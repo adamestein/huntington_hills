@@ -1,0 +1,272 @@
+/*******************************************************
+TITLE: Fixed Box Layout  V1.0
+DATE: 20060809
+AUTHOR: The CSS Tinderbox - http://www.csstinderbox.com
+*******************************************************/
+
+/*******************************************************
+General Properties
+*******************************************************/
+body {
+margin:1em;
+padding:0;
+height:100%;
+background-color:#ffffff;
+color:#000000;  
+text-align:center;
+font-family:Arial, Helvetica, sans-serif;
+font-size:1em;
+}
+
+a {
+color:#336699;
+text-decoration:underline;
+}
+
+a:hover {
+color:#999999;
+text-decoration:none;
+}
+
+.right {
+float:right;
+margin-bottom:2em;
+}
+
+.left {
+float:left;
+}
+
+#boxOne img, #boxTwo img, #boxThree img {
+margin:5px;
+padding:2px;
+border:1px solid #ffffff;
+}
+
+/*******************************************************
+Main Column Properties
+*******************************************************/
+#centerColumn { 	
+margin:0 auto;
+padding:1em;
+width:38em;
+text-align:left;
+vertical-align: middle;	
+background-color:#ffffff;
+background-image:url(img/big-leaf.gif);
+background-position:420px 100px;
+background-repeat:no-repeat;
+border:1px solid #C8DCB4;
+}
+
+#centerColumn h2 {
+margin:0 0 -.5em 0;
+padding:.75em 0 0 0;
+color:#94BC6E;
+font-size:1.1em;
+font-weight:lighter;
+letter-spacing:.1em;
+}
+
+#centerColumn h2.loaded {
+margin:0 0 -.5em 0;
+padding:.75em 0 15px 50px;
+background-image:url(img/leaf.gif);
+background-position:0 0;
+background-repeat:no-repeat;
+color:#A2C581;
+font-size:1.1em;
+letter-spacing:.1em;
+}
+
+#centerColumn h2.medium {
+margin:0 0 -.7em 0 !important; /* Mozilla specific style */
+margin:0 0 -1em 0; /* IE specific style */
+padding:.75em 0 .2em 0;
+color:#C66905;
+font-size:1em;
+letter-spacing:.1em;
+border-bottom:1px solid #EBF3E4;
+}
+
+#centerColumn h2.boxes {
+margin:0 0 -.5em 0 !important; /* Mozilla specific style */
+margin:0 0 -1em 0; /* IE specific style */
+padding:.5em 0 5px 25px;
+color:#C66905;
+font-size:.9em;
+font-weight:lighter;
+letter-spacing:.1em;
+background-image:url(img/boxes-h2-bg.gif);
+background-position:0 5px;
+background-repeat:no-repeat;
+}
+
+#centerColumn p {
+font-size:.8em;
+color:#3B3B3B;
+}
+
+.small {
+margin-top:-.8em;
+font-size:.75em;
+color:#86A1C0;
+}
+
+/*******************************************************
+Header Properties
+*******************************************************/
+#header {
+margin:-1em -1em 0 -1em;
+padding:0 0 0 0;
+height:7em;
+background-color:#94BC6E;
+background-image:url(img/header-bg.jpg);
+background-position:top left;
+background-repeat:no-repeat;
+}
+
+#header h1 {
+margin:0 0 -.5em 0;
+padding:2.2em 0 0 1em;
+font-family:Georgia, "Times New Roman", Times, serif;
+color:#ffffff;
+font-size:1.5em;
+font-weight:lighter;
+letter-spacing:.1em;
+}
+
+#header h2 {
+margin:0;
+padding:1em 0 0 1.8em;
+color:#ffffff;
+font-size:.85em;
+font-weight:lighter;
+letter-spacing:.1em;
+text-transform:lowercase;
+}
+
+/*******************************************************
+Top Navigation Properties
+*******************************************************/
+#navbar {
+margin:0 -1em 1em -1em !important; /* Mozilla specific style */
+margin:0 -1em .5em -1em; /* IE specific style */
+padding:0;
+height:20px;
+background-color:#EBF3E4;
+}
+
+#navbar ul {
+margin:0 0 0 .25em;
+padding:0;
+list-style-type:none;
+}
+
+#navbar li {
+margin:0 2em 0 -1em;
+padding:0 0 0 0;
+list-style-type:none;
+display:inline;
+background-color:#cc0000;
+}
+
+#navbar a {
+float:left;
+margin:0 1em 0 0;
+padding:.3em;
+font-size:.9em;
+color:#000000;
+text-decoration:none;
+background-color:#EBF3E4;
+border-left:1px solid #CDDBC0 !important; /* Mozilla specific style */
+border-left:none; /* IE specific style */
+border-right:1px solid #CDDBC0 !important; /* Mozilla specific style */
+border-right:none; /* IE specific style */
+border-bottom:1px solid #CDDBC0 !important; /* Mozilla specific style */
+border-bottom:none; /* IE specific style */
+}
+
+#navbar a:hover {
+color:#ffffff;
+text-decoration:none;
+background-color:#CDDBC0;
+}
+
+/*******************************************************
+Properties of the Three Lower Boxes
+*******************************************************/
+#boxOne {
+float:left;
+margin:1em .5em 0 0;
+padding:.54em;
+width:11.25em;
+background-color:#ffffff;
+background-image:url(img/boxes-bg.jpg);
+background-position:0 0;
+background-repeat:repeat-x;
+}
+
+#boxTwo {
+float:left;
+margin:1em .5em 0 0;
+padding:.54em;
+width:11.25em;
+background-color:#ffffff;
+background-image:url(img/boxes-bg.jpg);
+background-position:0 0;
+background-repeat:repeat-x;
+}
+
+#boxThree {
+float:left;
+margin:1em 0 0 0;
+padding:.5em;
+width:11.25em;
+background-color:#ffffff;
+background-image:url(img/boxes-bg.jpg);
+background-position:0 0;
+background-repeat:repeat-x;
+}
+
+#boxOne p, #boxTwo p, #boxThree p {
+font-size:.7em;
+color:#575757;
+}
+
+/*******************************************************
+Footer Properties
+*******************************************************/
+#footer {
+position:relative;
+clear:both;
+bottom:0;
+margin:5em 0 0 0;
+padding:0;
+height:4em;
+line-height:4em;
+font-size:.7em;
+background-color:#ffffff;
+border-top:1px solid #eeeeee;
+}
+
+#footer a {
+color:#B6B5B5;
+text-decoration:underline;
+}
+
+#footer a:hover {
+color:#cccccc;
+text-decoration:none;
+}
+
+
+
+
+
+
+
+
+
+
+

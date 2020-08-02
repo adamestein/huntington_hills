@@ -1,0 +1,4 @@
+-r requirements.txt
+bpython==0.18
+django-extensions==2.2.9
+

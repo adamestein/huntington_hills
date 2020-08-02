@@ -1,0 +1,117 @@
+{% extends "staff/staff_base.html" %}
+{% load lookup %}
+
+{% block css %}
+    {{ block.super }}
+
+    <style type="text/css">
+        caption {
+            font-weight: bold;
+            margin-bottom: 1em;
+        }
+
+        hr {
+            margin-bottom: 1.5em;
+            margin-top: 1.5em;
+        }
+
+        .row_label {
+            text-align: left;
+            vertical-align: top;
+            width: 25%;
+        }
+
+        table {
+            border-collapse: separate;
+            border-spacing: 0 0.5em;
+            width: 100%;
+        }
+
+        tr {
+            margin-bottom: 5em;
+        }
+
+        ul {
+            margin-top: 0.25em;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}View All Data{% endblock %}
+{% block header %}View All Data{% endblock %}
+
+{% block staff_content %}
+    {% for property in properties %}
+        <table>
+            <caption>{{ property.street_address }}</caption>
+
+            <tbody>
+                <tr>
+                    <td class="row_label">People:</td>
+                    <td>
+                        {% for person in property.person_set.all %}
+                            {{ person.full_name }} <br />
+                        {% endfor %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="row_label">Mailing Address:</td>
+                    <td>{{ property.mailing_address|linebreaksbr }}</td>
+                </tr>
+
+                <tr>
+                    <td class="row_label">Emails:</td>
+                    <td>
+                        {% with property_emails=emails|dict_lookup:property.id %}
+                            {% for email_type in email_types %}
+                                {% with type_emails=property_emails|dict_lookup:email_type %}
+                                    {% if type_emails %}
+                                        <div style="font-size: 95%;">{{ email_type }}:</div>
+
+                                        <ul style="list-style: none;">
+                                            {% for email in type_emails %}
+                                                <li>
+                                                    <a href="mailto:{{ email.email }}">{{ email.email }}</a>
+                                                    ({{ email.person.first_name }})
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                {% endwith %}
+                            {% endfor %}
+                        {% endwith %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="row_label">In HH:</td>
+                    <td>{{ property.in_hh|yesno }}</td>
+                </tr>
+
+                <tr>
+                    <td class="row_label">Type:</td>
+                    <td>{{ property.property_type }}</td>
+                </tr>
+
+                <tr>
+                    <td class="row_label">Lot Numbers:</td>
+                    <td>
+                        {% for lot_number in property.lotnumber_set.all %}
+                            {{ lot_number.lot_number }}<br />
+                        {% endfor %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="row_label">Comments:</td>
+                    <td>{{ property.comment }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        {% if not forloop.last %}
+            <hr />
+        {% endif %}
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,219 @@
+/*******************************************************
+TITLE: Fixed Box Layout  V1.0
+DATE: 20060809
+AUTHOR: The CSS Tinderbox - http://www.csstinderbox.com
+*******************************************************/
+
+body {
+margin:1em;
+padding:0;
+height:100%;
+background-color:#ffffff;
+color:#000000;  
+text-align:center;
+font-family:Arial, Helvetica, sans-serif;
+font-size:1em;
+}
+
+a {
+color:#336699;
+text-decoration:underline;
+}
+
+a:hover {
+color:#999999;
+text-decoration:none;
+}
+
+.right {
+float:right;
+margin-bottom:2em;
+}
+
+.left {
+float:left;
+}
+
+#boxOne img, #boxTwo img, #boxThree img {
+margin:5px;
+padding:2px;
+border:1px solid #ffffff;
+}
+
+#centerColumn { 	
+margin:0 auto;
+padding:1em;
+width:38em;
+text-align:left;
+vertical-align: middle;	
+background-color:#ffffff;
+}
+
+#centerColumn h2 {
+margin:0 0 -.5em 0;
+padding:.75em 0 0 0;
+color:#000000;
+font-size:1.1em;
+font-weight:lighter;
+letter-spacing:.1em;
+}
+
+#centerColumn h2.medium {
+margin:0 0 -.7em 0 !important;
+margin:0 0 -1em 0;
+padding:.75em 0 .2em 0;
+color:#000000;
+font-size:1em;
+font-weight:bold;
+letter-spacing:.1em;
+border-bottom:1px solid #EBF3E4;
+}
+
+#centerColumn h2.boxes {
+margin:0 0 -.5em 0 !important;
+margin:0 0 -1em 0;
+padding:.5em 0 5px 0;
+color:#000000;
+font-size:.9em;
+font-weight:bold;
+letter-spacing:.1em;
+}
+
+#centerColumn p {
+font-size:.8em;
+color:#444444;
+}
+
+.small {
+margin-top:-.8em;
+font-size:.75em;
+color:#999999;
+}
+
+#header {
+margin:-1em -1em 0 -1em;
+padding:0 0 0 0;
+height:7em;
+background-color:#94BC6E;
+}
+
+#header h1 {
+margin:0 0 -.5em 0;
+padding:2.2em 0 0 .3em;
+font-family:Georgia, "Times New Roman", Times, serif;
+color:#000000;
+font-size:1.5em;
+font-weight:lighter;
+letter-spacing:.1em;
+}
+
+#header h2 {
+margin:0;
+padding:1em 0 0 .6em;
+color:#000000;
+font-size:.85em;
+font-weight:lighter;
+letter-spacing:.1em;
+text-transform:lowercase;
+}
+
+#navbar {
+margin:0 -1em 1em -1em !important;
+margin:0 -1em .5em -1em;
+padding:0;
+height:20px;
+background-color:#EBF3E4;
+}
+
+#navbar ul {
+margin:0 0 0 .25em;
+padding:0;
+list-style-type:none;
+}
+
+#navbar li {
+margin:0 2em 0 -1em;
+padding:0 0 0 0;
+list-style-type:none;
+display:inline;
+background-color:#cc0000;
+}
+
+#navbar a {
+float:left;
+margin:0 1em 0 0;
+padding:.3em;
+font-size:.9em;
+color:#000000;
+text-decoration:underline;
+background-color:#EBF3E4;
+}
+
+#navbar a:hover {
+color:#ffffff;
+text-decoration:none;
+background-color:#CDDBC0;
+}
+
+#boxOne {
+float:left;
+margin:1em .5em 0 0;
+padding:.54em;
+width:11.25em;
+background-color:#ffffff;
+}
+
+#boxTwo {
+float:left;
+margin:1em .5em 0 0;
+padding:.54em;
+width:11.25em;
+background-color:#ffffff;
+}
+
+#boxThree {
+float:left;
+margin:1em 0 0 0;
+padding:.5em;
+width:11.25em;
+background-color:#ffffff;
+}
+
+#boxOne p, #boxTwo p, #boxThree p {
+font-size:.7em;
+color:#575757;
+}
+
+#footer {
+position:relative;
+clear:both;
+bottom:0;
+margin:5em 0 0 0;
+padding:0;
+height:4em;
+line-height:4em;
+font-size:.7em;
+background-color:#ffffff;
+border-top:1px solid #eeeeee;
+}
+
+#footer a {
+color:#B6B5B5;
+text-decoration:underline;
+}
+
+#footer a:hover {
+color:#cccccc;
+text-decoration:none;
+}
+
+
+
+
+
+
+
+
+
+
+

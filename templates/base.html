@@ -1,0 +1,38 @@
+{% load static %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html style="direction: ltr;" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <meta name="author" content="Adam Stein" />
+
+        <link rel="stylesheet" type="text/css" href="{% static "css/tree_hugger/style.css" %}" media="screen" />
+        <link rel="stylesheet" type="text/css" href="{% static "css/tree_hugger/print.css" %}" media="print" />
+
+        <title>{% block title %}{% endblock %}</title>
+
+        {% block css %}{% endblock %}
+        {% block js %}{% endblock %}
+    </head>
+
+    <body style="direction: ltr;">
+        <div id="centerColumn">
+            <div id="header"><h1>{% block header %}{% endblock %}</h1></div>
+
+            <div id="navbar"><ul>{% block navbar %}{% endblock %}</ul></div>
+
+            {% block content %}{% endblock %}
+        </div>
+
+        <div id="footer">
+            <p>
+                design by
+                <a href="http://www.openwebdesign.org/userinfo.phtml?user=pogy366" target="_blank">
+                    <span style="text-decoration: underline;">pogy366</span>
+                </a>
+                | content by Huntington Hills Association, Inc. (All Rights Reserved)
+                | {% if settings.DEBUG %}[Development] {% endif %}HH v{{ settings.VERSION }}
+            </p>
+        </div>
+    </body>
+</html>

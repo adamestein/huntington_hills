@@ -1,0 +1,62 @@
+{% extends "staff/staff_base.html" %}
+
+{% block js %}
+    <script type='text/javascript'>
+        function byAll()
+        {
+            let all_button = document.getElementById("byall_button");
+            let noemail_button = document.getElementById("bynoemail_button");
+        
+            let all_div = document.getElementById("byall_div");
+            let noemail_div = document.getElementById("bynoemail_div");
+        
+            all_div.style.display = "";
+            noemail_div.style.display = "none";
+        
+            all_button.disabled = true;
+            noemail_button.disabled = false;
+        }
+        
+        function byNoEmail()
+        {
+            let all_button = document.getElementById("byall_button");
+            let noemail_button = document.getElementById("bynoemail_button");
+        
+            let all_div = document.getElementById("byall_div");
+            let noemail_div = document.getElementById("bynoemail_div");
+        
+            all_div.style.display = "none";
+            noemail_div.style.display = "";
+        
+            all_button.disabled = false;
+            noemail_button.disabled = true;
+        }
+        </script>
+{% endblock %}
+
+{% block title %}Mailing Addresses{% endblock %}
+{% block header %}Mailing Addresses{% endblock %}
+
+{% block staff_content %}
+    <div style="margin-bottom: 2em; text-align: center;">
+        <input type="button"  name="All Households" value="All Households" onclick="byAll();"
+               disabled="disabled" id="byall_button" />
+
+        <input type="button"  name="Households With No Email" value="Households With No Email"
+               onclick="byNoEmail();" id="bynoemail_button" />
+    </div>
+
+    <div id="byall_div">
+        {% for property in properties %}
+            {{ property.household_address|linebreaksbr }}<br style="margin-bottom: 1em;" />
+        {% endfor %}
+    </div>
+
+    <div id="bynoemail_div" style="display: none;">
+        {% for property in properties %}
+            {% if property.receives_no_email %}
+                {{ property.household_address|linebreaksbr }}<br style="margin-bottom: 1em;" />
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}

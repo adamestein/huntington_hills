@@ -1,0 +1,46 @@
+{% extends "staff/staff_base.html" %}
+{% load static %}
+
+{% block css %}
+    {{ block.super }}
+
+    <style type="text/css">
+        fieldset {
+            height: 90%;
+            margin-bottom: 1em;
+        }
+
+        ul {
+            margin-left: -2em;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}Staff Main Menu{% endblock %}
+{% block header %}Staff Main Menu{% endblock %}
+
+{% block navbar %}{% include "_full_navbar.html" %}{% endblock %}
+
+{% block staff_content %}
+    <div>
+        <fieldset>
+            <legend>Download</legend>
+
+            <ul>
+                <li><a href="{% url 'staff:sign_in_sheet' %}">Annual Meeting List (PDF format)</a></li>
+                <li><a href="{% url 'staff:email_notice_list' %}">Email Notice List (CSV format)</a></li>
+                <li><a href="{% url 'staff:non_email_notice_list' %}">Non Email Notice List (CSV format)</a></li>
+            </ul>
+        </fieldset>
+
+        <fieldset>
+            <legend>View</legend>
+
+            <ul>
+                <li><a href="{% url 'staff:all_data' %}">All Data</a></li>
+                <li><a href="{% url 'staff:mailing_addresses' %}">Mailing Addresses</a></li>
+                <li><a href="{% url 'resident:information' %}">Residents List</a></li>
+            </ul>
+        </fieldset>
+    </div>
+{% endblock %}

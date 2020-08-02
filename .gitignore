@@ -1,0 +1,7 @@
+*.pyc
+*.swp
+.env
+.idea
+datadumper.js
+/static
+

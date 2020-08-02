@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block navbar %}{% include "_full_navbar.html" %}{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+
+    <link rel="stylesheet" href="{% static "css/std.css" %}" type="text/css" />
+{% endblock %}
+
+{% block content %}
+    <div id="links_div">
+        <div class="links">
+            {% if is_main_menu %}
+                [<span>Main Menu</span> | <a href="{% url 'admin:index' %}">Admin</a>]
+            {% else %}
+                [<a href="{% url 'staff:main_menu' %}">Main Menu</a> | <a href="{% url 'admin:index' %}">Admin</a>]
+            {% endif %}
+        </div>
+    </div>
+
+    {% block staff_content %}{% endblock %}
+{% endblock %}

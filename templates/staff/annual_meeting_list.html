@@ -1,0 +1,85 @@
+{% extends "easy_pdf/base.html" %}
+
+{% block style_base %}
+    {{ block.super }}
+
+    <style type="text/css">
+        .counter {
+            vertical-align: top;
+            width: 20px;
+        }
+
+        .member {
+            width: 140px;
+        }
+
+        .street_address {
+            width: 130px;
+        }
+
+        tr {
+            padding-top: 0.5em;
+        }
+
+        tr td {
+            border-bottom: 1px solid #000;
+        }
+
+        tr td:first-child {
+            border-bottom: inherit;
+        }
+    </style>
+{% endblock %}
+
+{% block page_header %}
+    <h1 style="text-align: center;">Huntington Hills Annual Meeting<br />Attendees Sign In Sheet</h1>
+{% endblock %}
+
+{% block content %}
+    <table style='border-collapse: collapse;'>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Member</th>
+                <th>Address</th>
+                <th>Email</th>
+                <th style="padding: 1.5em;">Email<br />Notice</th>
+                <th>Signature</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for property in properties %}
+                <tr>
+                    <td class="counter">{{ forloop.counter }}.</td>
+
+                    <td class="member">
+                        {% for person in property.person_set.all %}
+                            {{ person.name }}<br />
+                        {% endfor %}
+                    </td>
+
+                    <td class="street_address">{{ property.street_address}}</td>
+
+                    <td>
+                        {% for person in property.person_set.all %}
+                            {% for email in person.emails %}
+                                {{ email }}<br />
+                            {% endfor %}
+                        {% endfor %}
+                    </td>
+
+                    <td style="text-align: center;">
+                        {% if property.receives_email_notices %}
+                            [&#10004;]
+                        {% else %}
+                            [&nbsp;&nbsp;&nbsp;]
+                        {% endif %}
+                    </td>
+
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

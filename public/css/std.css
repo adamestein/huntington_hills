@@ -1,0 +1,16 @@
+.links {
+    float: right;
+    font-size: 74%;
+    font-weight: bold;
+    margin-bottom: 2em;
+}
+
+.links span {
+    font-weight: normal;
+}
+
+#links_div:after {
+    clear: both;
+    content: "";
+    display: table;
+}

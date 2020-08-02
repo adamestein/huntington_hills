@@ -1,0 +1,164 @@
+{% extends "residents/resident_base.html" %}
+{% load static %}
+
+{% block css %}
+    {{ block.super }}
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.21/fh-3.1.7/datatables.min.css"/>
+
+    <style type="text/css">
+        caption {
+            font-weight: bold;
+            margin-bottom: 0.5em;
+        }
+
+        #bystreet_div table {
+            margin-bottom: 3em;
+        }
+
+        th {
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.21/fh-3.1.7/datatables.min.js"></script>
+
+    <script type='text/javascript'>
+        $(document).ready(function() {
+            $("#byname_div table").DataTable({
+                fixedHeader: {
+                    header: true
+                },
+                ordering: false,
+                paging: false
+            });
+
+            $("#bystreet_div table").DataTable({
+                bInfo: false,
+                fixedHeader: {
+                    header: true
+                },
+                ordering: false,
+                paging: false,
+                searching: false
+            })
+        });
+
+        function byName()
+        {
+            let name_button = document.getElementById("byname_button");
+            let street_button = document.getElementById("bystreet_button");
+        
+            let name_div = document.getElementById("byname_div");
+            let street_div = document.getElementById("bystreet_div");
+        
+            name_div.style.display = "";
+            street_div.style.display = "none";
+        
+            name_button.disabled = true;
+            street_button.disabled = false;
+        }
+        
+        function byStreet()
+        {
+            let name_button = document.getElementById("byname_button");
+            let street_button = document.getElementById("bystreet_button");
+        
+            let name_div = document.getElementById("byname_div");
+            let street_div = document.getElementById("bystreet_div");
+        
+            name_div.style.display = "none";
+            street_div.style.display = "";
+        
+            name_button.disabled = false;
+            street_button.disabled = true;
+        }
+        </script>
+{% endblock %}
+
+{% block title %}Resident Information{% endblock %}
+{% block header %}Resident Information{% endblock %}
+
+{% block resident_content %}
+    <div style="margin-bottom: 2em; text-align: center;">
+        <input type="button"  name="Group By Name" value="Group By Name" onclick="byName();"
+               disabled="disabled" id="byname_button" />
+
+        <input type="button"  name="Group By Street" value="Group By Street"
+               onclick="byStreet();" id="bystreet_button" />
+    </div>
+
+    <div id="byname_div">
+        <table class="display" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for property in properties %}
+                    <tr>
+                        <td>
+                            {% for person in property.person_set.all %}
+                                {{ person.full_name }} <br />
+                            {% endfor %}
+                        </td>
+
+                        <td>{{ property.street_address }}</td>
+
+                        <td>
+                             {% for person in property.person_set.all %}
+                                {% for email in person.emails %}
+                                    {{ email }}<br />
+                                {% endfor %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="bystreet_div">
+        {% for street, property_list in by_street.items %}
+            <table class="display" style="width: 100%;">
+                <caption>{{ street }}</caption>
+
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for property in property_list %}
+                        <tr>
+                            <td>
+                                {% for person in property.person_set.all %}
+                                    {{ person.full_name }} <br />
+                                {% endfor %}
+                            </td>
+
+                            <td>{{ property.street_address }}</td>
+
+                            <td>
+                                 {% for person in property.person_set.all %}
+                                    {% for email in person.emails %}
+                                        {{ email }}<br />
+                                    {% endfor %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+    </div>
+{% endblock %}
