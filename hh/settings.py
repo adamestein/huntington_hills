@@ -19,7 +19,7 @@ from decouple import config, Csv
 from django.urls import reverse_lazy
 
 # Build paths inside the project like this: path.join(BASE_DIR, ...)
-BASE_DIR = path.abspath(path.join(path.dirname(__file__), '', '..'))
+BASE_DIR = path.dirname(path.dirname(path.abspath(__file__)))
 
 # Add the apps directory to the path since all code lives under there
 sys.path.append(path.join(BASE_DIR, 'apps'))
