@@ -1,0 +1,95 @@
+{% extends "residents/resident_base.html" %}
+{% load static %}
+
+{% block css %}
+    {{ block.super }}
+
+    <style type="text/css">
+        table {
+            border: 1px solid black;
+            font-size: 0.8em;
+            width: 100%;
+        }
+
+        td {
+            border: 1px solid black;
+        }
+
+        th {
+            border: 1px solid black;
+            text-align: center;
+        }
+
+        td, th {
+            padding: 0.25em;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}Huntington Hills Board Members{% endblock %}
+{% block header %}Board Members{% endblock %}
+
+{% block resident_content %}
+    <table style='border-collapse: collapse;'>
+        <thead>
+            <tr>
+                <th>Position</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>President</td>
+                <td>{{ board.president.full_name }}</td>
+                <td>{{ board.president.residential_property.street_address }}</td>
+                <td>{{ board.president.phone.as_national }}</td>
+                <td>{{ board.president.primary_email }}</td>
+            </tr>
+
+            <tr>
+                <td>Vice President</td>
+                <td>{{ board.vice_president.full_name }}</td>
+                <td>{{ board.vice_president.residential_property.street_address }}</td>
+                <td>{{ board.vice_president.phone.as_national }}</td>
+                <td>{{ board.vice_president.primary_email }}</td>
+            </tr>
+
+            <tr>
+                <td>Treasurer</td>
+                <td>{{ board.treasurer.full_name }}</td>
+                <td>{{ board.treasurer.residential_property.street_address }}</td>
+                <td>{{ board.treasurer.phone.as_national }}</td>
+                <td>{{ board.treasurer.primary_email }}</td>
+            </tr>
+
+            <tr>
+                <td>Secretary</td>
+                <td>{{ board.secretary.full_name }}</td>
+                <td>{{ board.secretary.residential_property.street_address }}</td>
+                <td>{{ board.secretary.phone.as_national }}</td>
+                <td>{{ board.secretary.primary_email }}</td>
+            </tr>
+
+            <tr>
+                <td>Director At Large</td>
+                <td>{{ board.director_at_large_1.full_name }}</td>
+                <td>{{ board.director_at_large_1.residential_property.street_address }}</td>
+                <td>{{ board.director_at_large_1.phone.as_national }}</td>
+                <td>{{ board.director_at_large_1.primary_email }}</td>
+            </tr>
+
+            <tr>
+                <td>Director At Large</td>
+                <td>{{ board.director_at_large_2.full_name }}</td>
+                <td>{{ board.director_at_large_2.residential_property.street_address }}</td>
+                <td>{{ board.director_at_large_2.phone.as_national }}</td>
+                <td>{{ board.director_at_large_2.primary_email }}</td>
+            </tr>
+        </tbody>
+
+    </table>
+{% endblock %}
