@@ -1,6 +1,15 @@
 from django.views.generic.base import TemplateView
 
-from .models import Property, Street
+from .models import Board, Property, Street
+
+
+class BoardMembersListView(TemplateView):
+    template_name = 'residents/board_members.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['board'] = Board.objects.all()[0]
+        return context
 
 
 class ResidentListView(TemplateView):

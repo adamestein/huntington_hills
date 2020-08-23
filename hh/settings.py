@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 
     # 3rd Party Apps
     'easy_pdf',
+    'phonenumber_field',
 
     # Apps
     'authentication',
@@ -163,7 +164,7 @@ LOGIN_REDIRECT_URL = reverse_lazy('redirect')
 
 # Version information
 
-VERSION = '2.0'
+VERSION = '2.1'
 
 
 # List of settings to export to templates (django-settings-export)

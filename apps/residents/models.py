@@ -1,7 +1,23 @@
 # noinspection PyPackageRequirements
 from localflavor.us.models import USStateField
 
+from phonenumber_field.modelfields import PhoneNumberField
+
 from django.db import models
+
+from library.models import SingletonModel
+
+
+class Board(SingletonModel):
+    director_at_large_1 = models.ForeignKey('Person', blank=True, related_name='director_at_large_1')
+    director_at_large_2 = models.ForeignKey('Person', blank=True, related_name='director_at_large_2')
+    president = models.ForeignKey('Person', blank=True, related_name='president')
+    secretary = models.ForeignKey('Person', blank=True, related_name='secretary')
+    treasurer = models.ForeignKey('Person', blank=True, related_name='treasurer')
+    vice_president = models.ForeignKey('Person', blank=True, related_name='vice_president')
+
+    class Meta:
+        verbose_name_plural = 'Board Members'
 
 
 class Email(models.Model):
@@ -69,6 +85,7 @@ class Person(models.Model):
     prefix = models.CharField(blank=True, default=None, max_length=5, null=True)
     residential_property = models.ForeignKey('Property')
     suffix = models.CharField(blank=True, default=None, max_length=10, null=True)
+    phone = PhoneNumberField(blank=True, help_text='Example: 000-000-0000.', region='US')
 
     class Meta:
         ordering = ('last_name', 'first_name')
@@ -93,6 +110,10 @@ class Person(models.Model):
         full_name += f'{self.first_name} {self.last_name}{self.add_suffix()}'
 
         return full_name
+
+    @property
+    def primary_email(self):
+        return self.email_set.filter(email_type__email_type__in=[EmailType.RESIDENT, EmailType.PERSONAL])[0].email
 
     def __str__(self):
         return f'{self.last_name}, {self.first_name} [{self.residential_property.mailing_address(multiline=False)}]'
