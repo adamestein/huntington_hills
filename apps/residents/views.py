@@ -12,6 +12,10 @@ class BoardMembersListView(TemplateView):
         return context
 
 
+class MainMenuView(TemplateView):
+    template_name = 'residents/main_menu.html'
+
+
 class ResidentListView(TemplateView):
     template_name = 'residents/residents.html'
 
