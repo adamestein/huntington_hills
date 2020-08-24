@@ -1,0 +1,39 @@
+{% extends "residents/resident_base.html" %}
+{% load static %}
+
+{% block css %}
+    {{ block.super }}
+
+    <style type="text/css">
+        .arrow_bullet {
+            list-style: none;
+            position: relative;
+        }
+
+        .arrow_bullet li::before {
+            content: '⮕';
+            left: 2em;
+            position: absolute;
+        }
+
+        fieldset {
+            height: 90%;
+            margin-bottom: 1em;
+        }
+    </style>
+{% endblock %}
+
+{% block residents_title %}Residents Main Menu{% endblock %}
+{% block header %}Residents Main Menu{% endblock %}
+
+{% block navbar %}{% include "_full_navbar.html" %}{% endblock %}
+
+{% block resident_content %}
+    <p>Your choices:</p>
+
+    <ul class="arrow_bullet">
+        <li><a href="{% url 'resident:board' %}">Board Members</a></li>
+        <li><a href="{% url 'resident:information' %}">Residents List</a></li>
+    </ul>
+{% endblock %}
+

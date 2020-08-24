@@ -8,4 +8,4 @@ def redirect(request):
     if request.user.is_staff:
         return HttpResponseRedirect(reverse('staff:main_menu'))
     else:
-        return HttpResponseRedirect(reverse('resident:information'))
+        return HttpResponseRedirect(reverse('resident:main_menu'))
