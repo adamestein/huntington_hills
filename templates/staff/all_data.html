@@ -49,7 +49,7 @@
                 <tr>
                     <td class="row_label">People:</td>
                     <td>
-                        {% for person in property.person_set.all %}
+                        {% for person in property.get_all_active_people %}
                             {{ person.full_name }} <br />
                         {% endfor %}
                     </td>

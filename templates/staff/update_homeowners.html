@@ -1,0 +1,72 @@
+{% extends "staff/staff_base.html" %}
+
+{% block css %}
+    {{ block.super }}
+
+    <style type="text/css">
+        caption {
+            font-weight: bold;
+            margin-bottom: 0.25em;
+        }
+
+        label {
+            font-weight: normal;
+        }
+    </style>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.21/fh-3.1.7/datatables.min.js"></script>
+
+    <script type='text/javascript'>
+        $(document).ready(function() {
+            $("#property_select").change(function() {
+                $("#person").prop("disabled", !$(this).find("option:selected").val().length);
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block staff_title %}Update Homeowners{% endblock %}
+{% block header %}Update Homeowners{% endblock %}
+
+{% block staff_content %}
+    <p style="margin-bottom: 2em;">
+        Choose a property and then add the primary homeowner name.
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div style="margin-bottom: 2em;">
+            <label>Property:
+                <select id="property_select" name="property">
+                    <option value="">----------</option>
+
+                    {% for street, property_list in properties_by_street.items %}
+                        <optgroup label="{{ street }}">
+                            {% for property in property_list %}
+                                <option value="{{ property.id }}">{{ property }}</option>
+                            {% endfor %}
+                        </optgroup>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+
+        <fieldset id="person" style="border: 0; margin: 0; padding: 0;" disabled>
+            {{ form.management_form }}
+
+            {% for person_form in form.forms %}
+                <table style="margin-bottom: 2em;">
+                    <caption>Person {{ forloop.counter }}</caption>
+                    {{ person_form.as_table }}
+                </table>
+            {% endfor %}
+
+            <div style="text-align: center;">
+                <input type="submit" value="Update">
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}

@@ -8,6 +8,8 @@
 
         <link rel="stylesheet" type="text/css" href="{% static "css/tree_hugger/style.css" %}" media="screen" />
         <link rel="stylesheet" type="text/css" href="{% static "css/tree_hugger/print.css" %}" media="print" />
+        <link rel="stylesheet" href="{% static "css/std.css" %}" type="text/css" />
+        <link rel="stylesheet" href="{% static "css/messages.css" %}" type="text/css" />
 
         <title>{% block title %}{% endblock %}</title>
 
@@ -16,6 +18,17 @@
     </head>
 
     <body style="direction: ltr;">
+        <div id="messages">
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li class="message{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                <a href="#" onclick="$('#messages').hide(); return false;" class="close">[x]</a>
+            {% endif %}
+        </div>
+
         <div id="centerColumn">
             <div id="header"><h1>{% block header %}{% endblock %}</h1></div>
 

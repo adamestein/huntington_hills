@@ -86,6 +86,7 @@ class Person(models.Model):
     residential_property = models.ForeignKey('Property')
     suffix = models.CharField(blank=True, default=None, max_length=10, null=True)
     phone = PhoneNumberField(blank=True, help_text='Example: 000-000-0000.', region='US')
+    active = models.BooleanField(default=True)
 
     class Meta:
         ordering = ('last_name', 'first_name')
@@ -131,17 +132,20 @@ class Property(models.Model):
         ordering = ('street', 'house_number')
         verbose_name_plural = 'Properties'
 
+    def get_all_active_people(self):
+        return self.person_set.filter(active=True)
+
     def get_all_names(self):
-        last_names = set([person.last_name + person.add_suffix() for person in self.person_set.all()])
+        last_names = set([person.last_name + person.add_suffix() for person in self.get_all_active_people()])
 
         if len(last_names) == 1:
             # Same last name
             all_names = ' & '.join(
-                [person.add_prefix() + person.first_name for person in self.person_set.all()]
+                [person.add_prefix() + person.first_name for person in self.get_all_active_people()]
             ) + ' ' + last_names.pop()
         else:
             # Different last names
-            all_names = ' / '.join([person.full_name for person in self.person_set.all()])
+            all_names = ' / '.join([person.full_name for person in self.get_all_active_people()])
 
         return all_names
 
@@ -179,11 +183,11 @@ class Property(models.Model):
 
     @property
     def receives_email_notices(self):
-        return any([person.has_notice_email for person in self.person_set.all()])
+        return any([person.has_notice_email for person in self.get_all_active_people()])
 
     @property
     def receives_no_email(self):
-        return sum([person.email_set.all().count() for person in self.person_set.all()]) == 0
+        return sum([person.email_set.all().count() for person in self.get_all_active_people()]) == 0
 
     def street_address(self):
         return f'{self.house_number} {self.street}'
