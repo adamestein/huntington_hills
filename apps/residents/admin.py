@@ -18,6 +18,10 @@ class BoardAdmin(admin.ModelAdmin):
         return obj.director_at_large_2.full_name
     director_at_large_2_full_name.short_description = 'Director At Large'
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        kwargs['queryset'] = Person.objects.filter(active=True)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
     def president_full_name(self, obj):
         return obj.president.full_name
     president_full_name.short_description = 'President'
@@ -38,6 +42,11 @@ class BoardAdmin(admin.ModelAdmin):
 @admin.register(Email)
 class EmailAdmin(admin.ModelAdmin):
     list_filter = ('email_type',)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'person':
+            kwargs['queryset'] = Person.objects.filter(active=True)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 @admin.register(Person)

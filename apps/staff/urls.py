@@ -1,6 +1,8 @@
 from django.conf.urls import url
 
-from .views import AllDataView, EmailNoticeList, MailingAddresses, MainMenuView, NonEmailNoticeList, SignInSheet
+from .views import (
+    AllDataView, EmailNoticeList, MailingAddresses, MainMenuView, NonEmailNoticeList, SignInSheet, UpdateHomeowners
+)
 
 
 app_name = 'staff'
@@ -10,5 +12,6 @@ urlpatterns = [
     url(r'^download/non_email_notice_list/$', NonEmailNoticeList.as_view(), name='non_email_notice_list'),
     url(r'^download/sign_in_sheet/$', SignInSheet.as_view(), name='sign_in_sheet'),
     url(r'^mailing_addresses/$', MailingAddresses.as_view(), name='mailing_addresses'),
-    url(r'^main_menu/$', MainMenuView.as_view(), name='main_menu')
+    url(r'^main_menu/$', MainMenuView.as_view(), name='main_menu'),
+    url(r'^update_homeowners/$', UpdateHomeowners.as_view(), name='update_homeowners')
 ]

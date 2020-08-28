@@ -1,12 +1,16 @@
 from easy_pdf.views import PDFTemplateView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.base import TemplateView
+from django.contrib.messages import success
+from django.views.generic import FormView, TemplateView
+from django.urls import reverse_lazy
+
+from .forms import UpdateHomeownersFormSet
 
 from library.contrib.auth.mixins import IsStaffMixin
-from library.views.generic.views import CSVFileView
+from library.views.generic.csv import CSVFileView
 
-from residents.models import Email, EmailType, Property, Street
+from residents.models import Email, EmailType, Person, Property, Street
 
 
 class AllDataView(LoginRequiredMixin, IsStaffMixin, TemplateView):
@@ -44,7 +48,7 @@ class EmailNoticeList(LoginRequiredMixin, IsStaffMixin, CSVFileView):
                 emails = []
                 people = []
 
-                for person in residential_property.person_set.all():
+                for person in residential_property.get_all_active_people():
                     if person.has_notice_email:
                         emails.append(person.email_set.get(email_type__email_type=EmailType.NOTIFICATION).email)
                         people.append(person.full_name)
@@ -110,3 +114,53 @@ class SignInSheet(LoginRequiredMixin, IsStaffMixin, PDFTemplateView):
         context['properties'] = Property.objects.all()
 
         return context
+
+
+class UpdateHomeowners(LoginRequiredMixin, IsStaffMixin, FormView):
+    form_class = UpdateHomeownersFormSet
+    success_url = reverse_lazy('staff:update_homeowners')
+    template_name = 'staff/update_homeowners.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['properties_by_street'] = {}
+
+        for street in Street.objects.all():
+            context['properties_by_street'][street.street] = Property.objects.filter(street=street)
+
+        return context
+
+    def get_form_kwargs(self):
+        """
+        Returns the keyword arguments for instantiating the form.
+        """
+        kwargs = {
+            'initial': self.get_initial(),
+            'prefix': self.get_prefix(),
+            'queryset': Person.objects.none(),
+            'unrequired': [1]
+        }
+
+        if self.request.method in ('POST', 'PUT'):
+            kwargs.update({
+                'data': self.request.POST,
+                'files': self.request.FILES,
+            })
+        return kwargs
+
+    def form_valid(self, form):
+        residential_property = Property.objects.get(id=self.request.POST['property'])
+
+        # Deactivate the old property owners
+        Person.objects.filter(residential_property=residential_property).update(active=False)
+
+        for person_form in form.forms:
+            if person_form.cleaned_data:
+                # Add the new property owners
+                person = person_form.save(commit=False)
+                person.residential_property = residential_property
+                person.save()
+
+        success(self.request, 'Updated Homeowners')
+
+        return super().form_valid(form)

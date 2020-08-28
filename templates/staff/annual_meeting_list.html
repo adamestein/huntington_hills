@@ -54,15 +54,15 @@
                     <td class="counter">{{ forloop.counter }}.</td>
 
                     <td class="member">
-                        {% for person in property.person_set.all %}
-                            {{ person.name }}<br />
+                        {% for person in property.get_all_active_people %}
+                            {{ person.full_name }}<br />
                         {% endfor %}
                     </td>
 
                     <td class="street_address">{{ property.street_address}}</td>
 
                     <td>
-                        {% for person in property.person_set.all %}
+                        {% for person in property.get_all_active_people %}
                             {% for email in person.emails %}
                                 {{ email }}<br />
                             {% endfor %}
