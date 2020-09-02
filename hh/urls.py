@@ -16,7 +16,4 @@ urlpatterns = [
     url(r'^gallery/', include('gallery.urls')),
     url(r'^resident/', include('residents.urls')),
     url(r'^staff/', include('staff.urls'))
-]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

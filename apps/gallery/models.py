@@ -34,6 +34,9 @@ class Owner(models.Model):
 
         super().save(**kwargs)
 
+    class Meta:
+        ordering = ('name',)
+
     def __str__(self):
         return self.name
 
@@ -51,6 +54,9 @@ class Photo(models.Model):
     tnail_height = models.PositiveIntegerField(editable=False)
     tnail_width = models.PositiveIntegerField(editable=False)
     width = models.PositiveIntegerField(editable=False)
+
+    class Meta:
+        ordering = ('owner', 'page')
 
     @property
     def tnail_margin_top(self):
