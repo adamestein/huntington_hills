@@ -26,7 +26,7 @@ class Owner(models.Model):
 
     @property
     def num_pages(self):
-        return self.photo_set.order_by('page').distinct().count()
+        return self.photo_set.values_list('page', flat=True).order_by('page').distinct().count()
 
     def save(self, **kwargs):
         if not self.slug:
