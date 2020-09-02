@@ -1,0 +1,106 @@
+{% load static %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html style="direction: ltr;" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+        <meta name="description" content="Photographs of Huntington Hills" />
+
+        <title>{% block gallery_title %}Huntington Hills Gallery{% endblock %}</title>
+
+        <link href="{% static "css/photogenic.css" %}" rel="stylesheet" type="text/css" />
+    </head>
+
+    <body style="direction: ltr;">
+        <div id="wrapper">
+            <div id="header">
+                <h1>Gallery</h1>
+            </div>
+
+            <div id="navigation">
+                <span><span>{% block nav %}Gallery{% endblock %}</span></span>
+            </div>
+
+            <div id="right">
+                {% block gallery_content %}<h2>Click on a name to see photos</h2>{% endblock %}
+            </div>
+
+            <div id="left">
+                <h1><span>List of Submitters</span></h1>
+
+                <p>
+                    <span>
+                        Photographic images are available in the Gallery.
+                        <a href="http://www.youtube.com/channel/UCMizLaUidrOfovnrgCaIP7A/videos?view=0" target="_blank">Videos
+                        </a> are stored on <a href="http://www.youtube.com/" target="_blank">YouTube</a>.<br />
+                    </span>
+                </p>
+
+                <p>
+                    <span>
+                        Click on an image to see the full sized version. Hover the mouse over the image to see a
+                        description.
+                    </span>
+                </p>
+
+                <p>
+                    <span>
+                        Please send all images or videos to <a href="mailto:adam@huntingtonhillsinc.org">Adam Stein</a>.
+                        Submissions may be made by email (either the files or the locations to fetch them), CD, DVD,
+                        USB stick, etc. (any media should be fine). Also include long and short descriptions as to
+                        the contents of the files.<br />
+                    </span>
+                </p>
+
+                <p>
+                    <span>
+                        All pictures are copyrighted by their respective owners unless otherwise noted.
+                    </span>
+                </p>
+
+                {% if owner_list %}
+                    <ol>
+                        {% for owner in owner_list %}
+                            <li>
+                                {% ifequal owner object %}
+                                    {{ owner.name }}
+                                {% else %}
+                                    <a href="{% url 'gallery:owner' owner.slug %}">{{ owner.name }}</a>
+                                {% endifequal %}
+                            </li>
+                        {% endfor %}
+                    </ol>
+                {% else %}
+                    <p>
+                        <span>
+                            There are currently no photographs online at this time.
+                        </span>
+                    </p>
+                {% endif %}
+
+                {% comment %}Easy way to get some padding at bottom of "left" container{% endcomment %}
+                <p style="line-height: 1em;">&nbsp;</p>
+            </div>
+
+            <div id="footer">
+                <span>
+                    <a href="http://www.huntingtonhillsinc.org/index.html">Home</a> |
+                    <a href="http://www.huntingtonhillsinc.org/about.html">About</a> |
+                    <a href="http://www.huntingtonhillsinc.org/docs.html">Documents</a> |
+                    <a href="http://www.huntingtonhillsinc.org/history.html">History</a> |
+                    Gallery |
+                    <a href="http://www.huntingtonhillsinc.org/contact.html">Contact</a> |
+                    <a href="http://www.huntingtonhillsinc.org/search.html">Search</a> |
+                    <a href="http://www.huntingtonhillsinc.org/technical.html">Technical Details</a>
+                </span>
+            </div>
+
+            <div id="wrapper">
+                <span class="credit">
+                    design by <a href="http://www.oswd.org/user/profile/id/6360" target="_blank">Jack</a> |
+                    content by Huntington Hills Association, Inc. (All Rights Reserved)
+                </span>
+            </div>
+        </div>
+    </body>
+</html>

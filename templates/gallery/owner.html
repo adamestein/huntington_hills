@@ -1,0 +1,17 @@
+{% extends "gallery/gallery.html" %}
+
+{% block gallery_title %}{{ object.name }}'s Photographs{% endblock %}
+
+{% block nav %}
+    <a href="{% url 'gallery:gallery' %}">Gallery</a>&#8250;&#8250;&nbsp;&nbsp;{{ object.name }}
+{% endblock %}
+
+{% block gallery_content %}
+    <h2>{{ object.name }}'s Pictures</h2>
+
+    <ul class="pagelist">
+        {% for page in pages %}
+            <li><a href="{% url 'gallery:page' object.slug forloop.counter %}">{{ page }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -3,5 +3,6 @@
 .env
 .idea
 datadumper.js
+/media
 /static
 
