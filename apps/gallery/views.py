@@ -25,9 +25,11 @@ class PageView(ListView):
     template_name = 'gallery/page.html'
 
     def get_context_data(self, **kwargs):
+        owner = Owner.objects.get(slug=self.kwargs['owner_slug'])
+        kwargs['object_list'] = Photo.objects.filter(owner=owner)
         context = super().get_context_data(**kwargs)
         context['box_size'] = (TNAIL_BACKGROUND_WIDTH, TNAIL_BACKGROUND_HEIGHT)
-        context['object'] = Owner.objects.get(slug=self.kwargs['owner_slug'])
+        context['object'] = owner
         context['owner_list'] = Owner.objects.all()
         context['page_num'] = self.kwargs['page_num']
 
