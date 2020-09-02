@@ -1,0 +1,28 @@
+{% extends "gallery/gallery.html" %}
+
+{% block gallery_title %}{{ object.name }}'s Photographs (Page {{ page_num }}){% endblock %}
+
+{% block nav %}
+    <a href="{% url 'gallery:gallery' %}">Gallery</a>&#8250;&#8250;
+    <a href="{% url 'gallery:owner' object.slug %}">{{ object.name }}</a>&#8250;&#8250;&nbsp;&nbsp;{{ page_num }}
+{% endblock %}
+
+{% block gallery_content %}
+    <h2>Photos</h2>
+
+    <ul class="gallery">
+        {% for photo in photo_list %}
+            <li>
+                <a target="_blank" href="{{ photo.image.url }}"
+                   style="height: {{ box_size.1 }}px; width: {{ box_size.0 }}px;">
+                    <img alt="{{ photo.short_description }}"
+                         style="height: {{ photo.tnail_height }}px; margin-top: {{ photo.tnail_margin_top }}px; width: {{ photo.tnail_width }}px;"
+                         src="{{ photo.tnail.url }}" />
+                    <span>
+                        <em>{{ photo.short_description }}</em>
+                        {{ photo.long_description }}
+                    </span>
+                </a>
+            </li>
+        {% endfor %}
+{% endblock %}

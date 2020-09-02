@@ -1,9 +1,10 @@
-from django.views.generic.base import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView
 
 from .models import Board, Property, Street
 
 
-class BoardMembersListView(TemplateView):
+class BoardMembersListView(LoginRequiredMixin, TemplateView):
     template_name = 'residents/board_members.html'
 
     def get_context_data(self, **kwargs):
@@ -12,11 +13,11 @@ class BoardMembersListView(TemplateView):
         return context
 
 
-class MainMenuView(TemplateView):
+class MainMenuView(LoginRequiredMixin, TemplateView):
     template_name = 'residents/main_menu.html'
 
 
-class ResidentListView(TemplateView):
+class ResidentListView(LoginRequiredMixin, TemplateView):
     template_name = 'residents/residents.html'
 
     def get_context_data(self, **kwargs):
