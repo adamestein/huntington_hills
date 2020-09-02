@@ -56,7 +56,7 @@ class Photo(models.Model):
     width = models.PositiveIntegerField(editable=False)
 
     class Meta:
-        ordering = ('owner', 'page')
+        ordering = ('owner', 'page', 'image')
 
     @property
     def tnail_margin_top(self):
@@ -88,4 +88,4 @@ class Photo(models.Model):
         super().save(**kwargs)
 
     def __str__(self):
-        return f'[{self.owner}] {self.short_description}'
+        return f'[{self.owner}/{self.page}] {self.short_description}'
