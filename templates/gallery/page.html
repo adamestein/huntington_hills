@@ -20,7 +20,7 @@
                          src="{{ photo.tnail.url }}" />
                     <span>
                         <em>{{ photo.short_description }}</em>
-                        {{ photo.long_description }}
+                        {{ photo.long_description|safe }}
                     </span>
                 </a>
             </li>

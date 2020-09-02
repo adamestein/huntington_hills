@@ -168,7 +168,7 @@ LOGIN_REDIRECT_URL = reverse_lazy('redirect')
 
 # Version information
 
-VERSION = '2.3.1'
+VERSION = '2.3.2'
 
 
 # List of settings to export to templates (django-settings-export)
