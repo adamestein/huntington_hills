@@ -104,7 +104,7 @@
                 {% for property in properties %}
                     <tr>
                         <td>
-                            {% for person in property.person_set.all %}
+                            {% for person in property.get_all_active_people %}
                                 {{ person.full_name }} <br />
                             {% endfor %}
                         </td>
@@ -112,7 +112,7 @@
                         <td>{{ property.street_address }}</td>
 
                         <td>
-                             {% for person in property.person_set.all %}
+                             {% for person in property.get_all_active_people %}
                                 {% for email in person.emails %}
                                     {{ email }}<br />
                                 {% endfor %}
@@ -141,7 +141,7 @@
                     {% for property in property_list %}
                         <tr>
                             <td>
-                                {% for person in property.person_set.all %}
+                                {% for person in property.get_all_active_people %}
                                     {{ person.full_name }} <br />
                                 {% endfor %}
                             </td>
@@ -149,7 +149,7 @@
                             <td>{{ property.street_address }}</td>
 
                             <td>
-                                 {% for person in property.person_set.all %}
+                                 {% for person in property.get_all_active_people %}
                                     {% for email in person.emails %}
                                         {{ email }}<br />
                                     {% endfor %}

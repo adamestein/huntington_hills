@@ -27,7 +27,7 @@ class AllDataView(LoginRequiredMixin, IsStaffMixin, TemplateView):
             context['emails'][residential_property.id] = {}
             for email_type in EmailType.objects.all():
                 context['emails'][residential_property.id][email_type.email_type] = Email.objects.filter(
-                    email_type=email_type, person__residential_property=residential_property
+                    email_type=email_type, person__active=True, person__residential_property=residential_property
                 ).order_by('email')
 
         return context
