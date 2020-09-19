@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^auth/', include('authentication.urls')),
     url(r'^gallery/', include('gallery.urls')),
+    url(r'^news/', include('news.urls')),
     url(r'^resident/', include('residents.urls')),
     url(r'^staff/', include('staff.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

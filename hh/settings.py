@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'authentication',
     'gallery',
     'library',
+    'news',
     'residents',
     'staff'
 ]
@@ -157,6 +158,7 @@ STATICFILES_DIRS = [
     path.abspath(path.join(BASE_DIR, 'public'))
 ]
 
+# noinspection PyUnresolvedReferences
 MEDIA_ROOT = path.abspath(path.join(BASE_DIR, 'media'))
 MEDIA_URL = '/media/'
 
@@ -168,7 +170,7 @@ LOGIN_REDIRECT_URL = reverse_lazy('redirect')
 
 # Version information
 
-VERSION = '2.3.7'
+VERSION = '2.4exp'
 
 
 # List of settings to export to templates (django-settings-export)
