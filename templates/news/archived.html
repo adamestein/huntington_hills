@@ -1,0 +1,17 @@
+{% extends "residents/resident_base.html" %}
+
+{% block residents_title %}Archived News{% endblock %}
+{% block header %}Archived News{% endblock %}
+
+{% block resident_content %}
+    <p>
+        All news articles shown on this site (in the <em>News &amp; Updates</em> section on the front page) are
+        archived. Pick the year below to see all the articles presented in that year.
+    </p>
+
+    <ul>
+        {% for year in years %}
+            <li><a href="{% url 'news:by_year' year %}">{{ year }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

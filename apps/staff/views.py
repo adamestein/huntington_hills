@@ -1,3 +1,5 @@
+from datetime import date
+
 from easy_pdf.views import PDFTemplateView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -10,7 +12,13 @@ from .forms import UpdateHomeownersFormSet
 from library.contrib.auth.mixins import IsStaffMixin
 from library.views.generic.csv import CSVFileView
 
+from news.views import CurrentArticles
+
 from residents.models import Email, EmailType, Person, Property, Street
+
+
+class AllCurrentNews(CurrentArticles):
+    template_name = 'staff/all_current_news.html'
 
 
 class AllDataView(LoginRequiredMixin, IsStaffMixin, TemplateView):
