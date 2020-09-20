@@ -61,6 +61,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # 3rd party middleware that needs to come before others
+    'corsheaders.middleware.CorsMiddleware',
+
     # Django middleware
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -166,6 +169,17 @@ MEDIA_URL = '/media/'
 # Login information
 
 LOGIN_REDIRECT_URL = reverse_lazy('redirect')
+
+
+# CORS setup
+
+CORS_ALLOW_METHODS = [
+    'GET'
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://www.huntingtonhillsinc.org'
+]
 
 
 # Version information
