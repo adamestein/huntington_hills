@@ -1,0 +1,11 @@
+{% for article in articles %}
+    <p>
+        <a href="{% url 'news:article_redirect' article.pk %}">
+            <span style="font-size: x-small; ">{{ article.title }}</span>
+        </a> ››
+        <br />
+        <em>{{ article.posted_on }}</em>
+        <br />
+        {{ article.short_desc|safe }}
+    </p>
+{% endfor %}

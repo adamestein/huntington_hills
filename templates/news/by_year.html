@@ -1,0 +1,21 @@
+{% extends "residents/resident_base.html" %}
+
+{% block js %}
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <script type='text/javascript'>
+        $(document).ready(function() {
+            $("html,body").animate({scrollTop: $("#{{ slug }}").offset().top});
+        });
+    </script>
+{% endblock %}
+
+{% block residents_title %}News in {{ year }}{% endblock %}
+{% block header %}News in {{ year }}{% endblock %}
+
+{% block resident_content %}
+    {% for article in articles %}
+        <h2 class="medium" id="{{ article.title|slugify }}">{{ article.posted_on|date:"F d, Y" }}</h2>
+        <p>{{ article.desc|safe }}</p>
+    {% endfor %}
+{% endblock %}

@@ -177,14 +177,14 @@ CORS_ALLOW_METHODS = [
     'GET'
 ]
 
-CORS_ALLOWED_ORIGINS = [
+CORS_ORIGIN_WHITELIST = [
     'http://www.huntingtonhillsinc.org'
 ]
 
 
 # Version information
 
-VERSION = '2.4exp'
+VERSION = '2.4'
 
 
 # List of settings to export to templates (django-settings-export)

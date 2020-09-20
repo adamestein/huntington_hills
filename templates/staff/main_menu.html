@@ -54,7 +54,9 @@
             <legend>View</legend>
 
             <ul class="arrow_bullet">
+                <li><a href="{% url 'staff:all_current_news' %}">All Current News</a></li>
                 <li><a href="{% url 'staff:all_data' %}">All Data</a></li>
+                <li><a href="{% url 'news:archived' %}">Archived News</a></li>
                 <li><a href="{% url 'resident:board' %}">Board Members</a></li>
                 <li><a href="{% url 'staff:mailing_addresses' %}">Mailing Addresses</a></li>
                 <li><a href="{% url 'resident:information' %}">Residents List</a></li>
