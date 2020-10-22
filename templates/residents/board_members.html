@@ -47,7 +47,11 @@
                 <td>{{ board.president.full_name }}</td>
                 <td>{{ board.president.residential_property.street_address }}</td>
                 <td>{{ board.president.phone.as_national }}</td>
-                <td>{{ board.president.primary_email }}</td>
+                <td>
+                    <a href="mailto:{{ board.president.primary_email }}">
+                        {{ board.president.primary_email }}
+                    </a>
+                </td>
             </tr>
 
             <tr>
@@ -55,7 +59,11 @@
                 <td>{{ board.vice_president.full_name }}</td>
                 <td>{{ board.vice_president.residential_property.street_address }}</td>
                 <td>{{ board.vice_president.phone.as_national }}</td>
-                <td>{{ board.vice_president.primary_email }}</td>
+                <td>
+                    <a href="mailto:{{ board.vice_president.primary_email }}">
+                        {{ board.vice_president.primary_email }}
+                    </a>
+                </td>
             </tr>
 
             <tr>
@@ -63,7 +71,11 @@
                 <td>{{ board.treasurer.full_name }}</td>
                 <td>{{ board.treasurer.residential_property.street_address }}</td>
                 <td>{{ board.treasurer.phone.as_national }}</td>
-                <td>{{ board.treasurer.primary_email }}</td>
+                <td>
+                    <a href="mailto:{{ board.treasurer.primary_email }}">
+                        {{ board.treasurer.primary_email }}
+                    </a>
+                </td>
             </tr>
 
             <tr>
@@ -71,7 +83,11 @@
                 <td>{{ board.secretary.full_name }}</td>
                 <td>{{ board.secretary.residential_property.street_address }}</td>
                 <td>{{ board.secretary.phone.as_national }}</td>
-                <td>{{ board.secretary.primary_email }}</td>
+                <td>
+                    <a href="mailto:{{ board.secretary.primary_email }}">
+                        {{ board.secretary.primary_email }}
+                    </a>
+                </td>
             </tr>
 
             <tr>
@@ -79,7 +95,11 @@
                 <td>{{ board.director_at_large_1.full_name }}</td>
                 <td>{{ board.director_at_large_1.residential_property.street_address }}</td>
                 <td>{{ board.director_at_large_1.phone.as_national }}</td>
-                <td>{{ board.director_at_large_1.primary_email }}</td>
+                <td>
+                    <a href="mailto:{{ board.director_at_large_1.primary_email }}">
+                        {{ board.director_at_large_1.primary_email }}
+                    </a>
+                </td>
             </tr>
 
             <tr>
@@ -87,7 +107,11 @@
                 <td>{{ board.director_at_large_2.full_name }}</td>
                 <td>{{ board.director_at_large_2.residential_property.street_address }}</td>
                 <td>{{ board.director_at_large_2.phone.as_national }}</td>
-                <td>{{ board.director_at_large_2.primary_email }}</td>
+                <td>
+                    <a href="mailto:{{ board.director_at_large_2.primary_email }}">
+                        {{ board.director_at_large_2.primary_email }}
+                    </a>
+                </td>
             </tr>
         </tbody>
     </table>
