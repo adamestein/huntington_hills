@@ -11,7 +11,7 @@ class Article(models.Model):
     title = models.CharField(max_length=50, unique=True)
 
     class Meta:
-        ordering = ('posted_on', 'title')
+        ordering = ('-posted_on', 'title')
 
     def save(self, **kwargs):
         if self.posted_on is None:
