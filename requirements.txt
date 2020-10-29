@@ -1,6 +1,7 @@
 Django==1.11.29
 django-cors-headers==3.2.1
 django-easy-pdf==0.1.1
+django-fullurl==1.1
 django-localflavor==2.2
 django-phonenumber-field==3.0.1
 django-settings-export==1.2.1

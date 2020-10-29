@@ -1,6 +1,8 @@
+{% load fullurl %}
+
 {% for article in articles %}
     <p>
-        <a href="{% url 'news:article_redirect' article.pk %}">
+        <a href="{% fullurl 'news:article_redirect' article.pk %}">
             <span style="font-size: x-small; ">{{ article.title }}</span>
         </a> ››
         <br />
