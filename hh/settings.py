@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'easy_pdf',
     'fullurl',
     'phonenumber_field',
+    'tinymce',
 
     # Apps
     'authentication',
@@ -185,7 +186,7 @@ CORS_ORIGIN_WHITELIST = [
 
 # Version information
 
-VERSION = '2.4.3'
+VERSION = '2.5'
 
 
 # List of settings to export to templates (django-settings-export)
