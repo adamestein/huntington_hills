@@ -2,9 +2,11 @@ from datetime import date
 
 from django.db import models
 
+from tinymce.models import HTMLField
+
 
 class Article(models.Model):
-    desc = models.TextField()
+    desc = HTMLField()
     posted_on = models.DateField(blank=True)
     posted_until = models.DateField(help_text='Last date in which to display this article')
     short_desc = models.CharField(max_length=200)

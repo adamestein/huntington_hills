@@ -16,5 +16,6 @@ urlpatterns = [
     url(r'^gallery/', include('gallery.urls')),
     url(r'^news/', include('news.urls')),
     url(r'^resident/', include('residents.urls')),
-    url(r'^staff/', include('staff.urls'))
+    url(r'^staff/', include('staff.urls')),
+    url(r'^tinymce/', include('tinymce.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
