@@ -38,80 +38,127 @@
                 <th>Address</th>
                 <th>Phone</th>
                 <th>Email</th>
+                {% if is_staff %}<th>Term</th>{% endif %}
             </tr>
         </thead>
 
         <tbody>
             <tr>
                 <td>President</td>
-                <td>{{ board.president.full_name }}</td>
-                <td>{{ board.president.residential_property.street_address }}</td>
-                <td>{{ board.president.phone.as_national }}</td>
+                <td>{{ president.person.full_name }}</td>
+                <td>{{ president.person.residential_property.street_address }}</td>
+                <td>{{ president.person.phone.as_national }}</td>
                 <td>
-                    <a href="mailto:{{ board.president.primary_email }}">
-                        {{ board.president.primary_email }}
+                    <a href="mailto:{{ president.person.primary_email }}">
+                        {{ president.person.primary_email }}
                     </a>
                 </td>
+                {% if is_staff %}
+                    {% if president.start_year == "N/A" %}
+                        <td style="text-align: center;">N/A</td>
+                    {% else %}
+                        <td>{{ president.start_year }} - {{ president.start_year|add:"2" }}</td>
+                    {% endif %}
+                {% endif %}
             </tr>
 
             <tr>
                 <td>Vice President</td>
-                <td>{{ board.vice_president.full_name }}</td>
-                <td>{{ board.vice_president.residential_property.street_address }}</td>
-                <td>{{ board.vice_president.phone.as_national }}</td>
+                <td>{{ vice_president.person.full_name }}</td>
+                <td>{{ vice_president.person.residential_property.street_address }}</td>
+                <td>{{ vice_president.person.phone.as_national }}</td>
                 <td>
-                    <a href="mailto:{{ board.vice_president.primary_email }}">
-                        {{ board.vice_president.primary_email }}
+                    <a href="mailto:{{ vice_president.person.primary_email }}">
+                        {{ vice_president.person.primary_email }}
                     </a>
                 </td>
+                {% if is_staff %}
+                    {% if vice_president.start_year == "N/A" %}
+                        <td style="text-align: center;">N/A</td>
+                    {% else %}
+                        <td>{{ vice_president.start_year }} - {{ vice_president.start_year|add:"2" }}</td>
+                    {% endif %}
+                {% endif %}
             </tr>
 
             <tr>
                 <td>Treasurer</td>
-                <td>{{ board.treasurer.full_name }}</td>
-                <td>{{ board.treasurer.residential_property.street_address }}</td>
-                <td>{{ board.treasurer.phone.as_national }}</td>
+                <td>{{ treasurer.person.full_name }}</td>
+                <td>{{ treasurer.person.residential_property.street_address }}</td>
+                <td>{{ treasurer.person.phone.as_national }}</td>
                 <td>
-                    <a href="mailto:{{ board.treasurer.primary_email }}">
-                        {{ board.treasurer.primary_email }}
+                    <a href="mailto:{{ treasurer.person.primary_email }}">
+                        {{ treasurer.person.primary_email }}
                     </a>
                 </td>
+                {% if is_staff %}
+                    {% if treasurer.start_year == "N/A" %}
+                        <td style="text-align: center;">N/A</td>
+                    {% else %}
+                        <td>{{ treasurer.start_year }} - {{ treasurer.start_year|add:"2" }}</td>
+                    {% endif %}
+                {% endif %}
             </tr>
 
             <tr>
                 <td>Secretary</td>
-                <td>{{ board.secretary.full_name }}</td>
-                <td>{{ board.secretary.residential_property.street_address }}</td>
-                <td>{{ board.secretary.phone.as_national }}</td>
+                <td>{{ secretary.person.full_name }}</td>
+                <td>{{ secretary.person.residential_property.street_address }}</td>
+                <td>{{ secretary.person.phone.as_national }}</td>
                 <td>
-                    <a href="mailto:{{ board.secretary.primary_email }}">
-                        {{ board.secretary.primary_email }}
+                    <a href="mailto:{{ secretary.person.primary_email }}">
+                        {{ secretary.person.primary_email }}
                     </a>
                 </td>
+                {% if is_staff %}
+                    {% if secretary.start_year == "N/A" %}
+                        <td style="text-align: center;">N/A</td>
+                    {% else %}
+                        <td>{{ secretary.start_year }} - {{ secretary.start_year|add:"2" }}</td>
+                    {% endif %}
+                {% endif %}
             </tr>
 
             <tr>
                 <td>Director At Large</td>
-                <td>{{ board.director_at_large_1.full_name }}</td>
-                <td>{{ board.director_at_large_1.residential_property.street_address }}</td>
-                <td>{{ board.director_at_large_1.phone.as_national }}</td>
+                <td>{{ director_at_large_1.person.full_name }}</td>
+                <td>{{ director_at_large_1.person.residential_property.street_address }}</td>
+                <td>{{ director_at_large_1.person.phone.as_national }}</td>
                 <td>
-                    <a href="mailto:{{ board.director_at_large_1.primary_email }}">
-                        {{ board.director_at_large_1.primary_email }}
+                    <a href="mailto:{{ director_at_large_1.person.primary_email }}">
+                        {{ director_at_large_1.person.primary_email }}
                     </a>
                 </td>
+                {% if is_staff %}
+                    {% if director_at_large_1.start_year == "N/A" %}
+                        <td style="text-align: center;">N/A</td>
+                    {% else %}
+                        <td>
+                            {{ director_at_large_1.start_year }} - {{ director_at_large_1.start_year|add:"2" }}
+                        </td>
+                    {% endif %}
+                {% endif %}
             </tr>
 
             <tr>
                 <td>Director At Large</td>
-                <td>{{ board.director_at_large_2.full_name }}</td>
-                <td>{{ board.director_at_large_2.residential_property.street_address }}</td>
-                <td>{{ board.director_at_large_2.phone.as_national }}</td>
+                <td>{{ director_at_large_2.person.full_name }}</td>
+                <td>{{ director_at_large_2.person.residential_property.street_address }}</td>
+                <td>{{ director_at_large_2.person.phone.as_national }}</td>
                 <td>
-                    <a href="mailto:{{ board.director_at_large_2.primary_email }}">
-                        {{ board.director_at_large_2.primary_email }}
+                    <a href="mailto:{{ director_at_large_2.person.primary_email }}">
+                        {{ director_at_large_2.person.primary_email }}
                     </a>
                 </td>
+                {% if is_staff %}
+                    {% if director_at_large_2.start_year == "N/A" %}
+                        <td style="text-align: center;">N/A</td>
+                    {% else %}
+                        <td>
+                            {{ director_at_large_2.start_year }} - {{ director_at_large_2.start_year|add:"2" }}
+                        </td>
+                    {% endif %}
+                {% endif %}
             </tr>
         </tbody>
     </table>

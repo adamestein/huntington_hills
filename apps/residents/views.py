@@ -1,15 +1,29 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 
-from .models import Board, Property, Street
+from .models import Board, BoardTerm, Property, Street
 
 
 class BoardMembersListView(LoginRequiredMixin, TemplateView):
     template_name = 'residents/board_members.html'
 
     def get_context_data(self, **kwargs):
+        board = Board.objects.all()[0]
+
         context = super().get_context_data(**kwargs)
-        context['board'] = Board.objects.all()[0]
+        context['is_staff'] = self.request.user.is_staff
+
+        for position in BoardTerm.POSITIONS:
+            office = position[1].lower().replace(' ', '_')
+            person = getattr(board, office)
+
+            try:
+                start_year = BoardTerm.objects.filter(person=person).last().elected_date.year
+            except AttributeError:
+                start_year = 'N/A'
+
+            context[office] = {'start_year': start_year, 'person': person}
+        
         return context
 
 

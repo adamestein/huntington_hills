@@ -1,6 +1,8 @@
 from django.contrib import admin
 
-from .models import Board, Email, EmailType, LotNumber, MailingAddress, Person, Property, PropertyType, Street
+from .models import (
+    Board, BoardTerm, Email, EmailType, LotNumber, MailingAddress, Person, Property, PropertyType, Street
+)
 
 
 @admin.register(Board)
@@ -37,6 +39,13 @@ class BoardAdmin(admin.ModelAdmin):
     def vice_president_full_name(self, obj):
         return obj.vice_president.full_name
     vice_president_full_name.short_description = 'Vice President'
+
+
+@admin.register(BoardTerm)
+class PersonAdmin(admin.ModelAdmin):
+    list_filter = ('office',)
+
+    search_fields = ('person__first_name', 'person__last_name')
 
 
 @admin.register(Email)
