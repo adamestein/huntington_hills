@@ -4,17 +4,17 @@ from easy_pdf.views import PDFTemplateView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages import success
-from django.views.generic import FormView, TemplateView
+from django.views.generic import FormView, TemplateView, UpdateView
 from django.urls import reverse_lazy
 
-from .forms import UpdateHomeownersFormSet
+from .forms import UpdateBoardMembersForm, UpdateHomeownersFormSet
 
 from library.contrib.auth.mixins import IsStaffMixin
 from library.views.generic.csv import CSVFileView
 
 from news.views import CurrentArticles
 
-from residents.models import Email, EmailType, Person, Property, Street
+from residents.models import Board, BoardTerm, Email, EmailType, Person, Property, Street
 
 
 class AllCurrentNews(CurrentArticles):
@@ -122,6 +122,28 @@ class SignInSheet(LoginRequiredMixin, IsStaffMixin, PDFTemplateView):
         context['properties'] = Property.objects.all()
 
         return context
+
+
+class UpdateBoardMembers(LoginRequiredMixin, IsStaffMixin, UpdateView):
+    # We list all the fields so that we can specify the order in which they appear on the page
+    # fields = ['president', 'vice_president', 'treasurer', 'secretary', 'director_at_large_1', 'director_at_large_2']
+    form_class = UpdateBoardMembersForm
+    model = Board
+    success_url = reverse_lazy('resident:board')
+    template_name = 'staff/update_board_members.html'
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+
+        for field in form.changed_data:
+            if field != 'elected_date':
+                BoardTerm.objects.create(
+                    elected_date=data['elected_date'],
+                    office=BoardTerm.office_abbr(field),
+                    person=data[field]
+                )
+
+        return super().form_valid(form)
 
 
 class UpdateHomeowners(LoginRequiredMixin, IsStaffMixin, FormView):

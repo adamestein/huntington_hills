@@ -17,7 +17,40 @@ class Board(SingletonModel):
     vice_president = models.ForeignKey('Person', blank=True, related_name='vice_president')
 
     class Meta:
-        verbose_name_plural = 'Board Members'
+        verbose_name_plural = 'Board members'
+
+
+class BoardTerm(models.Model):
+    POSITIONS = (
+        ('d1', 'Director at Large 1'),
+        ('d2', 'Director at Large 2'),
+        ('p', 'President'),
+        ('s', 'Secretary'),
+        ('t', 'Treasurer'),
+        ('vp', 'Vice President')
+    )
+
+    elected_date = models.DateField()
+    office = models.CharField(choices=POSITIONS, max_length=2)
+    person = models.ForeignKey('Person')
+
+    class Meta:
+        ordering = ('-elected_date', 'person')
+
+    @staticmethod
+    def office_abbr(office):
+        abbrs = {
+            'director_at_large_1': 'd1',
+            'director_at_large_2': 'd2',
+            'president': 'p',
+            'secretary': 's',
+            'treasurer': 't',
+            'vice_president': 'vp'
+        }
+        return abbrs[office]
+
+    def __str__(self):
+        return f'[{self.elected_date}] {self.person.full_name} ({self.get_office_display()})'
 
 
 class Email(models.Model):
@@ -114,7 +147,10 @@ class Person(models.Model):
 
     @property
     def primary_email(self):
-        return self.email_set.filter(email_type__email_type__in=[EmailType.RESIDENT, EmailType.PERSONAL])[0].email
+        try:
+            return self.email_set.filter(email_type__email_type__in=[EmailType.RESIDENT, EmailType.PERSONAL])[0].email
+        except IndexError:
+            return ''
 
     def __str__(self):
         return f'{self.last_name}, {self.first_name} [{self.residential_property.mailing_address(multiline=False)}]'

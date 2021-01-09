@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from .views import (
     AllCurrentNews, AllDataView, EmailNoticeList, MailingAddresses, MainMenuView, NonEmailNoticeList, SignInSheet,
-    UpdateHomeowners
+    UpdateBoardMembers, UpdateHomeowners
 )
 
 
@@ -15,5 +15,6 @@ urlpatterns = [
     url(r'^download/sign_in_sheet/$', SignInSheet.as_view(), name='sign_in_sheet'),
     url(r'^mailing_addresses/$', MailingAddresses.as_view(), name='mailing_addresses'),
     url(r'^main_menu/$', MainMenuView.as_view(), name='main_menu'),
+    url(r'^update_board_members/(?P<pk>\d+)$', UpdateBoardMembers.as_view(), name='update_board_members'),
     url(r'^update_homeowners/$', UpdateHomeowners.as_view(), name='update_homeowners')
 ]
