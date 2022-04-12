@@ -1,8 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import serializers
+from django.utils.html import escape
 from django.views.generic import TemplateView
 
-from .models import Log, LogSheet
+from .models import LogSheet
 
 from library.views.generic.mixins.ajax import AJAXResponseMixin
 
@@ -29,7 +30,7 @@ class FetchLogSheetsByYear(LoginRequiredMixin, AJAXResponseMixin, TemplateView):
                 if log.hunter:
                     hunter = {
                         'deer': log.deer_as_str,
-                        'name': log.hunter.name,
+                        'name': escape(log.hunter.name),
                         'track': log.deer_tracking
                     }
                 else:
