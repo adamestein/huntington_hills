@@ -8,7 +8,7 @@ from .models import (
 @admin.register(Board)
 class BoardAdmin(admin.ModelAdmin):
     list_display = (
-        'president_full_name' , 'vice_president_full_name', 'treasurer_full_name', 'secretary_full_name',
+        'president_full_name', 'vice_president_full_name', 'treasurer_full_name', 'secretary_full_name',
         'director_at_large_1_full_name', 'director_at_large_2_full_name'
     )
 
@@ -42,7 +42,7 @@ class BoardAdmin(admin.ModelAdmin):
 
 
 @admin.register(BoardTerm)
-class PersonAdmin(admin.ModelAdmin):
+class BoardTermAdmin(admin.ModelAdmin):
     list_filter = ('office',)
 
     search_fields = ('person__first_name', 'person__last_name')
