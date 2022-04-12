@@ -58,7 +58,8 @@ class FetchLogSheetsByYear(LoginRequiredMixin, AJAXResponseMixin, TemplateView):
                 'logs': log_data,
                 'missing_log_data': missing_log_data,
                 'officer': log_sheet.officer.name,
-                'sheet': serializers.serialize('json', [log_sheet])     # serialize() needs an iterable, hence the []
+                'sheet': serializers.serialize('json', [log_sheet]),    # serialize() needs an iterable, hence the []
+                'total_archers': log_sheet.total_archers
             })
 
         return log_sheet_data
