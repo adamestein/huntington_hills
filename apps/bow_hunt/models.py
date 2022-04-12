@@ -66,7 +66,7 @@ class Log(models.Model):
     deer_tracking = models.NullBooleanField(default=None, help_text='(set only if deer shot or killed)')
 
     class Meta:
-        ordering = ('log_sheet__date', 'hunter__last_name', 'hunter__first_name')
+        ordering = ('log_sheet__date', 'location__line_item_number', 'hunter__last_name', 'hunter__first_name')
 
     @property
     def deer_as_str(self):

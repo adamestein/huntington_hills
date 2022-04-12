@@ -34,6 +34,11 @@ class LogAdminForm(forms.ModelForm):
         points = cleaned_data['deer_points']
         tracking = cleaned_data['deer_tracking']
 
+        # Can't seem to set unique_together for these fields (migration has a duplicate entry for the log sheet key
+        # error), so we'll just check here
+        if Log.objects.filter(location=location, log_sheet=log_sheet).exists():
+            raise ValidationError(f'Log with this Location and Log sheet already exists.')
+
         if location.year != log_sheet.date.year:
             raise ValidationError(
                 f'Mismatch between location year ({location.year}) and log sheet year ({log_sheet.date.year}'
