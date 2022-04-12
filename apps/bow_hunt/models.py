@@ -65,6 +65,8 @@ class Log(models.Model):
     )
     deer_tracking = models.NullBooleanField(default=None, help_text='(set only if deer shot or killed)')
 
+    comment = models.CharField(blank=True, max_length=200)
+
     class Meta:
         ordering = ('log_sheet__date', 'location__line_item_number', 'hunter__last_name', 'hunter__first_name')
 

@@ -118,7 +118,7 @@
                                     <td style="vertical-align: top;">${data["deer"]}</td>
                                     <td></td>
                                     <td></td>
-                                    <td style="text-align: center; vertical-align: top;">${data["tracking"]}</td>
+                                    <td style="vertical-align: top;">${data["tracking"]}</td>
                                 </tr>
                             `;
 
@@ -193,12 +193,15 @@
                                             if (hunter["deer"]) {
                                                 deer += hunter["deer"];
                                             }
-
-                                            if (tracking.length) {
-                                                tracking += "<br />";
-                                            }
+                                            
                                             if (hunter["track"] !== null) {
-                                                tracking += (hunter["track"]) ? "Y" : "N";
+                                                tracking += "<div style='text-align: center;'>" +
+                                                    ((hunter["track"]) ? "Y" : "N") +
+                                                    "</div>";
+                                            }
+
+                                            if (hunter["comment"] !== "") {
+                                                tracking += "(" + hunter["comment"] + ")";
                                             }
                                         });
                                     }

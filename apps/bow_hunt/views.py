@@ -29,6 +29,7 @@ class FetchLogSheetsByYear(LoginRequiredMixin, AJAXResponseMixin, TemplateView):
 
                 if log.hunter:
                     hunter = {
+                        'comment': escape(log.comment),
                         'deer': log.deer_as_str,
                         'name': escape(log.hunter.name),
                         'track': log.deer_tracking

@@ -36,7 +36,7 @@ class LogAdminForm(forms.ModelForm):
 
         # Can't seem to set unique_together for these fields (migration has a duplicate entry for the log sheet key
         # error), so we'll just check here
-        if Log.objects.filter(location=location, log_sheet=log_sheet).exists():
+        if self.instance.id is None and Log.objects.filter(location=location, log_sheet=log_sheet).exists():
             raise ValidationError(f'Log with this Location and Log sheet already exists.')
 
         if location.year != log_sheet.date.year:
