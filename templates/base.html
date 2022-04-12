@@ -13,7 +13,14 @@
 
         <title>{% block title %}{% endblock %}</title>
 
-        {% block css %}{% endblock %}
+        {% block css %}
+            <style>
+                .warning {
+                    display: none;
+                }
+            </style>
+        {% endblock %}
+
         {% block js %}{% endblock %}
     </head>
 

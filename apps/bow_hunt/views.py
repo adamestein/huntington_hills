@@ -76,6 +76,7 @@ class LogSheetView(LoginRequiredMixin, TemplateView):
         for log_sheet in LogSheet.objects.all():
             years[log_sheet.date.year] = True
 
-        context['years'] = years.keys()
+        # If there is any info on 2017 hunting, can remove the addition (IPD did not keep log in 2017)
+        context['years'] = ['2017'] + list(years.keys())
 
         return context
