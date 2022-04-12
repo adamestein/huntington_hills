@@ -41,6 +41,7 @@ class FetchLogSheetsByYear(LoginRequiredMixin, AJAXResponseMixin, TemplateView):
                     # First time for this location
                     log_data.append({
                         'hunters': None if hunter is None else [hunter],
+                        'loc_index': log.location.line_item_number,
                         'location': log.location.address
                     })
                     prev_location = log.location
