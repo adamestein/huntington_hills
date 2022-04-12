@@ -14,7 +14,7 @@ class Hunter(models.Model):
     def name(self):
         # Ordering of the first and last name is different from __str__() when both are present
         if self.first_name and self.last_name:
-            return f'{self.first_name}, {self.last_name}'
+            return f'{self.first_name} {self.last_name}'
         elif self.first_name:
             return self.first_name
         else:
