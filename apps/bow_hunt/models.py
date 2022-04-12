@@ -69,6 +69,7 @@ class Log(models.Model):
 
     class Meta:
         ordering = ('log_sheet__date', 'location__line_item_number', 'hunter__last_name', 'hunter__first_name')
+        unique_together = ('log_sheet', 'location', 'hunter')
 
     @property
     def deer_as_str(self):
