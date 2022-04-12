@@ -193,7 +193,7 @@
                                             if (hunter["deer"]) {
                                                 deer += hunter["deer"];
                                             }
-                                            
+
                                             if (hunter["track"] !== null) {
                                                 tracking += "<div style='text-align: center;'>" +
                                                     ((hunter["track"]) ? "Y" : "N") +
@@ -209,7 +209,7 @@
                                     html += logRowTemplate({
                                         "deer": deer,
                                         "hunter": hunters,
-                                        "index": index2 + 1,
+                                        "index": log["loc_index"],
                                         "location": log["location"],
                                         "tracking": tracking
                                     });
