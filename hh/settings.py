@@ -187,7 +187,7 @@ CORS_ORIGIN_WHITELIST = [
 
 # Version information
 
-VERSION = '2.6.8'
+VERSION = '2.6.9'
 
 
 # List of settings to export to templates (django-settings-export)
