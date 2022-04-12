@@ -74,8 +74,10 @@ class Log(models.Model):
     @property
     def deer_as_str(self):
         if self.deer_gender:
-            return f'{self.GENDER_MALE}-{self.deer_points}' if self.deer_gender == self.GENDER_MALE \
+            msg = f'{self.deer_count}' if self.deer_count > 1 else ''
+            msg += f'{self.GENDER_MALE}-{self.deer_points}' if self.deer_gender == self.GENDER_MALE \
                 else self.GENDER_FEMALE
+            return msg
         else:
             return None
 
@@ -110,7 +112,7 @@ class LogSheet(models.Model):
 
     @property
     def deer_taken(self):
-        return self.log_set.filter(deer_count__gt=0).count()
+        return self.log_set.filter(deer_count__gt=0).aggregate(models.Sum('deer_count'))['deer_count__sum']
 
     @property
     def total_archers(self):
