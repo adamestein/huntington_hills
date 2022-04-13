@@ -41,8 +41,10 @@ class FetchLogSheetsByYear(LoginRequiredMixin, AJAXResponseMixin, TemplateView):
                     # First time for this location
                     log_data.append({
                         'hunters': None if hunter is None else [hunter],
+                        'incorrect_warnings': serializers.serialize('json', log.incorrect_warnings.all()),
                         'loc_index': log.location.line_item_number,
-                        'location': log.location.address
+                        'location': log.location.address,
+                        'missing_warnings': serializers.serialize('json', log.missing_warnings.all())
                     })
                     prev_location = log.location
                 else:
