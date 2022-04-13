@@ -34,6 +34,11 @@ class LogAdminForm(forms.ModelForm):
         points = cleaned_data['deer_points']
         tracking = cleaned_data['deer_tracking']
 
+        # Database level restriction doesn't seem to work when Hunter = None, so we'll test for that here
+        if self.instance.id is None and hunter is None and \
+                Log.objects.filter(hunter=hunter, location=location, log_sheet=log_sheet).exists():
+            raise ValidationError('Log with this Log sheet, Location and Hunter already exists.')
+
         if location.year != log_sheet.date.year:
             raise ValidationError(
                 f'Mismatch between location year ({location.year}) and log sheet year ({log_sheet.date.year}'
