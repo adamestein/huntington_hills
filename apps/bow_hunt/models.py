@@ -2,6 +2,26 @@ from django.core.validators import MinValueValidator
 from django.db import models
 
 
+class DataWarning(models.Model):
+    INCORRECT_WARNING = 0
+    MISSING_WARNING = 1
+
+    warning_choices = (
+        (INCORRECT_WARNING, 'Incorrect'),
+        (MISSING_WARNING, 'Missing')
+    )
+
+    label = models.CharField(max_length=50)
+    description = models.CharField(blank=True, max_length=200)
+    type = models.PositiveSmallIntegerField(choices=warning_choices)
+
+    class Meta:
+        ordering = ('type', 'label')
+
+    def __str__(self):
+        return self.label
+
+
 class Hunter(models.Model):
     first_name = models.CharField(blank=True, max_length=10)
     last_name = models.CharField(blank=True, max_length=20)
@@ -49,6 +69,8 @@ class Log(models.Model):
     GENDER_MALE = 'M'
     GENDER_CHOICES = ((GENDER_FEMALE, 'Female'), (GENDER_MALE, 'Male'))
 
+    # With the warnings below, when all data is updated to add the warnings, there shouldn't be a need for these
+    # boolean flags anymore, we can tell if there is a problem based on if there are any warnings listed with this log
     incorrect_in_ipd_log = models.BooleanField(default=False)
     missing_from_ipd_log = models.BooleanField(default=False)
     log_sheet = models.ForeignKey('LogSheet')
@@ -66,6 +88,15 @@ class Log(models.Model):
     deer_tracking = models.NullBooleanField(default=None, help_text='(set only if deer shot or killed)')
 
     comment = models.CharField(blank=True, max_length=200)
+
+    incorrect_warnings = models.ManyToManyField(
+        DataWarning, blank=True, limit_choices_to={'type': DataWarning.INCORRECT_WARNING},
+        related_name='incorrect_warnings'
+    )
+    missing_warnings = models.ManyToManyField(
+        DataWarning, blank=True, limit_choices_to={'type': DataWarning.MISSING_WARNING},
+        related_name='missing_warnings'
+    )
 
     class Meta:
         ordering = ('log_sheet__date', 'location__line_item_number', 'hunter__last_name', 'hunter__first_name')
@@ -85,7 +116,7 @@ class Log(models.Model):
         if self.deer_count:
             action = 'shot' if self.deer_tracking else 'killed'
             msg = (
-                f'[{self.log_sheet.date}] {self.hunter.name} {action} {self.deer_count} {self.deer_as_str} '
+                f'[{self.log_sheet.date}] {self.hunter.name} {action} {self.deer_as_str} '
                 f'deer at {self.location.address}'
             )
         elif self.hunter:

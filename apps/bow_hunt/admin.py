@@ -29,8 +29,12 @@ class LogAdminForm(forms.ModelForm):
         count = cleaned_data['deer_count']
         gender = cleaned_data['deer_gender']
         hunter = cleaned_data['hunter']
+        incorrect_error = cleaned_data['incorrect_in_ipd_log']
+        incorrect_warnings = cleaned_data['incorrect_warnings']
         location = cleaned_data['location']
         log_sheet = cleaned_data['log_sheet']
+        missing_error = cleaned_data['missing_from_ipd_log']
+        missing_warnings = cleaned_data['missing_warnings']
         points = cleaned_data['deer_points']
         tracking = cleaned_data['deer_tracking']
 
@@ -64,6 +68,18 @@ class LogAdminForm(forms.ModelForm):
                 raise ValidationError(
                     'Need to specify if tracking was required when any deer are shot or killed', code='invalid'
                 )
+
+        if incorrect_error and incorrect_warnings.count() == 0:
+            raise ValidationError('An incorrect error is specified, but no warnings were selected')
+
+        if incorrect_warnings.count() and not incorrect_error:
+            raise ValidationError('Incorrect warnings were selected, but no incorrect error was specified')
+
+        if missing_error and missing_warnings.count() == 0:
+            raise ValidationError('A missing error is specified, but no warnings were selected')
+
+        if missing_warnings.count() and not missing_error:
+            raise ValidationError('Missing warnings were selected, but no missing error was specified')
 
         return cleaned_data
 
