@@ -143,7 +143,8 @@ class LogSheet(models.Model):
 
     @property
     def deer_taken(self):
-        return self.log_set.filter(deer_count__gt=0).aggregate(models.Sum('deer_count'))['deer_count__sum']
+        count = self.log_set.filter(deer_count__gt=0).aggregate(models.Sum('deer_count'))['deer_count__sum']
+        return 0 if count is None else count
 
     @property
     def total_archers(self):
