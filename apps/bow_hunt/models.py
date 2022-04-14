@@ -56,12 +56,34 @@ class Location(models.Model):
         help_text='(to verify location is being used on the correct log sheet)', validators=[MinValueValidator(2017)]
     )
 
+    # Because the log sheets sometimes have locations added to the end of the regular sheet (sometimes with line
+    # numbers, sometimes without), we need a way to override what is displayed. If override_line_item_number is True,
+    # then the value in override_line_item_number_value is displayed instead of line_item_number. line_item_number still
+    # needs to have a value to determine where this location is in the order (since the override value can be blank).
+    override_line_item_number = models.BooleanField(default=False)
+    override_line_item_number_value = models.PositiveSmallIntegerField(
+        blank=True, validators=[MinValueValidator(1)], null=True
+    )
+
     class Meta:
         ordering = ('year', 'line_item_number')
-        unique_together = ('line_item_number', 'year')
+        unique_together = ('address', 'line_item_number', 'year')
+
+    @property
+    def line_number(self):
+        if self.override_line_item_number:
+            return self.override_line_item_number_value if self.override_line_item_number_value else ''
+        else:
+            return self.line_item_number
 
     def __str__(self):
-        return f'[{self.year}] {self.line_item_number}. {self.address}'
+        if self.override_line_item_number:
+            number = f'({self.line_item_number})'
+            if self.override_line_item_number_value:
+                number += f' {self.override_line_item_number_value}.'
+        else:
+            number = f'{self.line_item_number}.'
+        return f'[{self.year}] {number} {self.address}'
 
 
 class Log(models.Model):
@@ -122,7 +144,7 @@ class Log(models.Model):
 
         if self.incorrect_warnings.all().exists():
             msg += ' (data incorrect in log)'
-        elif self.Update:
+        elif self.missing_warnings.all().exists():
             msg += ' (data missing from log)'
 
         return msg
