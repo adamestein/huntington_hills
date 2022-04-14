@@ -22,9 +22,9 @@ class FetchLogSheetsByYear(LoginRequiredMixin, AJAXResponseMixin, TemplateView):
             prev_location = None
 
             for log in log_sheet.log_set.all().order_by('location', 'hunter__last_name', 'hunter__first_name'):
-                if log.incorrect_in_ipd_log:
+                if log.incorrect_warnings.all().exists():
                     incorrect_log_data = True
-                if log.missing_from_ipd_log:
+                if log.missing_warnings.all().exists():
                     missing_log_data = True
 
                 if log.hunter:

@@ -69,10 +69,6 @@ class Log(models.Model):
     GENDER_MALE = 'M'
     GENDER_CHOICES = ((GENDER_FEMALE, 'Female'), (GENDER_MALE, 'Male'))
 
-    # With the warnings below, when all data is updated to add the warnings, there shouldn't be a need for these
-    # boolean flags anymore, we can tell if there is a problem based on if there are any warnings listed with this log
-    incorrect_in_ipd_log = models.BooleanField(default=False)
-    missing_from_ipd_log = models.BooleanField(default=False)
     log_sheet = models.ForeignKey('LogSheet')
 
     location = models.ForeignKey('Location')
@@ -124,9 +120,9 @@ class Log(models.Model):
         else:
             msg = f'[{self.log_sheet.date}] no hunting occurred at {self.location.address}'
 
-        if self.incorrect_in_ipd_log:
+        if self.incorrect_warnings.all().exists():
             msg += ' (data incorrect in log)'
-        elif self.missing_from_ipd_log:
+        elif self.Update:
             msg += ' (data missing from log)'
 
         return msg

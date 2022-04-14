@@ -1,0 +1,28 @@
+/* Anytime the body has the 'busy' class, our modal element will be visible */
+body.busy .busy_modal {
+    display: block;
+}
+
+.busy_inner {
+    left:       50%;
+    position:   absolute;
+    top:        50%;
+    transform:  translate(-50%, -50%);
+}
+
+.busy_modal {
+    background: rgba(80, 80, 80, .6);
+    cursor:     wait;
+    display:    none;
+    height:     100%;
+    left:       0;
+    position:   fixed;
+    top:        0;
+    width:      100%;
+    z-index:    1000;
+}
+
+/* Anytime the body has the 'busy' class, our modal element will be visible */
+body.busy .busy_modal {
+    display: block;
+}
