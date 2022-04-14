@@ -128,7 +128,7 @@
 
                             const logRowTemplate = (data) => `
                                 <tr>
-                                    <td>${data["index"]}. ${data["location"]}</td>
+                                    <td>${data["index"]} ${data["location"]}</td>
                                     <td style="vertical-align: top;">${data["hunter"]}</td>
                                     <td style="vertical-align: top;">${data["deer"]}</td>
                                     <td></td>
@@ -260,7 +260,7 @@
                                     html += logRowTemplate({
                                         "deer": deer,
                                         "hunter": hunters,
-                                        "index": log["loc_index"],
+                                        "index": (log["loc_index"]) ? log["loc_index"] + "." : "",
                                         "location": log["location"],
                                         "tracking": tracking
                                     });
