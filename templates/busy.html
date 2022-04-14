@@ -1,0 +1,13 @@
+{% load static %}
+
+<!-- Place at bottom of page -->
+<div class="busy_modal">
+    <div class="busy_inner" style="margin: auto; width: 30em;">
+        <p id="busy_text" style="color: #30501f; font-family: 'Comic Sans MS',serif; font-size: 20px;
+           text-align: center;">
+            Please Wait
+        </p>
+        <img id="busy_image" style="display: block; margin-left: auto; margin-right: auto;"
+             src="{% static 'img/ajax-loader.gif' %}" />
+    </div>
+</div>
