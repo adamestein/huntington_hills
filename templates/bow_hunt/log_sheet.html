@@ -195,6 +195,7 @@
                                     let hunters = "";
                                     let tracking = "";
 
+                                    let unknownHunterFirstName = "";
                                     let unknownHunterWarning = "";
                                     let unknownTrackValueWarning = "";
 
@@ -205,6 +206,9 @@
                                     if (log["missing_warnings"] !== "[]") {
                                         $.each(JSON.parse(log["missing_warnings"]), function(index, warning) {
                                             switch (warning["fields"]["label"]) {
+                                                case "Hunter first name missing":
+                                                    unknownHunterFirstName = warning["fields"]["description"];
+                                                    break;
                                                 case "No indication of which hunter shot":
                                                     unknownHunterWarning = warning["fields"]["description"];
                                                     break;
@@ -224,7 +228,17 @@
                                             }
 
                                             if (hunter["name"] === "&lt;unknown&gt;" && unknownHunterWarning.length) {
-                                                hunters += `<span class="missing_data" title="${unknownHunterWarning}">${hunter['name']}</span>`;
+                                                hunters += `
+                                                    <span class="missing_data" title="${unknownHunterWarning}">
+                                                        ${hunter['name']}
+                                                    </span>
+                                                `;
+                                            } else if (unknownHunterFirstName.length) {
+                                                hunters += `
+                                                    <span class="missing_data" title="${unknownHunterFirstName}">
+                                                        ${hunter['name']}
+                                                    </span>
+                                                `;
                                             } else {
                                                 hunters += hunter["name"];
                                             }
