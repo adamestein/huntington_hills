@@ -1,7 +1,7 @@
 import json
 
 from django.http import HttpResponse
-from django.views.generic.base import ContextMixin, TemplateResponseMixin
+from django.views.generic.base import TemplateResponseMixin
 
 
 class AJAXResponseMixin(TemplateResponseMixin):
