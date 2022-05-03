@@ -107,7 +107,11 @@ class HunterForm(forms.ModelForm):
                         {six.text_type(self['pk'])}
                         {six.text_type(self['log_sheet_id'])}
                         {six.text_type(self['location_id'])}
-                        {six.text_type(bf)}{help_text}
+                        {six.text_type(bf)}{help_text}<br />
+                        <span style="font-size: 90%; font-style: italic;">
+                            (names can be added, but the menu is not automaticall updated)
+                        </span>
+                        <br />
                         {six.text_type(missing_warnings)}
                     </td>
                 </tr>
