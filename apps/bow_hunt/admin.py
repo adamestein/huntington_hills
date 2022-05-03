@@ -29,40 +29,39 @@ class LogAdminForm(forms.ModelForm):
         count = cleaned_data['deer_count']
         gender = cleaned_data['deer_gender']
         hunter = cleaned_data['hunter']
-        location = cleaned_data['location']
-        log_sheet = cleaned_data['log_sheet']
+        location = cleaned_data.get('location')
+        log_sheet = cleaned_data.get('log_sheet')
         points = cleaned_data['deer_points']
         tracking = cleaned_data['deer_tracking']
 
         # Database level restriction doesn't seem to work when Hunter = None, so we'll test for that here
         if self.instance.id is None and hunter is None and \
                 Log.objects.filter(hunter=hunter, location=location, log_sheet=log_sheet).exists():
-            raise ValidationError('Log with this Log sheet, Location and Hunter already exists.')
+            raise ValidationError('Log with this Log Sheet, Location and Hunter already exists.')
 
-        if location.year != log_sheet.date.year:
-            raise ValidationError(
-                f'Mismatch between location year ({location.year}) and log sheet year ({log_sheet.date.year}'
+        if log_sheet and location and location.year != log_sheet.date.year:
+            self.add_error(
+                'location',
+                f'Mismatch between location year ({location.year}) and log sheet year ({log_sheet.date.year})'
             )
 
         if count:
             if hunter is None:
-                raise ValidationError(
-                    (
-                        'Hunter needs to be specified when any deer are shot or killed. '
-                        'If not specified, list first name as <unknown>.'
-                    ),
-                    code='invalid'
+                self.add_error(
+                    'hunter',
+                    'Hunter needs to be specified when any deer are shot or killed. If not specified, '
+                    'list first name as <unknown>.'
                 )
 
             if gender is None:
-                raise ValidationError('Need to specify the deer gender when any are shot or killed', code='invalid')
+                self.add_error('deer_gender', 'Need to specify the deer gender when any are shot or killed')
 
             if gender == Log.GENDER_MALE and points is None:
-                raise ValidationError('Male deer need the number of points specified', code='invalid')
+                self.add_error('deer_points', 'Male deer need the number of points specified')
 
             if tracking is None:
-                raise ValidationError(
-                    'Need to specify if tracking was required when any deer are shot or killed', code='invalid'
+                self.add_error(
+                    'deer_tracking', 'Need to specify if tracking was required when any deer are shot or killed'
                 )
 
         return cleaned_data

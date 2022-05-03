@@ -2,7 +2,7 @@ from datetime import date
 
 from django import forms
 
-from library.forms import RequiredFormSet
+from library.forms.forms import RequiredFormSet
 
 from residents.models import Board, Person
 
