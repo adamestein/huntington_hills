@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.conf import settings
 from django.utils.safestring import mark_safe
@@ -31,10 +33,12 @@ class SelectWithAdd(forms.Select):
         self.popup_add = _create_popup_anchor(defaults)
 
     def render(self, name, value, attrs=None, renderer=None):
+        field_name = re.sub(r'.*-[0-9]+-', '', name)
+
         html = super(SelectWithAdd, self).render(name, value, attrs, renderer)
         return mark_safe(
             html + self.popup_add % {
-                'field': name.replace('_', ''),
+                'field': field_name.replace('_', ''),
                 'id_name': name,
                 'name': name.replace('_', ' '),
                 'static_url': settings.STATIC_URL

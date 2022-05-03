@@ -93,17 +93,22 @@
                     $("#worksheet_table > tbody > ").empty();
 
                     if (locations.length === 0) {
+                        $("#busy_text").text("Retrieving data");
+                        $("body").addClass("busy");
+
                         $.get(
                             "{% url 'bow_hunt:fetch_log_sheet_data' %}",
                             {"sheet_id": sheetID},
                             function(response) {
                                 let data = JSON.parse(response);
                                 loadHunterForms(data["log_forms"], data["locations"]);
+                                $("body").removeClass("busy");
                             }
                         ).fail(function(jqXHR, textStatus, errorThrown) {
                             alert(
                                 "Could not fetch location information.\n\nError: " + jqXHR.responseText
                             );
+                            $("body").removeClass("busy");
                         });
                     } else {
                         loadHunterForms(JSON.parse("{{ hunter_forms|escapejs }}"), locations);
@@ -504,4 +509,6 @@
                 </div>
         </div>
     </form>
+
+    {% include 'busy.html' %}
 {% endblock %}
