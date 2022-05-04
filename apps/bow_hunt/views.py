@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages import success
@@ -12,6 +13,8 @@ from .forms import HunterForm, HunterFormSet, LocationForm, LogSheetForm
 from .models import Location, Log, LogSheet
 
 from library.views.generic.mixins.ajax import AJAXResponseMixin
+
+logger = logging.getLogger(__name__)
 
 
 class AddLogs(LoginRequiredMixin, FormView):
@@ -82,10 +85,15 @@ class AddLogs(LoginRequiredMixin, FormView):
 
         hunter_formset = HunterFormSet(self.request.POST)
 
-        if hunter_formset.is_valid():
-            return self.form_valid(form, hunter_formset)
-        else:
-            return self.form_invalid(form, hunter_formset, self.request.POST['log_sheet'])
+        try:
+            if hunter_formset.is_valid():
+                return self.form_valid(form, hunter_formset)
+            else:
+                return self.form_invalid(form, hunter_formset, self.request.POST['log_sheet'])
+        except KeyError:
+            # Sometimes 'deer_count' is missing in form validation, so log info in the hope of tracking down the error
+            print(f'POST = [{self.request.POST}]')
+            raise
 
 
 class FetchLogSheetData(LoginRequiredMixin, AJAXResponseMixin, TemplateView):
