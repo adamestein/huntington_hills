@@ -179,7 +179,7 @@
             }).on("click", "#id_worksheet_form input[value='Hunting'][type=radio]", function() {
                 addHunterForm(this);
             }).on("focus", "#id_worksheet_form input[value='Ignore']", function() {
-                prevOptSelected = $(this).siblings(":checked").val();
+                prevOptSelected = $(this).parent().parent().find(":checked").first().val()
             }).on("click", "#id_worksheet_form input[value='Ignore']", function() {
                 let $this = $(this);
                 let delete_list = getExistingHunterFormList($this, ignore=true);
@@ -228,16 +228,8 @@
         });
 
         function addHunterForm(elem, hide=false) {
-            let locID;
-            let parent = $(elem).parent().parent();
-
-            if (elem.nodeName === "BUTTON") {
-                // The button is down one more level than the INPUT radio element
-                parent = parent.parent();
-                locID = parent.prevAll(".location").first();
-            } else {
-                locID = parent;
-            }
+            let parent = $(elem).parent().parent().parent();
+            let locID = (elem.nodeName === "BUTTON") ? parent.prevAll(".location").first() : parent;
 
             /*
                 Hide error row, usually it's to clear an error when the first hunter form is added, but doesn't hurt
@@ -321,7 +313,7 @@
         function getExistingHunterFormList($this, ignore=false) {
             let delete_list = [];
 
-            $.each($this.parent().parent().nextAll(), function(index, value) {
+            $.each($this.parent().parent().parent().nextAll(), function(index, value) {
                 if (["error", "location"].indexOf($(value).attr("class")) > -1) {
                     return false;
                 } else {
@@ -447,9 +439,9 @@
                         <tr class="location" data-location_id="${option.value}">
                             <td><span style="color: forestgreen;">${option.text}</span></td>
                             <td>
-                                <input name="${option.value}" type="radio" value="Ignore"> Ignore
-                                <input name="${option.value}" type="radio" value="No Hunting"> No Hunting
-                                <input data-selected="false" name="${option.value}" type="radio" value="Hunting"> Hunting
+                                <label><input name="${option.value}" type="radio" value="Ignore"> Ignore</label>
+                                <label><input name="${option.value}" type="radio" value="No Hunting"> No Hunting</label>
+                                <label><input data-selected="false" name="${option.value}" type="radio" value="Hunting"> Hunting</label>
                             </td>
                         </tr>
                     `;
