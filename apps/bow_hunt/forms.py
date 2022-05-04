@@ -1,12 +1,16 @@
+import logging
+
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils import six
 from django.utils.encoding import force_text
 from django.utils.html import conditional_escape
 
-from .models import DataWarning, Location, Log, LogSheet
+from .models import Location, Log, LogSheet
 
 from library.forms import MultipleSelectWithAdd, SelectWithAdd
+
+logger = logging.getLogger(__name__)
 
 
 class HunterForm(forms.ModelForm):
@@ -33,14 +37,20 @@ class HunterForm(forms.ModelForm):
     def clean(self):
         # LogAdminForm.clean(), have them point to the same code doing the checking
         cleaned_data = super().clean()
-        count = cleaned_data['deer_count']
-        gender = cleaned_data['deer_gender']
-        hunter = cleaned_data['hunter']
-        location_id = cleaned_data['location_id']
-        log_sheet_id = cleaned_data['log_sheet_id']
-        pk = cleaned_data.get('pk')
-        points = cleaned_data['deer_points']
-        tracking = cleaned_data['deer_tracking']
+        try:
+            count = cleaned_data['deer_count']
+            gender = cleaned_data['deer_gender']
+            hunter = cleaned_data['hunter']
+            location_id = cleaned_data['location_id']
+            log_sheet_id = cleaned_data['log_sheet_id']
+            pk = cleaned_data.get('pk')
+            points = cleaned_data['deer_points']
+            tracking = cleaned_data['deer_tracking']
+        except KeyError as e:
+            # Sometimes 'deer_count' is missing, so log info in the hope of tracking down the error
+            logger.error(f'clean(): {e}')
+            logger.error(f'cleaned_data = [{cleaned_data}]')
+            raise
 
         log_sheet = LogSheet.objects.get(id=log_sheet_id)
         location = Location.objects.get(id=location_id)
