@@ -166,7 +166,10 @@ class LogSheet(models.Model):
 
     @property
     def total_archers(self):
-        return self.log_set.exclude(hunter=None).exclude(hunter__first_name='<unknown>').count()
+        return self.log_set.exclude(hunter=None)\
+            .exclude(hunter__first_name='<unknown>')\
+            .exclude(incorrect_warnings__label='Listed hunter didn\'t actually hunt here')\
+            .count()
 
     def __str__(self):
         return f'Log sheet for {self.date.strftime("%B %d, %Y")}'

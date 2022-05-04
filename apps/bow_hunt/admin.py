@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.core.exceptions import ValidationError
 
-from .models import Hunter, Location, Log, LogSheet, Officer
+from .models import DataWarning, Hunter, Location, Log, LogSheet, Officer
 
 
 class HunterAdminForm(forms.ModelForm):
@@ -75,6 +75,7 @@ class LogAdmin(admin.ModelAdmin):
     form = LogAdminForm
 
 
+admin.site.register(DataWarning)
 admin.site.register(Log, LogAdmin)
 admin.site.register(Hunter, HunterAdmin)
 admin.site.register(Location)
