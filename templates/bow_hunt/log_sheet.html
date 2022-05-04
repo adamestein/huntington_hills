@@ -123,7 +123,6 @@
                         "{% url 'bow_hunt:fetch_log_sheet_by_year' %}",
                         {"year": year},
                         function(response) {
-                            let html;
                             let logSheets = JSON.parse(response);
 
                             const logRowTemplate = (data) => `
@@ -195,12 +194,20 @@
                                     let hunters = "";
                                     let tracking = "";
 
+                                    let incorrectHunterListing = "";
                                     let unknownHunterFirstName = "";
                                     let unknownHunterWarning = "";
                                     let unknownTrackValueWarning = "";
 
                                     if (log["incorrect_warnings"] !== "[]") {
-                                        // TBD when we have any
+                                        $.each(JSON.parse(log["incorrect_warnings"]), function(index, warning) {
+                                            console.log('Label = [' + warning["fields"]["label"] + ']');
+                                            switch (warning["fields"]["label"]) {
+                                                case "Listed hunter didn't actually hunt here":
+                                                    incorrectHunterListing = warning["fields"]["description"];
+                                                    break;
+                                            }
+                                        });
                                     }
 
                                     if (log["missing_warnings"] !== "[]") {
@@ -230,6 +237,12 @@
                                             if (hunter["name"] === "&lt;unknown&gt;" && unknownHunterWarning.length) {
                                                 hunters += `
                                                     <span class="missing_data" title="${unknownHunterWarning}">
+                                                        ${hunter['name']}
+                                                    </span>
+                                                `;
+                                            } else if (incorrectHunterListing.length) {
+                                                hunters += `
+                                                    <span class="incorrect_data" title="${incorrectHunterListing}">
                                                         ${hunter['name']}
                                                     </span>
                                                 `;

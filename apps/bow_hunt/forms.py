@@ -23,6 +23,7 @@ class HunterForm(forms.ModelForm):
         model = Log
         widgets = {
             'hunter': SelectWithAdd(),
+            'incorrect_warnings': forms.CheckboxSelectMultiple,
             'missing_warnings': forms.CheckboxSelectMultiple
         }
 
@@ -107,8 +108,6 @@ class HunterForm(forms.ModelForm):
         error_row = f'<tr><td colspan="2">{force_text(bf_errors)}</td></tr>' if bf_errors else ''
 
         if field_name == 'hunter':
-            missing_warnings = self['missing_warnings']
-
             return f"""
                 {error_row}
                 <tr>
@@ -122,7 +121,8 @@ class HunterForm(forms.ModelForm):
                             (names can be added, but the menu is not automaticall updated)
                         </span>
                         <br />
-                        {six.text_type(missing_warnings)}
+                        {six.text_type(self['missing_warnings'])}
+                        {six.text_type(self['incorrect_warnings'])}
                     </td>
                 </tr>
             """
