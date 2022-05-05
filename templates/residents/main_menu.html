@@ -1,4 +1,5 @@
 {% extends "residents/resident_base.html" %}
+{% load auth %}
 {% load static %}
 
 {% block css %}
@@ -35,5 +36,15 @@
         <li><a href="{% url 'resident:board' %}">Board Members</a></li>
         <li><a href="{% url 'resident:information' %}">Residents List</a></li>
     </ul>
+
+    {% if request.user.is_staff or request.user|in_group:"Bow Hunt" %}
+        <fieldset>
+            <legend>Bow Hunt</legend>
+
+            <ul class="arrow_bullet">
+                <li><a href="{% url 'bow_hunt:log_sheet' %}">View Daily Log Sheets</a></li>
+            </ul>
+        </fieldset>
+    {% endif %}
 {% endblock %}
 

@@ -12,12 +12,13 @@ from django.views.generic import FormView, TemplateView
 from .forms import HunterForm, HunterFormSet, LocationForm, LogSheetForm
 from .models import Location, Log, LogSheet
 
+from library.contrib.auth.mixins import IsBowHuntMixin
 from library.views.generic.mixins.ajax import AJAXResponseMixin
 
 logger = logging.getLogger(__name__)
 
 
-class AddLogs(LoginRequiredMixin, FormView):
+class AddLogs(LoginRequiredMixin, IsBowHuntMixin, FormView):
     form_class = LogSheetForm
     template_name = 'bow_hunt/add_logs.html'
     success_url = reverse_lazy('bow_hunt:add_logs')
@@ -96,7 +97,7 @@ class AddLogs(LoginRequiredMixin, FormView):
             raise
 
 
-class FetchLogSheetData(LoginRequiredMixin, AJAXResponseMixin, TemplateView):
+class FetchLogSheetData(LoginRequiredMixin, IsBowHuntMixin, AJAXResponseMixin, TemplateView):
     content_type = 'application/json'
 
     def get_context_data(self, **kwargs):
@@ -133,7 +134,7 @@ class FetchLogSheetData(LoginRequiredMixin, AJAXResponseMixin, TemplateView):
         return context
 
 
-class FetchLogSheetsByYear(LoginRequiredMixin, AJAXResponseMixin, TemplateView):
+class FetchLogSheetsByYear(LoginRequiredMixin, IsBowHuntMixin, AJAXResponseMixin, TemplateView):
     content_type = 'application/json'
 
     def get_context_data(self, **kwargs):
@@ -200,7 +201,7 @@ class FetchLogSheetsByYear(LoginRequiredMixin, AJAXResponseMixin, TemplateView):
         return log_sheet_data
 
 
-class LogSheetView(LoginRequiredMixin, TemplateView):
+class LogSheetView(LoginRequiredMixin, IsBowHuntMixin, TemplateView):
     template_name = 'bow_hunt/log_sheet.html'
 
     def get_context_data(self, **kwargs):
