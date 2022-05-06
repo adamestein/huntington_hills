@@ -2,15 +2,43 @@ import logging
 
 from django import forms
 from django.core.exceptions import ValidationError
+from django.db.models.functions import ExtractYear
 from django.utils import six
 from django.utils.encoding import force_text
 from django.utils.html import conditional_escape
 
-from .models import Location, Log, LogSheet
+from .models import Hunter, Location, Log, LogSheet
 
 from library.forms import MultipleSelectWithAdd, SelectWithAdd
 
 logger = logging.getLogger(__name__)
+
+
+class HunterAnalysisForm(forms.Form):
+    HUNTER_ANALYSIS_LOCATIONS = 'locations'
+    HUNTER_ANALYSIS_SUCCESS_RATE = 'success_rate'
+    HUNTER_ANALYSIS_TIMES_HUNTED = 'times_hunted'
+
+    OPTION_CHOICES = (
+        (HUNTER_ANALYSIS_LOCATIONS, 'Locations'),
+        (HUNTER_ANALYSIS_SUCCESS_RATE, 'Success Rate'),
+        (HUNTER_ANALYSIS_TIMES_HUNTED, 'Number of times hunted')
+    )
+
+    year_choices = [
+        (year, year) for year in
+        LogSheet.objects.dates('date', 'year').annotate(year=ExtractYear('date')).values_list('year', flat=True)
+    ]
+
+    years = forms.MultipleChoiceField(choices=year_choices, label='', widget=forms.SelectMultiple(attrs={'size': 20}))
+
+    hunter_choices = [(hunter.id, hunter.name) for hunter in Hunter.objects.exclude(first_name='<unknown>')]
+
+    hunters = forms.MultipleChoiceField(
+        choices=hunter_choices, label='', widget=forms.SelectMultiple(attrs={'size': 20})
+    )
+
+    options = forms.MultipleChoiceField(choices=OPTION_CHOICES, label='', widget=forms.CheckboxSelectMultiple)
 
 
 class HunterForm(forms.ModelForm):
