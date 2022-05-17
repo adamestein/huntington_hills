@@ -35,9 +35,8 @@ class FetchLogSheetsByYear(LoginRequiredMixin, IsBowHuntMixin, AJAXResponseMixin
                 if log.hunter:
                     hunter = {
                         'comment': escape(log.comment),
-                        'deer': log.deer_as_str,
-                        'name': escape(log.hunter.name),
-                        'track': log.deer_tracking
+                        'deer': [{'str': deer.as_str, 'tracking': deer.tracking} for deer in log.deer_set.all()],
+                        'name': escape(log.hunter.name)
                     }
                 else:
                     hunter = None

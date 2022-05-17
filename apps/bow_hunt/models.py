@@ -22,6 +22,42 @@ class DataWarning(models.Model):
         return self.label
 
 
+class Deer(models.Model):
+    GENDER_FEMALE = 'F'
+    GENDER_MALE = 'M'
+    GENDER_CHOICES = ((GENDER_FEMALE, 'Female (Doe)'), (GENDER_MALE, 'Male (Buck)'))
+
+    count = models.PositiveSmallIntegerField(default=0)
+    gender = models.CharField(
+        blank=True, choices=GENDER_CHOICES, help_text='(only if deer shot)', max_length=1, null=True
+    )
+    log = models.ForeignKey('Log')
+    points = models.PositiveSmallIntegerField(
+        blank=True, default=None, help_text='(set only if deer is male)', null=True
+    )
+    tracking = models.NullBooleanField(default=None, help_text='(set only if deer shot)')
+
+    class Meta:
+        ordering = ('log',)
+        verbose_name_plural = 'Deer'
+
+    @property
+    def as_str(self):
+        if self.gender:
+            msg = f'{self.count}' if self.count > 1 else ''
+            msg += f'{self.GENDER_MALE}-{self.points}' if self.gender == self.GENDER_MALE \
+                else self.GENDER_FEMALE
+            return msg
+        else:
+            return None
+
+    def __str__(self):
+        action = 'shot' if self.tracking else 'killed'
+        msg = f'[{self.log.log_sheet.date}/{self.log.hunter}] {action} {self.as_str}'
+        msg += f' at {self.log.location.address}'
+        return msg
+
+
 class Hunter(models.Model):
     first_name = models.CharField(blank=True, max_length=10)
     last_name = models.CharField(blank=True, max_length=20)
@@ -87,23 +123,10 @@ class Location(models.Model):
 
 
 class Log(models.Model):
-    GENDER_FEMALE = 'F'
-    GENDER_MALE = 'M'
-    GENDER_CHOICES = ((GENDER_FEMALE, 'Female'), (GENDER_MALE, 'Male'))
-
     log_sheet = models.ForeignKey('LogSheet')
 
     location = models.ForeignKey('Location')
     hunter = models.ForeignKey('Hunter', blank=True, null=True)
-
-    deer_count = models.PositiveSmallIntegerField(default=0)
-    deer_gender = models.CharField(
-        blank=True, choices=GENDER_CHOICES, help_text='(only if deer shot or killed)', max_length=1, null=True
-    )
-    deer_points = models.PositiveSmallIntegerField(
-        blank=True, default=None, help_text='(only if deer is male)', null=True
-    )
-    deer_tracking = models.NullBooleanField(default=None, help_text='(set only if deer shot or killed)')
 
     comment = models.CharField(blank=True, max_length=200)
 
@@ -120,23 +143,9 @@ class Log(models.Model):
         ordering = ('log_sheet__date', 'location__line_item_number', 'hunter__last_name', 'hunter__first_name')
         unique_together = ('log_sheet', 'location', 'hunter')
 
-    @property
-    def deer_as_str(self):
-        if self.deer_gender:
-            msg = f'{self.deer_count}' if self.deer_count > 1 else ''
-            msg += f'{self.GENDER_MALE}-{self.deer_points}' if self.deer_gender == self.GENDER_MALE \
-                else self.GENDER_FEMALE
-            return msg
-        else:
-            return None
-
     def __str__(self):
-        if self.deer_count:
-            action = 'shot' if self.deer_tracking else 'killed'
-            msg = (
-                f'[{self.log_sheet.date}] {self.hunter.name} {action} {self.deer_as_str} '
-                f'deer at {self.location.address}'
-            )
+        if self.deer_set.all():
+            msg = f'[{self.log_sheet.date}] {self.hunter.name} shot deer at {self.location.address}'
         elif self.hunter:
             msg = f'[{self.log_sheet.date}] {self.hunter.name} did not shoot any deer at {self.location.address}'
         else:
@@ -161,8 +170,7 @@ class LogSheet(models.Model):
 
     @property
     def deer_taken(self):
-        count = self.log_set.filter(deer_count__gt=0).aggregate(models.Sum('deer_count'))['deer_count__sum']
-        return 0 if count is None else count
+        return sum([sum([deer.count for deer in log.deer_set.all()]) for log in self.log_set.all()])
 
     @property
     def total_archers(self):

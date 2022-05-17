@@ -67,31 +67,8 @@
                 let $this = $(this);
                 let text = $this.text();
 
-                if ($(this).parent().attr("class") === "options_select_all") {
-                    $("input[id^='id_options']").prop("checked", text === "Select All");
-                } else {
-                    $this.parent().parent().find("option").prop("selected", text === "Select All");
-                }
-
+                $this.parent().parent().find("option").prop("selected", text === "Select All");
                 $this.text((text === "Select All") ? "Unselect All" : "Select All");
-            });
-
-            $("form").on("submit", function(e) {
-                if ($("input[id^='id_options']:checked").length === 0) {
-                    let dialog = "<div title='Notice'>Must select at least one reporting option</div>";
-
-                    $(dialog).dialog({
-                        buttons: {
-                            "ok": function() {
-                                $(this).dialog("close");
-                            }
-                        },
-                        modal: true,
-                        width: "50%"
-                    });
-                    return false;
-                }
-                return true;
             });
         });
     </script>
@@ -107,7 +84,6 @@
             <tr>
                 <th>Years</th>
                 <th>Hunters</th>
-                <th>Reporting Options</th>
             </tr>
 
             <tr>
@@ -123,15 +99,6 @@
                     {{ form.hunters }}
 
                     <div class="non_options_select_all"><button type="button">Select All</button></div>
-                </td>
-
-                <td style="position: relative; width: 30%;">
-                    <div style="position: absolute; top: 0;">
-                        {{ form.options.errors }}
-                        {{ form.options }}
-                    </div>
-
-                    <div class="options_select_all"><button type="button">Select All</button></div>
                 </td>
             </tr>
         </table>

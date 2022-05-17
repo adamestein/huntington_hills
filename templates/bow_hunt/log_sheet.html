@@ -15,39 +15,23 @@
             margin-top: 1.5em;
         }
 
-        .log_info_table td:first-child {
-            width: 22%;
-        }
-
-        .log_info_table td:nth-child(2) {
-            vertical-align: top;
-            width: 46%;
-        }
-
-        #log_info_table td:nth-child(3) {
-            vertical-align: top;
-            width: 22%;
-        }
-
-        #log_info_table td:nth-child(4) {
-            width: 2%;
-        }
-
-        #log_info_table td:nth-child(5) {
-            width: 2%;
-        }
-
-        #log_info_table td:last-child {
-            text-align: center;
-            vertical-align: top;
-        }
-
         #overall_info_table td:first-child {
             width: 25%;
         }
 
         #overall_info_table td:nth-child(2) {
             width: 50%;
+        }
+
+        .row1 {
+            border-bottom: 0;
+            vertical-align: top;
+        }
+
+        .rowN {
+            border-bottom: 0;
+            border-top: 0;
+            vertical-align: top;
         }
 
         table, td, th {
@@ -77,6 +61,10 @@
             margin-right: 2em;
             margin-top: 0.25em;
             text-align: right;
+        }
+
+        .tracking {
+            text-align: center;
         }
 
         .ui-tooltip-content {
@@ -125,18 +113,42 @@
                         function(response) {
                             let logSheets = JSON.parse(response);
 
-                            const logRowTemplate = (data) => `
+                            // First hunter row
+                            const logRowTemplate1 = (data) => `
                                 <tr>
-                                    <td>${data["index"]} ${data["location"]}</td>
-                                    <td style="vertical-align: top;">${data["hunter"]}</td>
-                                    <td style="vertical-align: top;">${data["deer"]}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td style="vertical-align: top;">${data["tracking"]}</td>
+                                    <td rowspan="${data["rowspan"]}">${data["index"]} ${data["location"]}</td>
+                                    <td class="row1">${data["hunter"]}</td>
+                                    <td class="row1">${data["deer"]}</td>
+                                    <td class="row1"></td>
+                                    <td class="row1"></td>
+                                    <td class="row1 tracking">${data["tracking"]}</td>
                                 </tr>
                             `;
 
-                            $.each(logSheets, function(index, data) {
+                            // 2nd to Nth hunter rows
+                            const logRowTemplate2 = (data) => `
+                                <tr>
+                                    <td class="rowN">${data["hunter"]}</td>
+                                    <td class="rowN">${data["deer"]}</td>
+                                    <td class="rowN"></td>
+                                    <td class="rowN"></td>
+                                    <td class="rowN tracking">${data["tracking"]}</td>
+                                </tr>
+                            `;
+
+                            // No hunter row
+                            const logRowTemplate3 = (data) => `
+                                <tr>
+                                    <td>${data["index"]} ${data["location"]}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            `;
+
+                            $.each(logSheets, function(lsIndex, data) {
                                 let anchorDate;
                                 let anchorDay;
                                 let sheet = JSON.parse(data["sheet"])[0];
@@ -156,7 +168,7 @@
                                 anchorDate = `${month}-${anchorDay}-${date.slice(0, 4)}`;
                                 date = `${month}/${day}/${date.slice(2, 4)}`;
 
-                                if (index > 0) {
+                                if (lsIndex > 0) {
                                     logSheetDiv.append("<hr class='table_separator' />");
                                 }
 
@@ -178,6 +190,19 @@
 
                                 let html = `
                                     <table class="log_info_table">
+                                        {% comment %}
+                                            The width attribute to <col> is deprecated, but it seems to be the only
+                                            way to set the width of all the columns of interest when rowspan (or
+                                            colspan) is used. Tried using ".log_info_table td:nth-child(#)" (where
+                                            # is the column number starting at 1) but that only worked for the first
+                                            2 columns.
+                                        {% endcomment %}
+                                        <col width="30%">
+                                        <col width="30%">
+                                        <col width="15%">
+                                        <col width="2%">
+                                        <col width="2%">
+
                                         <tbody>
                                             <tr>
                                                 <th>Location</th>
@@ -185,23 +210,18 @@
                                                 <th>Deer M/F</th>
                                                 <th></th>
                                                 <th></th>
-                                                <th>Track<br />Y/N</th>
+                                                <th style="text-align: center;">Track<br />Y/N</th>
                                             </tr>
                                 `;
 
-                                $.each(data["logs"], function(index2, log) {
-                                    let deer = "";
-                                    let hunters = "";
-                                    let tracking = "";
-
+                                $.each(data["logs"], function(lIndex, log) {
                                     let incorrectHunterListing = "";
                                     let unknownHunterFirstName = "";
                                     let unknownHunterWarning = "";
                                     let unknownTrackValueWarning = "";
 
                                     if (log["incorrect_warnings"] !== "[]") {
-                                        $.each(JSON.parse(log["incorrect_warnings"]), function(index, warning) {
-                                            console.log('Label = [' + warning["fields"]["label"] + ']');
+                                        $.each(JSON.parse(log["incorrect_warnings"]), function(lsIndex, warning) {
                                             switch (warning["fields"]["label"]) {
                                                 case "Listed hunter didn't actually hunt here":
                                                     incorrectHunterListing = warning["fields"]["description"];
@@ -211,7 +231,7 @@
                                     }
 
                                     if (log["missing_warnings"] !== "[]") {
-                                        $.each(JSON.parse(log["missing_warnings"]), function(index, warning) {
+                                        $.each(JSON.parse(log["missing_warnings"]), function(lsIndex, warning) {
                                             switch (warning["fields"]["label"]) {
                                                 case "Hunter first name missing":
                                                     unknownHunterFirstName = warning["fields"]["description"];
@@ -228,69 +248,90 @@
                                         });
                                     }
 
-                                    if (log["hunters"]) {
-                                        $.each(log["hunters"], function (index2, hunter) {
-                                            if (hunters.length) {
-                                                hunters += "<br />";
-                                            }
+                                    let rowspan = 1;    // Even no hunter entries have 1 row
 
-                                            if (hunter["name"] === "&lt;unknown&gt;" && unknownHunterWarning.length) {
-                                                hunters += `
+                                    if (log["hunters"]) {
+                                        rowspan = log["hunters"].length;
+
+                                        $.each(log["hunters"], function(hIndex, hunter) {
+                                            let deer = [];
+                                            let name = hunter["name"];
+                                            let tracking = [];
+
+                                            if (name === "&lt;unknown&gt;" && unknownHunterWarning.length) {
+                                                name = `
                                                     <span class="missing_data" title="${unknownHunterWarning}">
-                                                        ${hunter['name']}
+                                                        ${name}
                                                     </span>
                                                 `;
                                             } else if (incorrectHunterListing.length) {
-                                                hunters += `
+                                                name = `
                                                     <span class="incorrect_data" title="${incorrectHunterListing}">
-                                                        ${hunter['name']}
+                                                        ${name}
                                                     </span>
                                                 `;
                                             } else if (unknownHunterFirstName.length) {
-                                                hunters += `
+                                                name = `
                                                     <span class="missing_data" title="${unknownHunterFirstName}">
-                                                        ${hunter['name']}
+                                                        ${name}
                                                     </span>
                                                 `;
-                                            } else {
-                                                hunters += hunter["name"];
                                             }
 
-                                            if (deer.length) {
-                                                deer += "<br />";
-                                            }
+                                            if (hunter["deer"].length) {
+                                                $.each(hunter["deer"], function (dIndex, info) {
+                                                    deer.push(info["str"]);
 
-                                            if (hunter["deer"]) {
-                                                deer += hunter["deer"];
-                                            } else {
-                                                deer += "&nbsp;";
-                                            }
+                                                    let trackValue = "";
 
-                                            if (hunter["track"] !== null) {
-                                                let trackValue = (hunter["track"]) ? "Y" : "N";
+                                                    if (info["tracking"] !== null) {
+                                                        trackValue = (info["tracking"]) ? "Y" : "N";
 
-                                                if (unknownTrackValueWarning.length) {
-                                                    trackValue = `<span class="missing_data" title="${unknownTrackValueWarning}">${trackValue}</span>`;
+                                                        if (unknownTrackValueWarning.length) {
+                                                            trackValue = `
+                                                            <span class="missing_data"
+                                                                  title="${unknownTrackValueWarning}">
+                                                                ${trackValue}
+                                                            </span>
+                                                        `;
+                                                        }
+                                                    }
+
+                                                    tracking.push(trackValue);
+                                                });
+
+                                                if (hunter["comment"]) {
+                                                    tracking.push(`<br />(${hunter["comment"]})`);
                                                 }
-
-                                                tracking += `<div style="text-align: center;">${trackValue}</div>`;
-                                            } else {
-                                                tracking += "<br />";
+                                            } else if (hunter["comment"]) {
+                                                tracking.push(
+                                                    `<div style="text-align: center;">${hunter["comment"]}</div>`
+                                                );
                                             }
 
-                                            if (hunter["comment"] !== "") {
-                                                tracking += "(" + hunter["comment"] + ")";
+                                            if (hIndex === 0) {
+                                                html += logRowTemplate1({
+                                                    "deer": deer.join("<br />"),
+                                                    "hunter": name,
+                                                    "index": (log["loc_index"]) ? log["loc_index"] + "." : "",
+                                                    "location": log["location"],
+                                                    "rowspan": rowspan,
+                                                    "tracking": tracking.join("<br />")
+                                                });
+                                            } else {
+                                                html += logRowTemplate2({
+                                                    "deer": deer.join("<br />"),
+                                                    "hunter": name,
+                                                    "tracking": tracking.join("<br />")
+                                                });
                                             }
                                         });
+                                    } else {
+                                        html += logRowTemplate3({
+                                            "index": (log["loc_index"]) ? log["loc_index"] + "." : "",
+                                            "location": log["location"]
+                                        });
                                     }
-
-                                    html += logRowTemplate({
-                                        "deer": deer,
-                                        "hunter": hunters,
-                                        "index": (log["loc_index"]) ? log["loc_index"] + "." : "",
-                                        "location": log["location"],
-                                        "tracking": tracking
-                                    });
                                 });
 
                                 html += `
@@ -380,7 +421,7 @@
         Jump to: <input id="datepicker" type="text" />
     </div>
 
-    {% include "bow_hunt/_ipd_log_warnings.html" %}
+    {% include "bow_hunt/_ipd_log_warnings.html" with can_mouse_over=1 %}
 
     <div id="log_sheet" style="font-size: 80%; margin-top: 2em;">No year selected.</div>
 
