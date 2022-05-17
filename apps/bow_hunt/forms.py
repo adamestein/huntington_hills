@@ -7,24 +7,77 @@ from django.utils import six
 from django.utils.encoding import force_text
 from django.utils.html import conditional_escape
 
-from .models import Hunter, Location, Log, LogSheet
+from .models import Deer, Hunter, Location, Log, LogSheet
 
 from library.forms import MultipleSelectWithAdd, SelectWithAdd
 
 logger = logging.getLogger(__name__)
 
+DEER_PREFIX = 'deer'
+HUNTER_PREFIX = 'hunter'
+
+
+class DeerForm(forms.ModelForm):
+    hunter_formset_number = forms.IntegerField(widget=forms.HiddenInput())
+
+    class Meta:
+        # Sets the order the fields will be displayed
+        fields = ['count', 'gender', 'points', 'tracking', 'log', 'hunter_formset_number']
+        model = Deer
+        widgets = {'log': forms.HiddenInput}
+
+    def __init__(self, *args, **kwargs):
+        log_required = kwargs.pop('log_required', False)
+        super().__init__(*args, **kwargs)
+        if not log_required:
+            self.fields['log'].required = False
+
+    def clean(self):
+        cleaned_data = super().clean()
+        count = cleaned_data['count']
+        gender = cleaned_data['gender']
+        points = cleaned_data['points']
+        tracking = cleaned_data['tracking']
+
+        if count:
+            log = cleaned_data['log']
+
+            if log.hunter is None:
+                raise forms.ValidationError(
+                    'Hunter needs to be specified when any deer are shot or killed. If not specified, '
+                    'list first name as <unknown>.'
+                )
+
+            if gender is None:
+                self.add_error('gender', 'Need to specify the deer gender when any are shot or killed')
+
+            if gender == Deer.GENDER_MALE and points is None:
+                self.add_error('points', 'Male deer need the number of points specified')
+
+            if tracking is None:
+                self.add_error(
+                    'tracking', 'Need to specify if tracking was required when any deer are shot or killed'
+                )
+        else:
+            if gender is not None:
+                self.add_error('gender', 'Gender is set but the count equals 0')
+
+            if points is not None:
+                if gender == Deer.GENDER_MALE:
+                    self.add_error('points', 'Points is set but the count equals 0')
+                else:
+                    self.add_error('points', 'Points is set but the count equals 0 and the gender is Female')
+
+            if tracking is not None:
+                self.add_error('tracking', 'Tracking is set but the count equals 0')
+
+        return cleaned_data
+
+
+DeerFormSet = forms.formset_factory(DeerForm, extra=0)
+
 
 class HunterAnalysisForm(forms.Form):
-    HUNTER_ANALYSIS_LOCATIONS = 'locations'
-    HUNTER_ANALYSIS_SUCCESS_RATE = 'success_rate'
-    HUNTER_ANALYSIS_TIMES_HUNTED = 'times_hunted'
-
-    OPTION_CHOICES = (
-        (HUNTER_ANALYSIS_LOCATIONS, 'Locations'),
-        (HUNTER_ANALYSIS_SUCCESS_RATE, 'Success Rate'),
-        (HUNTER_ANALYSIS_TIMES_HUNTED, 'Number of times hunted')
-    )
-
     year_choices = [
         (year, year) for year in
         LogSheet.objects.dates('date', 'year').annotate(year=ExtractYear('date')).values_list('year', flat=True)
@@ -32,16 +85,15 @@ class HunterAnalysisForm(forms.Form):
 
     years = forms.MultipleChoiceField(choices=year_choices, label='', widget=forms.SelectMultiple(attrs={'size': 20}))
 
-    hunter_choices = [(hunter.id, hunter.name) for hunter in Hunter.objects.exclude(first_name='<unknown>')]
+    hunter_choices = [(hunter.id, str(hunter)) for hunter in Hunter.objects.exclude(first_name='<unknown>')]
 
     hunters = forms.MultipleChoiceField(
         choices=hunter_choices, label='', widget=forms.SelectMultiple(attrs={'size': 20})
     )
 
-    options = forms.MultipleChoiceField(choices=OPTION_CHOICES, label='', widget=forms.CheckboxSelectMultiple)
-
 
 class HunterForm(forms.ModelForm):
+    hunter_formset_number = forms.IntegerField(widget=forms.HiddenInput())
     location_id = forms.IntegerField(widget=forms.HiddenInput())    # Store only the ID, so we can avoid the large list
     log_sheet_id = forms.IntegerField(widget=forms.HiddenInput())   # Store only the ID, so we can avoid the large list
     pk = forms.IntegerField(required=False, widget=forms.HiddenInput())  # Need this to add instance to form later
@@ -57,66 +109,8 @@ class HunterForm(forms.ModelForm):
 
     def as_table(self):
         return self._as_table('hunter') + \
-               self._as_table('deer_count') + \
-               self._as_table('deer_gender') + \
-               self._as_table('deer_points') + \
-               self._as_table('deer_tracking') + \
+               '<tr><th>Deer</th><td></td></tr>' + \
                self._as_table('comment')
-
-    def clean(self):
-        # LogAdminForm.clean(), have them point to the same code doing the checking
-        cleaned_data = super().clean()
-        try:
-            count = cleaned_data['deer_count']
-            gender = cleaned_data['deer_gender']
-            hunter = cleaned_data['hunter']
-            location_id = cleaned_data['location_id']
-            log_sheet_id = cleaned_data['log_sheet_id']
-            pk = cleaned_data.get('pk')
-            points = cleaned_data['deer_points']
-            tracking = cleaned_data['deer_tracking']
-        except KeyError as e:
-            # Sometimes 'deer_count' is missing, so log info in the hope of tracking down the error
-            logger.error(f'clean(): {e}')
-            logger.error(f'cleaned_data = [{cleaned_data}]')
-            raise
-
-        log_sheet = LogSheet.objects.get(id=log_sheet_id)
-        location = Location.objects.get(id=location_id)
-        if pk is not None:
-            self.instance = Log.objects.get(pk=pk)
-
-        # Database level restriction doesn't seem to work when Hunter = None, so we'll test for that here
-        if self.instance.id is None and hunter is None and \
-                Log.objects.filter(hunter=hunter, location=location, log_sheet=log_sheet).exists():
-            raise ValidationError('Log with this Log Sheet, Location and Hunter already exists.')
-
-        if location.year != log_sheet.date.year:
-            self.add_error(
-                'location',
-                f'Mismatch between location year ({location.year}) and log sheet year ({log_sheet.date.year})'
-            )
-
-        if count:
-            if hunter is None:
-                self.add_error(
-                    'hunter',
-                    'Hunter needs to be specified when any deer are shot or killed. If not specified, '
-                    'list first name as <unknown>.'
-                )
-
-            if gender is None:
-                self.add_error('deer_gender', 'Need to specify the deer gender when any are shot or killed')
-
-            if gender == Log.GENDER_MALE and points is None:
-                self.add_error('deer_points', 'Male deer need the number of points specified')
-
-            if tracking is None:
-                self.add_error(
-                    'deer_tracking', 'Need to specify if tracking was required when any deer are shot or killed'
-                )
-
-        return cleaned_data
 
     def _as_table(self, field_name):
         bf = self[field_name]
@@ -144,6 +138,7 @@ class HunterForm(forms.ModelForm):
                         {six.text_type(self['pk'])}
                         {six.text_type(self['log_sheet_id'])}
                         {six.text_type(self['location_id'])}
+                        {six.text_type(self['hunter_formset_number'])}
                         {six.text_type(bf)}{help_text}<br />
                         <span style="font-size: 90%; font-style: italic;">
                             (names can be added, but the menu is not automaticall updated)
