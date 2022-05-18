@@ -1,8 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
 from django.views.generic import TemplateView
 from django.views.generic.edit import ProcessFormView
 
-from ..forms import HunterAnalysisForm
 from ..models import Hunter, Log, LogSheet
 
 from library.contrib.auth.mixins import IsBowHuntMixin
@@ -29,6 +30,10 @@ class Report(LoginRequiredMixin, IsBowHuntMixin, ProcessFormView, TemplateView):
 
         return self.render_to_response(context)
 
+    @staticmethod
+    def _count_deer(query):
+        return query.exclude(deer__isnull=True).aggregate(deer_count=Coalesce(Sum('deer__count'), 0))['deer_count']
+
     def _create_hunter_summaries(self, **kwargs):
         details = {}
         summaries = {}
@@ -45,10 +50,10 @@ class Report(LoginRequiredMixin, IsBowHuntMixin, ProcessFormView, TemplateView):
                 hunter_name = str(hunter)
 
                 summary_days_hunted = hunter_logs.distinct().values_list('log_sheet').count()
-                summary_deer_shot = hunter_logs.exclude(deer__isnull=True).count()
+                summary_deer_shot = self._count_deer(hunter_logs)
                 summary_deer_tracked = hunter_logs.filter(deer__tracking=True).count()
-                summary_percent_shot = summary_deer_shot / summary_days_hunted * 100
-                summary_per_tracked = 0 if summary_deer_shot == 0 else summary_deer_tracked / summary_deer_shot * 100
+                summary_percent_shot = summary_deer_shot / summary_days_hunted * 100 if summary_deer_shot else 0
+                summary_per_tracked = summary_deer_tracked / summary_deer_shot * 100 if summary_deer_shot else 0
 
                 summaries[year][hunter_name] = {
                     'days_hunted': summary_days_hunted,
@@ -68,18 +73,20 @@ class Report(LoginRequiredMixin, IsBowHuntMixin, ProcessFormView, TemplateView):
                         location = location_logs[0].location.address
 
                         location_days_hunted = location_logs.count()
-                        location_deer_shot = location_logs.exclude(deer__isnull=True).count()
+                        location_deer_shot = self._count_deer(location_logs)
                         location_deer_tracked = location_logs.filter(deer__tracking=True).count()
-                        loc_per_deer_shot = 0 if summary_deer_shot == 0 else location_deer_shot / summary_deer_shot * 100
-                        loc_per_tracked = 0 if location_deer_shot == 0 else location_deer_tracked / location_deer_shot * 100
+                        location_percent_deer_shot = location_deer_shot / summary_deer_shot * 100 \
+                            if summary_deer_shot else 0
+                        location_percent_tracked = location_deer_tracked / location_deer_shot * 100 \
+                            if location_deer_shot else 0
 
                         details[year][hunter_name][location] = {
                             'days_hunted': location_days_hunted,
                             'percent_days_hunted': location_days_hunted / summary_days_hunted * 100,
                             'deer_shot': location_deer_shot,
                             'deer_tracked': location_deer_tracked,
-                            'percent_shot': loc_per_deer_shot,
-                            'percent_tracked': loc_per_tracked
+                            'percent_shot': location_percent_deer_shot,
+                            'percent_tracked': location_percent_tracked
                         }
 
         return details, summaries
@@ -89,13 +96,17 @@ class Report(LoginRequiredMixin, IsBowHuntMixin, ProcessFormView, TemplateView):
         for year in kwargs['years']:
             years[year] = LogSheet.objects.filter(date__year=year).count()
 
+        # Because some deer are shot by unknown hunters, we need to count using the full Log, not just the self.log
+        # filtered version
+        total_deer_shot = self._count_deer(Log.objects.filter(log_sheet__date__year__in=kwargs['years']))
+
         summary = {
             'locations': self.logs.distinct().values_list('location').count(),
             'number_locs_deer_shot': self.logs.exclude(deer__isnull=True).distinct().values_list('location').count(),
             'number_hunters': len(kwargs['hunters']),
             'required_tracking': self.logs.filter(deer__tracking=True).count(),
             'total_days_hunted': self.logs.distinct().values_list('log_sheet').count(),
-            'total_deer_shot': self.logs.exclude(deer__isnull=True).count(),
+            'total_deer_shot': total_deer_shot,
             'total_hunters': Hunter.objects.exclude(first_name='<unknown>').count(),
             'years': years
         }
