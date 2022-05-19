@@ -80,7 +80,10 @@ DeerFormSet = forms.formset_factory(DeerForm, extra=0)
 class HunterAnalysisForm(forms.Form):
     year_choices = [
         (year, year) for year in
-        LogSheet.objects.dates('date', 'year').annotate(year=ExtractYear('date')).values_list('year', flat=True)
+        LogSheet.objects.dates('date', 'year')
+        .annotate(year=ExtractYear('date'))
+        .order_by('year')
+        .values_list('year', flat=True)
     ]
 
     years = forms.MultipleChoiceField(choices=year_choices, label='', widget=forms.SelectMultiple(attrs={'size': 20}))
@@ -140,10 +143,6 @@ class HunterForm(forms.ModelForm):
                         {six.text_type(self['location_id'])}
                         {six.text_type(self['hunter_formset_number'])}
                         {six.text_type(bf)}{help_text}<br />
-                        <span style="font-size: 90%; font-style: italic;">
-                            (names can be added, but the menu is not automaticall updated)
-                        </span>
-                        <br />
                         {six.text_type(self['missing_warnings'])}
                         {six.text_type(self['incorrect_warnings'])}
                     </td>
