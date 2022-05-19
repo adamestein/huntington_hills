@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.core.exceptions import ValidationError
+from django.db.models.functions import ExtractYear
 
 from .models import DataWarning, Deer, Hunter, Location, Log, LogSheet, Officer
 
@@ -88,8 +89,25 @@ class LogAdminForm(forms.ModelForm):
         return cleaned_data
 
 
+class _YearFilter(admin.SimpleListFilter):
+    title = 'year'
+    parameter_name = 'year'
+
+    def lookups(self, request, model_admin):
+        return [
+            (year, year) for year in
+            LogSheet.objects.dates('date', 'year').annotate(year=ExtractYear('date')).order_by('year').values_list('year', flat=True)
+        ]
+
+    def queryset(self, request, queryset):
+        if self.value() is not None:
+            return queryset.filter(log_sheet__date__year=self.value())
+        return queryset
+
+
 class LogAdmin(admin.ModelAdmin):
     form = LogAdminForm
+    list_filter = (_YearFilter,)
 
 
 admin.site.register(DataWarning)

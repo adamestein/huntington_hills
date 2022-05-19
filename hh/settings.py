@@ -184,10 +184,14 @@ CORS_ORIGIN_WHITELIST = [
     'http://www.huntingtonhillsinc.org'
 ]
 
+# Allow for large number of fields to upload when adding logs
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 2000
+
 
 # Version information
 
-VERSION = '2.7.1'
+VERSION = '2.7.2'
 
 
 # List of settings to export to templates (django-settings-export)
