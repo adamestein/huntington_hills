@@ -70,6 +70,11 @@
                 $this.parent().parent().find("option").prop("selected", text === "Select All");
                 $this.text((text === "Select All") ? "Unselect All" : "Select All");
             });
+
+            $("form").on("submit", function() {
+                $("#busy_text").text("Retrieving data");
+                $("body").addClass("busy");
+            });
         });
     </script>
 {% endblock %}
