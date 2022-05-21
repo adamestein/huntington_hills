@@ -24,10 +24,6 @@
             margin-top: 2em !important;
         }
 
-        div[id^="DataTables_Table"] {
-            margin-top: 2em;
-        }
-
         .spacer {
             height: 1em;
         }
@@ -50,6 +46,15 @@
 
     <script type='text/javascript'>
         $(document).ready(function() {
+            /*
+                Max number of hunters in summary tables that we supress the search and "Showing # to # of # entries"
+                message
+             */
+            let MAX_SUMMARY_ENTRIES = 20;
+
+            let numHunters = parseInt("{{ summary.number_hunters }}");
+            let numYears = parseInt("{{ summary.years|length }}");
+
             if ("{{ has_incorrect_warnings }}" === "True") {
                 $("#incorrect_warning").show();
             }
@@ -58,7 +63,8 @@
                 $("#missing_warning").show();
             }
 
-            $("#id_hunter_summary_table").DataTable({
+            $(".hunter_summary_table").DataTable({
+                bInfo: numHunters > MAX_SUMMARY_ENTRIES,
                 columnDefs: [
                     {
                         targets: [1, 2, 3, 4, 5, 6],
@@ -66,7 +72,8 @@
                     }
                 ],
                 fixedHeader: true,
-                paging: false
+                paging: false,
+                searching: numHunters > MAX_SUMMARY_ENTRIES
             });
 
             $(".hunter_details_table").DataTable({
@@ -80,6 +87,21 @@
                 paging: false,
                 searching: false
             });
+
+            // Set spacing for tables. Can't do in CSS as we can't pick the "first" table from each set.
+            $("#DataTables_Table_0_wrapper").css("margin-top", "1em");
+            for(let index = numYears;index < numYears*numHunters;index += numHunters) {
+                $(`#DataTables_Table_${index}_wrapper`).css("margin-top", "1em");
+            }
+
+            $("#DataTables_Table_1_wrapper").css("margin-top", "2em");    // margin-top: 2em
+            for(let index=numYears+1;index < numYears*numHunters;index += numHunters) {
+                for(let index2=index;index2 < index+numHunters-1;++index2) {
+                    $(`#DataTables_Table_${index2}_wrapper`).css("margin-top", "2em");
+                }
+            }
+
+            $(".year_heading").slice(1).css("margin-top", "2em");
         });
     </script>
 {% endblock %}
@@ -139,7 +161,7 @@
     <h2 class="h2Nth">Hunter Summaries</h2>
 
     {% for year, summary_info in hunter_summaries.items %}
-        <table class="cell-border compact display" id="id_hunter_summary_table">
+        <table class="cell-border compact display hunter_summary_table">
             <caption>{{ year }}</caption>
 
             <thead>
@@ -157,7 +179,15 @@
             <tbody>
                 {% for name, info in summary_info.items %}
                     <tr>
-                        <td><a href="#DataTables_Table_{{ forloop.counter0 }}_wrapper">{{ name }}</a></td>
+                        {% comment %}
+                            link_index = (forloop.counter0 + numYears) + (forloop.parentloop.counter0 * numHunters)
+                        {% endcomment %}
+                        {% with a=summary.years|length|add:forloop.counter0 %}
+                            {% widthratio summary.number_hunters 1 forloop.parentloop.counter0 as b %}
+                            {% with link_index=a|add:b %}
+                                <td><a href="#DataTables_Table_{{ link_index }}_wrapper">{{ name }}</a></td>
+                            {% endwith %}
+                        {% endwith %}
                         <td>{{ info.days_hunted }}</td>
                         <td>{{ info.locations_hunted }}</td>
                         <td>{{ info.deer_shot }}</td>
@@ -173,7 +203,7 @@
     <h2 class="h2Nth">Details</h2>
 
     {% for year, details_info in hunter_details.items %}
-        <h3>{{ year }}</h3>
+        <h3 class="year_heading">{{ year }}</h3>
 
         {% for name, location_info in details_info.items %}
             <table class="cell-border compact display hunter_details_table">

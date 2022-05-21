@@ -45,7 +45,7 @@ class Report(LoginRequiredMixin, IsBowHuntMixin, ProcessFormView, TemplateView):
 
             for hunter in Hunter.objects.filter(id__in=kwargs['hunters']):
                 hunter_logs = self.logs\
-                    .filter(hunter=hunter)\
+                    .filter(hunter=hunter, log_sheet__date__year=year)\
                     .exclude(incorrect_warnings__label='Listed hunter didn\'t actually hunt here')
                 hunter_name = str(hunter)
 
