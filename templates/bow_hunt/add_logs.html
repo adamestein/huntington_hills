@@ -569,8 +569,10 @@
 
         function removeHunterForm(form) {
             $(form).remove();
-            let totalForms = $("#id_hunter-TOTAL_FORMS");
-            totalForms.val(parseInt(totalForms.val()) - 1);
+            let totalDeerForms = $("#id_deer-TOTAL_FORMS");
+            totalDeerForms.val(parseInt(totalDeerForms.val()) - 1);
+            let totalHunterForms = $("#id_hunter-TOTAL_FORMS");
+            totalHunterForms.val(parseInt(totalHunterForms.val()) - 1);
         }
 
         function updateEmptyForm(prefix, emptyForm) {
