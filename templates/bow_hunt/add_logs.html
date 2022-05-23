@@ -240,6 +240,9 @@
                 // Disable the Next button if no locations are selected, enable if at least one is
                 $("#id_after_locations").prop("disabled", $("#id_location").find("option:selected").length === 0);
             }).on("click", "#id_worksheet_form input[value='Hunting'][type=radio]", function() {
+                $.each(getExistingHunterFormList($(this), ignore=true), function(index, form) {
+                    removeHunterForm(form);
+                });
                 addHunterForm(this);
             }).on("focus", "#id_worksheet_form input[value='Ignore']", function() {
                 prevOptSelected = $(this).parent().parent().find(":checked").first().val()
