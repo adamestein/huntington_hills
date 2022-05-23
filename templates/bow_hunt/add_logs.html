@@ -143,6 +143,7 @@
             $("#id_worksheet_form").on("submit", function(e) {
                 let hunterForms = $(".hunter_form");
                 let locationRows = {};
+                let numErrors = 0;
                 let submitForm = true;
 
                 // Want to ensure at least 1 radio button per location was selected
@@ -156,6 +157,7 @@
                             "&#9660; No option was selected for this location"
                         );
                         submitForm = false;
+                        ++numErrors;
                     } else {
                         // Wipe out any previous error messages
                         $row.prev().find(".global_error").text("");
@@ -211,7 +213,8 @@
                         }
                     });
 
-                    if (Object.keys(errs).length) {
+                    numErrors = Object.keys(errs).length;
+                    if (numErrors) {
                         $.each(errs, function(index, msgs) {
                             let errorRow = locationRows[index].prev();
 
@@ -223,8 +226,12 @@
                             errorRow.show();
                         });
 
+                        alert((numErrors === 1) ? "1 error has been found" : `${numErrors} errors have been found`);
+
                         submitForm = false;
                     }
+                } else {
+                    alert((numErrors === 1) ? "1 error has been found" : `${numErrors} errors have been found`);
                 }
 
                 return submitForm;
