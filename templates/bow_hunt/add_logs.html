@@ -265,10 +265,16 @@
                         $.each(delete_list, function(index, form) {
                             removeHunterForm(form);
                         });
+
+                        // Can remove the error if there is one
+                        $this.parent().parent().parent().prev().hide().find(".global_error").text("");
                     }).fail(function() {
                         // Set option back to Hunting if not switching
                         $this.siblings().last().prop("checked", true);
                     });
+                } else {
+                    // Can remove the error if there is one
+                    $this.parent().parent().parent().prev().hide().find(".global_error").text("");
                 }
             }).on("click", "#id_worksheet_form input[value='No Hunting'][type=radio]", function() {
                 let $this = $(this);

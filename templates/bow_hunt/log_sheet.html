@@ -216,7 +216,7 @@
 
                                 $.each(data["logs"], function(lIndex, log) {
                                     let incorrectHunterListing = "";
-                                    let unknownHunterFirstName = "";
+                                    let unknownHunterNameWarning = "";
                                     let unknownHunterWarning = "";
                                     let unknownPointsWarning = "";
                                     let unknownTrackValueWarning = "";
@@ -234,8 +234,8 @@
                                     if (log["missing_warnings"] !== "[]") {
                                         $.each(JSON.parse(log["missing_warnings"]), function(lsIndex, warning) {
                                             switch (warning["fields"]["label"]) {
-                                                case "Hunter first name missing":
-                                                    unknownHunterFirstName = warning["fields"]["description"];
+                                                case "Partial name given":
+                                                    unknownHunterNameWarning = warning["fields"]["description"];
                                                     break;
                                                 case "No indication of which hunter shot":
                                                     unknownHunterWarning = warning["fields"]["description"];
@@ -274,9 +274,9 @@
                                                         ${name}
                                                     </span>
                                                 `;
-                                            } else if (unknownHunterFirstName.length) {
+                                            } else if (unknownHunterNameWarning.length) {
                                                 name = `
-                                                    <span class="missing_data" title="${unknownHunterFirstName}">
+                                                    <span class="missing_data" title="${unknownHunterNameWarning}">
                                                         ${name}
                                                     </span>
                                                 `;
