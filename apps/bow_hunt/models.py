@@ -33,7 +33,7 @@ class Deer(models.Model):
     )
     log = models.ForeignKey('Log')
     points = models.PositiveSmallIntegerField(
-        blank=True, default=None, help_text='(set only if deer is male)', null=True
+        blank=True, default=None, help_text='(set only if deer is male, set to 0 if unknown)', null=True
     )
     tracking = models.NullBooleanField(default=None, help_text='(set only if deer shot)')
 

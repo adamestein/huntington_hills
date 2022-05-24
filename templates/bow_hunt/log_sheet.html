@@ -218,6 +218,7 @@
                                     let incorrectHunterListing = "";
                                     let unknownHunterFirstName = "";
                                     let unknownHunterWarning = "";
+                                    let unknownPointsWarning = "";
                                     let unknownTrackValueWarning = "";
 
                                     if (log["incorrect_warnings"] !== "[]") {
@@ -238,6 +239,9 @@
                                                     break;
                                                 case "No indication of which hunter shot":
                                                     unknownHunterWarning = warning["fields"]["description"];
+                                                    break;
+                                                case "Points missing":
+                                                    unknownPointsWarning = warning["fields"]["description"];
                                                     break;
                                                 case "Tracking status is missing":
                                                     unknownTrackValueWarning = warning["fields"]["description"];
@@ -279,8 +283,18 @@
                                             }
 
                                             if (hunter["deer"].length) {
+                                                let deerInfo;
                                                 $.each(hunter["deer"], function (dIndex, info) {
-                                                    deer.push(info["str"]);
+                                                    if (unknownPointsWarning.length) {
+                                                        deerInfo = `
+                                                            <span class="missing_data" title="${unknownPointsWarning}">
+                                                                ${info['str']}
+                                                            </span>
+                                                        `;
+                                                    } else {
+                                                        deerInfo = info["str"];
+                                                    }
+                                                    deer.push(deerInfo);
 
                                                     let trackValue = "";
 
