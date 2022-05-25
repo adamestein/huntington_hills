@@ -1,9 +1,13 @@
 from django import forms
 from django.contrib import admin
-from django.core.exceptions import ValidationError
+from django.core.exceptions import FieldError, ValidationError
 from django.db.models.functions import ExtractYear
 
 from .models import DataWarning, Deer, Hunter, Location, Log, LogSheet, Officer
+
+
+class DataWarningAdmin(admin.ModelAdmin):
+    list_filter = ('type',)
 
 
 class DeerAdminForm(forms.ModelForm):
@@ -44,6 +48,7 @@ class DeerAdminForm(forms.ModelForm):
 
 class DeerAdmin(admin.ModelAdmin):
     form = DeerAdminForm
+    search_fields = ('log__hunter__first_name', 'log__hunter__last_name')
 
 
 class HunterAdminForm(forms.ModelForm):
@@ -62,6 +67,12 @@ class HunterAdminForm(forms.ModelForm):
 
 class HunterAdmin(admin.ModelAdmin):
     form = HunterAdminForm
+    search_fields = ('first_name', 'last_name')
+
+
+class LocationAdmin(admin.ModelAdmin):
+    list_filter = ('year',)
+    search_fields = ('address',)
 
 
 class LogAdminForm(forms.ModelForm):
@@ -89,31 +100,42 @@ class LogAdminForm(forms.ModelForm):
         return cleaned_data
 
 
-class _YearFilter(admin.SimpleListFilter):
+class _LogSheetYearFilter(admin.SimpleListFilter):
     title = 'year'
     parameter_name = 'year'
 
     def lookups(self, request, model_admin):
         return [
             (year, year) for year in
-            LogSheet.objects.dates('date', 'year').annotate(year=ExtractYear('date')).order_by('year').values_list('year', flat=True)
+            LogSheet.objects.dates('date', 'year')
+            .annotate(year=ExtractYear('date'))
+            .order_by('year')
+            .values_list('year', flat=True)
         ]
 
     def queryset(self, request, queryset):
         if self.value() is not None:
-            return queryset.filter(log_sheet__date__year=self.value())
+            try:
+                return queryset.filter(log_sheet__date__year=self.value())
+            except FieldError:
+                return queryset.filter(date__year=self.value())
         return queryset
 
 
 class LogAdmin(admin.ModelAdmin):
     form = LogAdminForm
-    list_filter = (_YearFilter,)
+    list_filter = (_LogSheetYearFilter,)
+    search_fields = ('hunter__first_name', 'hunter__last_name')
 
 
-admin.site.register(DataWarning)
+class LogSheetAdmin(admin.ModelAdmin):
+    list_filter = (_LogSheetYearFilter,)
+
+
+admin.site.register(DataWarning, DataWarningAdmin)
 admin.site.register(Deer, DeerAdmin)
-admin.site.register(Log, LogAdmin)
 admin.site.register(Hunter, HunterAdmin)
-admin.site.register(Location)
-admin.site.register(LogSheet)
+admin.site.register(Location, LocationAdmin)
+admin.site.register(Log, LogAdmin)
+admin.site.register(LogSheet, LogSheetAdmin)
 admin.site.register(Officer)
