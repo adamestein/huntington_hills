@@ -167,12 +167,12 @@
             <thead>
                 <tr>
                     <th>Hunter</th>
-                    <th>Days Hunted</th>
-                    <th>Locations Hunted</th>
-                    <th>Deer Shot</th>
-                    <th>Percent Shot</th>
-                    <th>Deer Tracked</th>
-                    <th>Percent Tracked</th>
+                    <th title="Number of days that this hunter participated in the {{ year }} season">Days Hunted</th>
+                    <th title="Number of locations this hunter was at in the {{ year }} season">Locations Hunted</th>
+                    <th title="Number of deer shot by this hunter in the {{ year }} season">Deer Shot</th>
+                    <th title="Percentage of deer shot by this hunter as compared to the total for the {{ year }} season">Percent Shot</th>
+                    <th title="Number of deer shot by this hunter that required tracking in the {{ year }} season">Deer Tracked</th>
+                    <th title="Percentage of deer shot by this hunter that required tracking for the {{ year }} season">Percent Tracked</th>
                 </tr>
             </thead>
 
@@ -212,26 +212,28 @@
                 <thead>
                     <tr>
                         <th>Location</th>
-                        <th>Days Hunted</th>
-                        <th>% Days Hunted</th>
-                        <th>Deer Shot</th>
-                        <th>Percent Deer Shot</th>
-                        <th>Deer Tracked</th>
-                        <th>Percent Tracked</th>
+                        <th title="Number of days in the {{ year }} season that {{ location_info.normalized_name }} participated at this location">Days Hunted</th>
+                        <th title="Percentage of hunting by {{ location_info.normalized_name }} as compared to the total for this location in the {{ year }} season">% Days Hunted</th>
+                        <th title="Number of deer shot at this location in the {{ year }} season by {{ location_info.normalized_name }}">Deer Shot</th>
+                        <th title="Percentage of deer shot by {{ location_info.normalized_name }} at this location as compared to the hunter's total in the {{ year }} season">Percent Deer Shot</th>
+                        <th title="Number of deer shot by {{ location_info.normalized_name }} at this location that required tracking in the {{ year }} season">Deer Tracked</th>
+                        <th title="Percentage of deer shot by {{ location_info.normalized_name }} at this location that required tracking in the {{ year }} season">Percent Tracked</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     {% for location, info in location_info.items %}
-                        <tr>
-                            <td>{{ location }}</td>
-                            <td>{{ info.days_hunted }}</td>
-                            <td>{{ info.percent_days_hunted|floatformat:"2" }}%</td>
-                            <td>{{ info.deer_shot }}</td>
-                            <td>{{ info.percent_shot|floatformat:"2" }}%</td>
-                            <td>{{ info.deer_tracked }}</td>
-                            <td>{{ info.percent_tracked|floatformat:"2" }}%</td>
-                        </tr>
+                        {% ifnotequal location "normalized_name" %}
+                            <tr>
+                                <td>{{ location }}</td>
+                                <td>{{ info.days_hunted }}</td>
+                                <td>{{ info.percent_days_hunted|floatformat:"2" }}%</td>
+                                <td>{{ info.deer_shot }}</td>
+                                <td>{{ info.percent_shot|floatformat:"2" }}%</td>
+                                <td>{{ info.deer_tracked }}</td>
+                                <td>{{ info.percent_tracked|floatformat:"2" }}%</td>
+                            </tr>
+                        {% endifnotequal %}
                     {% endfor %}
                 </tbody>
             </table>
