@@ -1,8 +1,8 @@
 {% extends "residents/resident_base.html" %}
 {% load static %}
 
-{% block residents_title %}Hunter Analysis{% endblock %}
-{% block header %}Hunter Analysis{% endblock %}
+{% block residents_title %}Location Analysis{% endblock %}
+{% block header %}Location Analysis{% endblock %}
 
 {% block css %}
     {{ block.super }}
@@ -80,7 +80,7 @@
 {% endblock %}
 
 {% block resident_content %}
-    <p>Choose the years and hunters of interest. Then click <strong>Analyze</strong> to report on the data.</p>
+    <p>Choose the years and locations of interest. Then click <strong>Analyze</strong> to report on the data.</p>
 
     <form method="post">
         {% csrf_token %}
@@ -88,7 +88,7 @@
         <table>
             <tr>
                 <th>Years</th>
-                <th>Hunters</th>
+                <th>Locations</th>
             </tr>
 
             <tr>
@@ -100,8 +100,8 @@
                 </td>
 
                 <td>
-                    {{ form.hunters.errors }}
-                    {{ form.hunters }}
+                    {{ form.locations.errors }}
+                    {{ form.locations }}
 
                     <div class="non_options_select_all"><button type="button">Select All</button></div>
                 </td>

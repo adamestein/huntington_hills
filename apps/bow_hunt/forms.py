@@ -1,7 +1,6 @@
 import logging
 
 from django import forms
-from django.core.exceptions import ValidationError
 from django.db.models.functions import ExtractYear
 from django.utils import six
 from django.utils.encoding import force_text
@@ -159,6 +158,27 @@ class HunterForm(forms.ModelForm):
 
 
 HunterFormSet = forms.formset_factory(HunterForm, extra=0)
+
+
+class LocationAnalysisForm(forms.Form):
+    year_choices = [
+        (year, year) for year in
+        LogSheet.objects.dates('date', 'year')
+        .annotate(year=ExtractYear('date'))
+        .order_by('year')
+        .values_list('year', flat=True)
+    ]
+
+    years = forms.MultipleChoiceField(choices=year_choices, label='', widget=forms.SelectMultiple(attrs={'size': 20}))
+
+    location_choices = [
+        (location, location)
+        for location in Location.objects.distinct().values_list('address', flat=True).order_by('address')
+    ]
+
+    locations = forms.MultipleChoiceField(
+        choices=location_choices, label='', widget=forms.SelectMultiple(attrs={'size': 20})
+    )
 
 
 class LocationForm(forms.Form):
