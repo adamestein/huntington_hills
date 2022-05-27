@@ -1,38 +1,25 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum
-from django.db.models.functions import Coalesce
-from django.views.generic import TemplateView
-from django.views.generic.edit import ProcessFormView
-
-from ..models import Hunter, Log, LogSheet
-
-from library.contrib.auth.mixins import IsBowHuntMixin
+from .base import ReportBase
+from ..models import Hunter, Log
 
 
-class Report(LoginRequiredMixin, IsBowHuntMixin, ProcessFormView, TemplateView):
-    logs = None
-    request = None
+class Report(ReportBase):
     template_name = 'bow_hunt/reports/by_hunter.html'
 
     def post(self, request, *args, **kwargs):
         self.logs = Log.objects.filter(hunter__in=kwargs['hunters'], log_sheet__date__year__in=kwargs['years'])
-        self.request = request
+        super().post(request, *args, **kwargs)
+
+        context = self.get_context_data(**kwargs)
 
         hunter_details, hunter_summaries = self._create_hunter_summaries(**kwargs)
 
-        context = {
-            'has_incorrect_warnings': self.logs.exclude(incorrect_warnings=None).count() > 0,
-            'has_missing_warnings': self.logs.exclude(missing_warnings=None).count() > 0,
+        context.update({
             'hunter_details': hunter_details,
             'hunter_summaries': hunter_summaries,
             'summary': self._create_summary(**kwargs)
-        }
+        })
 
         return self.render_to_response(context)
-
-    @staticmethod
-    def _count_deer(query):
-        return query.exclude(deer__isnull=True).aggregate(deer_count=Coalesce(Sum('deer__count'), 0))['deer_count']
 
     def _create_hunter_summaries(self, **kwargs):
         details = {}
@@ -44,13 +31,11 @@ class Report(LoginRequiredMixin, IsBowHuntMixin, ProcessFormView, TemplateView):
                 summaries[year] = {}
 
             for hunter in Hunter.objects.filter(id__in=kwargs['hunters']):
-                hunter_logs = self.logs\
-                    .filter(hunter=hunter, log_sheet__date__year=year)\
-                    .exclude(incorrect_warnings__label='Listed hunter didn\'t actually hunt here')
+                hunter_logs = self.logs.filter(hunter=hunter, log_sheet__date__year=year)
                 hunter_name = str(hunter)
 
                 summary_days_hunted = hunter_logs.distinct().values_list('log_sheet').count()
-                summary_deer_shot = self._count_deer(hunter_logs)
+                summary_deer_shot = self.deer_count(hunter_logs)
                 summary_deer_tracked = hunter_logs.filter(deer__tracking=True).count()
                 summary_percent_shot = summary_deer_shot / summary_days_hunted * 100 if summary_deer_shot else 0
                 summary_per_tracked = summary_deer_tracked / summary_deer_shot * 100 if summary_deer_shot else 0
@@ -72,33 +57,29 @@ class Report(LoginRequiredMixin, IsBowHuntMixin, ProcessFormView, TemplateView):
                     if location_logs:
                         location = location_logs[0].location.address
 
-                        location_days_hunted = location_logs.count()
-                        location_deer_shot = self._count_deer(location_logs)
-                        location_deer_tracked = location_logs.filter(deer__tracking=True).count()
-                        location_percent_deer_shot = location_deer_shot / summary_deer_shot * 100 \
+                        detailed_days_hunted = location_logs.count()
+                        detailed_deer_shot = self.deer_count(location_logs)
+                        detailed_deer_tracked = location_logs.filter(deer__tracking=True).count()
+                        detailed_percent_deer_shot = detailed_deer_shot / summary_deer_shot * 100 \
                             if summary_deer_shot else 0
-                        location_percent_tracked = location_deer_tracked / location_deer_shot * 100 \
-                            if location_deer_shot else 0
+                        detailed_percent_tracked = detailed_deer_tracked / detailed_deer_shot * 100 \
+                            if detailed_deer_shot else 0
 
                         details[year][hunter_name][location] = {
-                            'days_hunted': location_days_hunted,
-                            'percent_days_hunted': location_days_hunted / summary_days_hunted * 100,
-                            'deer_shot': location_deer_shot,
-                            'deer_tracked': location_deer_tracked,
-                            'percent_shot': location_percent_deer_shot,
-                            'percent_tracked': location_percent_tracked
+                            'days_hunted': detailed_days_hunted,
+                            'deer_shot': detailed_deer_shot,
+                            'deer_tracked': detailed_deer_tracked,
+                            'percent_days_hunted': detailed_days_hunted / summary_days_hunted * 100,
+                            'percent_shot': detailed_percent_deer_shot,
+                            'percent_tracked': detailed_percent_tracked
                         }
 
         return details, summaries
 
     def _create_summary(self, **kwargs):
-        years = {}
-        for year in kwargs['years']:
-            years[year] = LogSheet.objects.filter(date__year=year).count()
-
-        # Because some deer are shot by unknown hunters, we need to count using the full Log, not just the self.log
+        # Because some deer are shot by unknown hunters, we need to count using the full Log, not just the
         # filtered version
-        total_deer_shot = self._count_deer(Log.objects.filter(log_sheet__date__year__in=kwargs['years']))
+        total_deer_shot = self.deer_count(Log.objects.filter(log_sheet__date__year__in=kwargs['years']))
 
         summary = {
             'locations': self.logs.distinct().values_list('location').count(),
@@ -108,7 +89,7 @@ class Report(LoginRequiredMixin, IsBowHuntMixin, ProcessFormView, TemplateView):
             'total_days_hunted': self.logs.distinct().values_list('log_sheet').count(),
             'total_deer_shot': total_deer_shot,
             'total_hunters': Hunter.objects.exclude(first_name='<unknown>').count(),
-            'years': years
+            'years': self.get_year_info(**kwargs)
         }
 
         return summary
