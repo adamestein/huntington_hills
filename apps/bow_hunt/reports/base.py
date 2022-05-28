@@ -4,7 +4,7 @@ from django.db.models.functions import Coalesce
 from django.views.generic import TemplateView
 from django.views.generic.edit import ProcessFormView
 
-from ..models import Hunter, Log, LogSheet
+from ..models import LogSheet
 
 from library.contrib.auth.mixins import IsBowHuntMixin
 
