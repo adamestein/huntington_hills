@@ -191,7 +191,7 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 2000
 
 # Version information
 
-VERSION = '2.8.1'
+VERSION = '2.8.2'
 
 
 # List of settings to export to templates (django-settings-export)
