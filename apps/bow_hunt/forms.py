@@ -67,9 +67,6 @@ class DeerForm(forms.ModelForm):
                 else:
                     self.add_error('points', 'Points is set but the count equals 0 and the gender is Female')
 
-            if tracking is not None:
-                self.add_error('tracking', 'Tracking is set but the count equals 0')
-
         return cleaned_data
 
 
