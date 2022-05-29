@@ -29,13 +29,13 @@ class Deer(models.Model):
 
     count = models.PositiveSmallIntegerField(default=0)
     gender = models.CharField(
-        blank=True, choices=GENDER_CHOICES, help_text='(only if deer shot)', max_length=1, null=True
+        blank=True, choices=GENDER_CHOICES, max_length=1, null=True
     )
     log = models.ForeignKey('Log')
     points = models.PositiveSmallIntegerField(
         blank=True, default=None, help_text='(set only if deer is male, set to 0 if unknown)', null=True
     )
-    tracking = models.NullBooleanField(default=None, help_text='(set only if deer shot)')
+    tracking = models.BooleanField(default=False)
 
     class Meta:
         ordering = ('log',)
@@ -176,7 +176,9 @@ class LogSheet(models.Model):
     def total_archers(self):
         return self.log_set.exclude(hunter=None)\
             .exclude(hunter__first_name='<unknown>')\
-            .exclude(incorrect_warnings__label='Listed hunter didn\'t actually hunt here')\
+            .exclude(incorrect_warnings__label='Listed hunter didn\'t actually hunt here') \
+            .distinct()\
+            .values('hunter')\
             .count()
 
     def __str__(self):
