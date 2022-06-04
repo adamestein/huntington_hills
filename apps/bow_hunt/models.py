@@ -53,7 +53,9 @@ class Deer(models.Model):
 
     def __str__(self):
         action = 'shot' if self.tracking else 'killed'
-        msg = f'[{self.log.log_sheet.date}/{self.log.hunter}] {action} {self.as_str}'
+        cause = self.log.hunter if self.log.hunter else self.log.nonhunter.description
+
+        msg = f'[{self.log.log_sheet.date}/{cause}] {action} {self.as_str}'
         msg += f' at {self.log.location.address}'
         return msg
 
@@ -145,7 +147,13 @@ class Log(models.Model):
 
     def __str__(self):
         if self.deer_set.all():
-            msg = f'[{self.log_sheet.date}] {self.hunter.name} shot deer at {self.location.address}'
+            if self.hunter:
+                msg = f'[{self.log_sheet.date}] {self.hunter.name} shot deer at {self.location.address}'
+            else:
+                msg = (
+                    f'[{self.log_sheet.date}] deer killed at {self.location.address} due to '
+                    f'{self.nonhunter.description}'
+                )
         elif self.hunter:
             msg = f'[{self.log_sheet.date}] {self.hunter.name} did not shoot any deer at {self.location.address}'
         else:
@@ -183,6 +191,14 @@ class LogSheet(models.Model):
 
     def __str__(self):
         return f'Log sheet for {self.date.strftime("%B %d, %Y")}'
+
+
+class NonHunter(models.Model):
+    description = models.CharField(max_length=50)
+    log = models.OneToOneField(Log)
+
+    def __str__(self):
+        return f'[{self.log.log_sheet.date}] Deer killed due to {self.description}'
 
 
 class Officer(models.Model):

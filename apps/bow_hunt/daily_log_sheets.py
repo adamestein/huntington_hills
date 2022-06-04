@@ -38,6 +38,14 @@ class FetchLogSheetsByYear(LoginRequiredMixin, IsBowHuntMixin, AJAXResponseMixin
                         'deer': [{'str': deer.as_str, 'tracking': deer.tracking} for deer in log.deer_set.all()],
                         'name': escape(log.hunter.name)
                     }
+                elif hasattr(log, 'nonhunter'):
+                    # Even though information is not really a hunter, we'll add it so that the web page displays the
+                    # information in the correct place
+                    hunter = {
+                        'comment': '',
+                        'deer': [{'str': deer.as_str, 'tracking': deer.tracking} for deer in log.deer_set.all()],
+                        'name': log.nonhunter.description
+                    }
                 else:
                     hunter = None
 

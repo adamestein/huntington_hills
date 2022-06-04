@@ -1,9 +1,9 @@
 from django import forms
 from django.contrib import admin
-from django.core.exceptions import FieldError, ValidationError
+from django.core.exceptions import FieldError, ObjectDoesNotExist, ValidationError
 from django.db.models.functions import ExtractYear
 
-from .models import DataWarning, Deer, Hunter, Location, Log, LogSheet, Officer
+from .models import DataWarning, Deer, Hunter, Location, Log, LogSheet, NonHunter, Officer
 
 
 class DataWarningAdmin(admin.ModelAdmin):
@@ -19,11 +19,12 @@ class DeerAdminForm(forms.ModelForm):
         cleaned_data = super().clean()
         count = cleaned_data['count']
         gender = cleaned_data['gender']
+        log = cleaned_data.get('log')
         points = cleaned_data['points']
         tracking = cleaned_data['tracking']
 
         if count:
-            if 'log' not in cleaned_data or cleaned_data['log'].hunter is None:
+            if log is None or (log.hunter is None and not hasattr(log, 'nonhunter')):
                 self.add_error(
                     'log',
                     'Hunter needs to be specified when any deer are shot or killed. If not specified, '
@@ -138,4 +139,5 @@ admin.site.register(Hunter, HunterAdmin)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Log, LogAdmin)
 admin.site.register(LogSheet, LogSheetAdmin)
+admin.site.register(NonHunter)
 admin.site.register(Officer)
