@@ -171,6 +171,7 @@ class LogSheet(models.Model):
     date = models.DateField(unique=True)
     weather = models.CharField(max_length=50)
     temp = models.CharField(max_length=10)
+    comment = models.CharField(blank=True, max_length=200)
     officer = models.ForeignKey('Officer')
 
     class Meta:
