@@ -247,56 +247,62 @@
                 // Disable the Next button if no locations are selected, enable if at least one is
                 $("#id_after_locations").prop("disabled", $("#id_location").find("option:selected").length === 0);
             }).on("click", "#id_worksheet_form input[value='Hunting'][type=radio]", function() {
-                $.each(getExistingHunterFormList($(this), ignore=true), function(index, form) {
-                    removeHunterForm(form);
-                });
-                addHunterForm(this);
-            }).on("focus", "#id_worksheet_form input[value='Ignore']", function() {
-                prevOptSelected = $(this).parent().parent().find(":checked").first().val()
+                if (prevOptSelected !== "Hunting") {
+                    $.each(getExistingHunterFormList($(this), ignore = true), function (index, form) {
+                        removeHunterForm(form);
+                    });
+                    addHunterForm(this);
+                }
             }).on("click", "#id_worksheet_form input[value='Ignore']", function() {
-                let $this = $(this);
-                let delete_list = getExistingHunterFormList($this, ignore=true);
+                if (prevOptSelected !== "Ignore") {
+                    let $this = $(this);
+                    let delete_list = getExistingHunterFormList($this, ignore = true);
 
-                if (delete_list.length) {
-                    confirmDialog(
-                        'Confirm Deletion', 'Ok to remove all existing hunter forms for this location?'
-                    ).done(function() {
-                        // Remove any existing hunter forms for this location
-                        $.each(delete_list, function(index, form) {
-                            removeHunterForm(form);
+                    if (delete_list.length) {
+                        confirmDialog(
+                            'Confirm Deletion', 'Ok to remove all existing hunter forms for this location?'
+                        ).done(function () {
+                            // Remove any existing hunter forms for this location
+                            $.each(delete_list, function (index, form) {
+                                removeHunterForm(form);
+                            });
+
+                            // Can remove the error if there is one
+                            $this.parent().parent().parent().prev().hide().find(".global_error").text("");
+                        }).fail(function () {
+                            // Set option back to Hunting if not switching
+                            $this.siblings().last().prop("checked", true);
                         });
-
+                    } else {
                         // Can remove the error if there is one
                         $this.parent().parent().parent().prev().hide().find(".global_error").text("");
-                    }).fail(function() {
-                        // Set option back to Hunting if not switching
-                        $this.siblings().last().prop("checked", true);
-                    });
-                } else {
-                    // Can remove the error if there is one
-                    $this.parent().parent().parent().prev().hide().find(".global_error").text("");
+                    }
                 }
             }).on("click", "#id_worksheet_form input[value='No Hunting'][type=radio]", function() {
-                let $this = $(this);
-                let delete_list = getExistingHunterFormList($this);
+                if (prevOptSelected !== "No Hunting") {
+                    let $this = $(this);
+                    let delete_list = getExistingHunterFormList($this);
 
-                if (delete_list.length) {
-                    confirmDialog(
-                        'Confirm Deletion', 'Ok to remove all existing hunter forms for this location?'
-                    ).done(function() {
-                        // Remove any existing hunter forms for this location
-                        $.each(delete_list, function(index, form) {
-                            removeHunterForm(form);
+                    if (delete_list.length) {
+                        confirmDialog(
+                            'Confirm Deletion', 'Ok to remove all existing hunter forms for this location?'
+                        ).done(function () {
+                            // Remove any existing hunter forms for this location
+                            $.each(delete_list, function (index, form) {
+                                removeHunterForm(form);
+                            });
+
+                            addHunterForm($this, hide = true);
+                        }).fail(function () {
+                            // Set option back to Hunting if not switching
+                            $this.siblings().last().prop("checked", true);
                         });
-
-                        addHunterForm($this, hide=true);
-                    }).fail(function() {
-                        // Set option back to Hunting if not switching
-                        $this.siblings().last().prop("checked", true);
-                    });
-                } else {
-                    addHunterForm($this, hide=true);
+                    } else {
+                        addHunterForm($this, hide = true);
+                    }
                 }
+            }).on("focus", "#id_worksheet_form input", function() {
+                prevOptSelected = $(this).parent().parent().find(":checked").first().val()
             });
 
             // If the log sheet menu has a selected entry, display the next step
