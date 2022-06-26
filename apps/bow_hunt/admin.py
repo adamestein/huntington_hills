@@ -49,6 +49,7 @@ class DeerAdminForm(forms.ModelForm):
 
 class DeerAdmin(admin.ModelAdmin):
     form = DeerAdminForm
+    raw_id_fields = ('log',)
     search_fields = ('log__hunter__first_name', 'log__hunter__last_name')
 
 
@@ -133,11 +134,15 @@ class LogSheetAdmin(admin.ModelAdmin):
     list_filter = (_LogSheetYearFilter,)
 
 
+class NonHunterAdmin(admin.ModelAdmin):
+    raw_id_fields = ('log',)
+
+
 admin.site.register(DataWarning, DataWarningAdmin)
 admin.site.register(Deer, DeerAdmin)
 admin.site.register(Hunter, HunterAdmin)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Log, LogAdmin)
 admin.site.register(LogSheet, LogSheetAdmin)
-admin.site.register(NonHunter)
+admin.site.register(NonHunter, NonHunterAdmin)
 admin.site.register(Officer)
