@@ -89,16 +89,12 @@
             });
 
             // Set spacing for tables. Can't do in CSS as we can't pick the "first" table from each set.
-            $("#DataTables_Table_0_wrapper").css("margin-top", "1em");
-            for(let index = numYears;index < numYears*numHunters;index += numHunters) {
+            for (let index = 0;index < numYears + 1;++index) {
                 $(`#DataTables_Table_${index}_wrapper`).css("margin-top", "1em");
             }
 
-            $("#DataTables_Table_1_wrapper").css("margin-top", "2em");    // margin-top: 2em
-            for(let index=numYears+1;index < numYears*numHunters;index += numHunters) {
-                for(let index2=index;index2 < index+numHunters-1;++index2) {
-                    $(`#DataTables_Table_${index2}_wrapper`).css("margin-top", "2em");
-                }
+            for(let index=numYears;index < numYears*numHunters + numYears;++index) {
+                $(`#DataTables_Table_${index}_wrapper`).css("margin-top", "1em");
             }
 
             $(".year_heading").slice(1).css("margin-top", "2em");
