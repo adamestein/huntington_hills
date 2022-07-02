@@ -52,7 +52,7 @@
              */
             let MAX_SUMMARY_ENTRIES = 20;
 
-            let numHunters = parseInt("{{ summary.number_hunters }}");
+            let numLocations = parseInt("{{ summary.number_locations }}");
             let numYears = parseInt("{{ summary.years|length }}");
 
             if ("{{ has_incorrect_warnings }}" === "True") {
@@ -64,7 +64,7 @@
             }
 
             $(".location_summary_table").DataTable({
-                bInfo: numHunters > MAX_SUMMARY_ENTRIES,
+                bInfo: numLocations > MAX_SUMMARY_ENTRIES,
                 columnDefs: [
                     {
                         targets: [1, 2, 3, 4, 5, 6],
@@ -73,7 +73,7 @@
                 ],
                 fixedHeader: true,
                 paging: false,
-                searching: numHunters > MAX_SUMMARY_ENTRIES
+                searching: numLocations > MAX_SUMMARY_ENTRIES
             });
 
             $(".hunter_details_table").DataTable({
@@ -89,16 +89,12 @@
             });
 
             // Set spacing for tables. Can't do in CSS as we can't pick the "first" table from each set.
-            $("#DataTables_Table_0_wrapper").css("margin-top", "1em");
-            for(let index = numYears;index < numYears*numHunters;index += numHunters) {
+            for (let index = 0;index < numYears + 1;++index) {
                 $(`#DataTables_Table_${index}_wrapper`).css("margin-top", "1em");
             }
 
-            $("#DataTables_Table_1_wrapper").css("margin-top", "2em");    // margin-top: 2em
-            for(let index=numYears+1;index < numYears*numHunters;index += numHunters) {
-                for(let index2=index;index2 < index+numHunters-1;++index2) {
-                    $(`#DataTables_Table_${index2}_wrapper`).css("margin-top", "2em");
-                }
+            for(let index=numYears;index < numYears*numLocations + numYears;++index) {
+                $(`#DataTables_Table_${index}_wrapper`).css("margin-top", "1em");
             }
 
             $(".year_heading").slice(1).css("margin-top", "2em");
@@ -168,7 +164,7 @@
                 {% for location, info in summary_info.items %}
                     <tr>
                         {% comment %}
-                            link_index = (forloop.counter0 + numYears) + (forloop.parentloop.counter0 * numHunters)
+                            link_index = (forloop.counter0 + numYears) + (forloop.parentloop.counter0 * numLocations)
                         {% endcomment %}
                         {% with a=summary.years|length|add:forloop.counter0 %}
                             {% widthratio summary.number_locations 1 forloop.parentloop.counter0 as b %}
