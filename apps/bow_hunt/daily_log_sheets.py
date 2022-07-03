@@ -41,8 +41,6 @@ class FetchLogSheetsByYear(LoginRequiredMixin, IsBowHuntMixin, AJAXResponseMixin
                             'json', list(log.missing_warnings.all()) + list(log.incorrect_warnings.all())
                         )
                     }
-                    if log.missing_warnings.all().count() or log.incorrect_warnings.all().count():
-                        print('Found Some')
                 elif hasattr(log, 'nonhunter'):
                     # Even though information is not really a hunter, we'll add it so that the web page displays the
                     # information in the correct place
