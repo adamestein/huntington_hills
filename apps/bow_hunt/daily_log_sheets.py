@@ -36,15 +36,21 @@ class FetchLogSheetsByYear(LoginRequiredMixin, IsBowHuntMixin, AJAXResponseMixin
                     hunter = {
                         'comment': escape(log.comment),
                         'deer': [{'str': deer.as_str, 'tracking': deer.tracking} for deer in log.deer_set.all()],
-                        'name': escape(log.hunter.name)
+                        'name': escape(log.hunter.name),
+                        'warnings': serializers.serialize(
+                            'json', list(log.missing_warnings.all()) + list(log.incorrect_warnings.all())
+                        )
                     }
+                    if log.missing_warnings.all().count() or log.incorrect_warnings.all().count():
+                        print('Found Some')
                 elif hasattr(log, 'nonhunter'):
                     # Even though information is not really a hunter, we'll add it so that the web page displays the
                     # information in the correct place
                     hunter = {
                         'comment': '',
                         'deer': [{'str': deer.as_str, 'tracking': deer.tracking} for deer in log.deer_set.all()],
-                        'name': log.nonhunter.description
+                        'name': log.nonhunter.description,
+                        'warnings': []
                     }
                 else:
                     hunter = None
@@ -53,10 +59,8 @@ class FetchLogSheetsByYear(LoginRequiredMixin, IsBowHuntMixin, AJAXResponseMixin
                     # First time for this location
                     log_data.append({
                         'hunters': None if hunter is None else [hunter],
-                        'incorrect_warnings': serializers.serialize('json', log.incorrect_warnings.all()),
                         'loc_index': log.location.line_number,
-                        'location': log.location.address,
-                        'missing_warnings': serializers.serialize('json', log.missing_warnings.all())
+                        'location': log.location.address
                     })
                     prev_location = log.location
                 else:
