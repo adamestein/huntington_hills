@@ -170,7 +170,7 @@ class LocationAnalysisForm(forms.Form):
 
     location_choices = [
         (location, location)
-        for location in Location.objects.distinct().values_list('address', flat=True).order_by('address')
+        for location in Location.objects.distinct().values_list('label', flat=True).order_by('label')
     ]
 
     locations = forms.MultipleChoiceField(

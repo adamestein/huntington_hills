@@ -4,7 +4,7 @@ from django.db.models.functions import Coalesce
 from django.views.generic import TemplateView
 from django.views.generic.edit import ProcessFormView
 
-from ..models import LogSheet
+from ..models import LogSheet, Site
 
 from library.contrib.auth.mixins import IsBowHuntMixin
 
@@ -12,6 +12,7 @@ from library.contrib.auth.mixins import IsBowHuntMixin
 class ReportBase(LoginRequiredMixin, IsBowHuntMixin, ProcessFormView, TemplateView):
     logs = None
     request = None
+    sites = None
     template_name = None
 
     @staticmethod
@@ -39,3 +40,6 @@ class ReportBase(LoginRequiredMixin, IsBowHuntMixin, ProcessFormView, TemplateVi
 
     def post(self, request, *args, **kwargs):
         self.request = request
+        self.sites = Site.objects.filter(
+            id__in=self.logs.distinct().values_list('location__site', flat=True).order_by('location__site')
+        )

@@ -2,6 +2,30 @@ from django.core.validators import MinValueValidator
 from django.db import models
 
 
+class AdjacentSite(models.Model):
+    acres = models.FloatField()
+    adjacent_sites = models.ManyToManyField('self', blank=True, symmetrical=False)
+    is_durand_eastman_golf_course = models.BooleanField(default=False)
+    is_durand_eastman_park = models.BooleanField(default=False)
+    is_hh_commons = models.BooleanField(default=False)
+    is_irondequoit_bay_park_west = models.BooleanField(default=False)
+    is_irondequoit_town_land = models.BooleanField(default=False)
+    is_vacant = models.BooleanField(default=True)
+
+    def __str__(self):
+        if self.is_hh_commons:
+            prefix = 'HH Commons'
+        elif self.is_vacant:
+            prefix = 'Vacant Lot'
+        else:
+            prefix = ''
+
+        if prefix:
+            prefix += ': '
+
+        return f'{prefix}{self.acres}'
+
+
 class DataWarning(models.Model):
     INCORRECT_WARNING = 0
     MISSING_WARNING = 1
@@ -56,7 +80,7 @@ class Deer(models.Model):
         cause = self.log.hunter if self.log.hunter else self.log.nonhunter.description
 
         msg = f'[{self.log.log_sheet.date}/{cause}] {action} {self.as_str}'
-        msg += f' at {self.log.location.address}'
+        msg += f' at {self.log.location.label}'
         return msg
 
 
@@ -89,7 +113,8 @@ class Hunter(models.Model):
 
 class Location(models.Model):
     line_item_number = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)])
-    address = models.CharField(max_length=50)
+    label = models.CharField(max_length=50)
+    site = models.ForeignKey('Site', blank=True, default=None, null=True)
     year = models.PositiveSmallIntegerField(
         help_text='(to verify location is being used on the correct log sheet)', validators=[MinValueValidator(2017)]
     )
@@ -105,7 +130,7 @@ class Location(models.Model):
 
     class Meta:
         ordering = ('year', 'line_item_number')
-        unique_together = ('address', 'line_item_number', 'year')
+        unique_together = ('label', 'line_item_number', 'year')
 
     @property
     def line_number(self):
@@ -121,7 +146,7 @@ class Location(models.Model):
                 number += f' {self.override_line_item_number_value}.'
         else:
             number = f'{self.line_item_number}.'
-        return f'[{self.year}] {number} {self.address}'
+        return f'[{self.year}] {number} {self.label}'
 
 
 class Log(models.Model):
@@ -148,16 +173,16 @@ class Log(models.Model):
     def __str__(self):
         if self.deer_set.all():
             if self.hunter:
-                msg = f'[{self.log_sheet.date}] {self.hunter.name} shot deer at {self.location.address}'
+                msg = f'[{self.log_sheet.date}] {self.hunter.name} shot deer at {self.location.label}'
             else:
                 msg = (
-                    f'[{self.log_sheet.date}] deer killed at {self.location.address} due to '
+                    f'[{self.log_sheet.date}] deer killed at {self.location.label} due to '
                     f'{self.nonhunter.description}'
                 )
         elif self.hunter:
-            msg = f'[{self.log_sheet.date}] {self.hunter.name} did not shoot any deer at {self.location.address}'
+            msg = f'[{self.log_sheet.date}] {self.hunter.name} did not shoot any deer at {self.location.label}'
         else:
-            msg = f'[{self.log_sheet.date}] no hunting occurred at {self.location.address}'
+            msg = f'[{self.log_sheet.date}] no hunting occurred at {self.location.label}'
 
         if self.incorrect_warnings.all().exists():
             msg += ' (data incorrect in log)'
@@ -222,3 +247,24 @@ class Officer(models.Model):
             return f'Officer {self.first_name} {self.last_name}'
         else:
             return f'Officer {self.last_name}'
+
+
+class Site(models.Model):
+    # Fields are in order they should appear in the Django Admin form
+    number = models.PositiveIntegerField(blank=True, null=True)
+    secondary_number = models.PositiveIntegerField(blank=True, default=None, null=True)
+    street = models.CharField(max_length=50)
+    zip_code = models.CharField(max_length=10)
+    acres = models.FloatField(blank=True, default=None, null=True)
+    town_owned = models.BooleanField(default=False)
+    comment = models.CharField(blank=True, max_length=200)
+    adjacent_sites = models.ManyToManyField(AdjacentSite, blank=True)
+
+    class Meta:
+        ordering = ('street', 'number')
+        unique_together = ('number', 'street', 'zip_code')
+
+    def __str__(self):
+        number = f'{self.number}/{self.secondary_number}' if self.secondary_number else self.number
+        street = self.street if self.street else 'n/a'
+        return f'{number} {street}' if self.number else street

@@ -1,8 +1,5 @@
-from django.db.models import Sum
-from django.db.models.functions import Coalesce
-
 from .base import ReportBase
-from ..models import Location, Log
+from ..models import Log, Site
 
 
 class Report(ReportBase):
@@ -11,8 +8,9 @@ class Report(ReportBase):
 
     def post(self, request, *args, **kwargs):
         self.logs = Log.objects\
-            .filter(location__address__in=kwargs['locations'], log_sheet__date__year__in=kwargs['years'])\
+            .filter(location__label__in=kwargs['locations'], log_sheet__date__year__in=kwargs['years'])\
             .exclude(hunter__isnull=True)
+
         super().post(request, *args, **kwargs)
 
         self.years = self.get_year_info(**kwargs)
@@ -24,7 +22,7 @@ class Report(ReportBase):
         context.update({
             'location_details': location_details,
             'location_summaries': location_summaries,
-            'summary': self._create_summary(**kwargs)
+            'summary': self._create_summary()
         })
 
         return self.render_to_response(context)
@@ -42,8 +40,8 @@ class Report(ReportBase):
             # filtered version
             total_deer_shot = self.deer_count(Log.objects.filter(log_sheet__date__year=year))
 
-            for location in kwargs['locations']:
-                location_logs = self.logs.filter(location__address=location, log_sheet__date__year=year)
+            for location in self.sites:
+                location_logs = self.logs.filter(location__site=location, log_sheet__date__year=year)
 
                 summary_days_hunted = location_logs.distinct().values('log_sheet__date').count()
                 summary_deer_shot = self.deer_count(location_logs)
@@ -91,42 +89,15 @@ class Report(ReportBase):
                             'percent_tracked': detailed_percent_tracked
                         }
 
-
-            # for hunter in Hunter.objects.filter(id__in=kwargs['hunters']):
-            #     details[year][hunter_name] = {}
-            #
-            #     for location_id in hunter_logs.distinct().values_list('location', flat=True):
-            #         location_logs = hunter_logs.filter(location_id=location_id)
-            #
-            #         if location_logs:
-            #             location = location_logs[0].location.address
-            #
-            #             location_days_hunted = location_logs.count()
-            #             location_deer_shot = self._count_deer(location_logs)
-            #             location_deer_tracked = location_logs.filter(deer__tracking=True).count()
-            #             location_percent_deer_shot = location_deer_shot / summary_deer_shot * 100 \
-            #                 if summary_deer_shot else 0
-            #             location_percent_tracked = location_deer_tracked / location_deer_shot * 100 \
-            #                 if location_deer_shot else 0
-            #
-            #             details[year][hunter_name][location] = {
-            #                 'days_hunted': location_days_hunted,
-            #                 'percent_days_hunted': location_days_hunted / summary_days_hunted * 100,
-            #                 'deer_shot': location_deer_shot,
-            #                 'deer_tracked': location_deer_tracked,
-            #                 'percent_shot': location_percent_deer_shot,
-            #                 'percent_tracked': location_percent_tracked
-            #             }
-
         return details, summaries
 
-    def _create_summary(self, **kwargs):
+    def _create_summary(self):
         summary = {
-            'number_locations': len(kwargs['locations']),
+            'number_locations': len(self.sites),
             'required_tracking': self.logs.filter(deer__tracking=True).count(),
             'total_days_hunted': self.logs.exclude(hunter__isnull=True).count(),
             'total_deer_shot': self.deer_count(self.logs),
-            'total_locations': Location.objects.distinct().values('address').count(),
+            'total_locations': Site.objects.all().count(),
             'years': self.years
         }
 

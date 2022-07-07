@@ -1,9 +1,38 @@
 from django import forms
 from django.contrib import admin
-from django.core.exceptions import FieldError, ObjectDoesNotExist, ValidationError
+from django.core.exceptions import FieldError, ValidationError
 from django.db.models.functions import ExtractYear
 
-from .models import DataWarning, Deer, Hunter, Location, Log, LogSheet, NonHunter, Officer
+from .models import AdjacentSite, DataWarning, Deer, Hunter, Location, Log, LogSheet, NonHunter, Officer, Site
+
+
+class AdjacentSiteAdminForm(forms.ModelForm):
+    class Meta:
+        fields = '__all__'
+        model = AdjacentSite
+
+    def clean(self):
+        cleaned_data = super().clean()
+        count_true = sum([
+            cleaned_data['is_durand_eastman_golf_course'],
+            cleaned_data['is_durand_eastman_park'],
+            cleaned_data['is_hh_commons'],
+            cleaned_data['is_irondequoit_bay_park_west'],
+            cleaned_data['is_irondequoit_town_land'],
+            cleaned_data['is_vacant']
+        ])
+
+        if count_true == 0:
+            raise ValidationError('One is_... flag must be specified')
+        elif count_true > 1:
+            raise ValidationError('Only one is_... flag can be specified')
+
+        return cleaned_data
+
+
+class AdjacentSiteAdmin(admin.ModelAdmin):
+    form = AdjacentSiteAdminForm
+    list_filter = ('is_hh_commons', 'is_vacant')
 
 
 class DataWarningAdmin(admin.ModelAdmin):
@@ -74,7 +103,7 @@ class HunterAdmin(admin.ModelAdmin):
 
 class LocationAdmin(admin.ModelAdmin):
     list_filter = ('year',)
-    search_fields = ('address',)
+    search_fields = ('label',)
 
 
 class LogAdminForm(forms.ModelForm):
@@ -138,6 +167,11 @@ class NonHunterAdmin(admin.ModelAdmin):
     raw_id_fields = ('log',)
 
 
+class SiteAdmin(admin.ModelAdmin):
+    search_fields = ('line1',)
+
+
+admin.site.register(AdjacentSite, AdjacentSiteAdmin)
 admin.site.register(DataWarning, DataWarningAdmin)
 admin.site.register(Deer, DeerAdmin)
 admin.site.register(Hunter, HunterAdmin)
@@ -146,3 +180,4 @@ admin.site.register(Log, LogAdmin)
 admin.site.register(LogSheet, LogSheetAdmin)
 admin.site.register(NonHunter, NonHunterAdmin)
 admin.site.register(Officer)
+admin.site.register(Site, SiteAdmin)
