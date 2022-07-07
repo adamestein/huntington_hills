@@ -1,9 +1,13 @@
 from .base import ReportBase
-from ..models import Hunter, Log
+from ..models import Hunter, Log, Site
 
 
 class Report(ReportBase):
     template_name = 'bow_hunt/reports/by_hunter.html'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.total_deer_shot = 0
 
     def post(self, request, *args, **kwargs):
         self.logs = Log.objects.filter(hunter__in=kwargs['hunters'], log_sheet__date__year__in=kwargs['years'])
@@ -44,22 +48,26 @@ class Report(ReportBase):
                 summary_percent_shot = summary_deer_shot / self.total_deer_shot * 100 if self.total_deer_shot else 0
                 summary_per_tracked = summary_deer_tracked / summary_deer_shot * 100 if summary_deer_shot else 0
 
+                hunter_sites = Site.objects.filter(
+                    id__in=hunter_logs.distinct().values_list('location__site', flat=True).order_by('location__site')
+                )
+
                 summaries[year][hunter_name] = {
                     'days_hunted': summary_days_hunted,
                     'deer_shot': summary_deer_shot,
                     'deer_tracked': summary_deer_tracked,
-                    'locations_hunted': hunter_logs.distinct().values_list('location').count(),
+                    'locations_hunted': hunter_sites.count(),
                     'percent_shot': summary_percent_shot,
                     'percent_tracked': summary_per_tracked
                 }
 
                 details[year][hunter_name] = {'normalized_name': hunter.name}
 
-                for location_id in hunter_logs.distinct().values_list('location', flat=True):
-                    location_logs = hunter_logs.filter(location_id=location_id)
+                for site in hunter_sites:
+                    location_logs = hunter_logs.filter(location__site=site)
 
                     if location_logs:
-                        location = location_logs[0].location.address
+                        location = str(location_logs[0].location.site)
 
                         detailed_days_hunted = location_logs.count()
                         detailed_deer_shot = self.deer_count(location_logs)
