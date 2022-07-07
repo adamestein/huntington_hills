@@ -58,7 +58,7 @@ class FetchLogSheetsByYear(LoginRequiredMixin, IsBowHuntMixin, AJAXResponseMixin
                     log_data.append({
                         'hunters': None if hunter is None else [hunter],
                         'loc_index': log.location.line_number,
-                        'location': log.location.address
+                        'location': log.location.label
                     })
                     prev_location = log.location
                 else:
