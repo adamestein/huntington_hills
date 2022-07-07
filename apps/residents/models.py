@@ -128,7 +128,10 @@ class Person(models.Model):
         return f'{self.prefix} ' if self.prefix else ''
 
     def add_suffix(self):
-        return f', {self.suffix}' if self.suffix == 'Esq' else f' {self.suffix}' if self.suffix else ''
+        if self.suffix == 'Esq':
+            return f', {self.suffix}'
+        else:
+            return f' {self.suffix}' if self.suffix else ''
 
     @property
     def emails(self):
