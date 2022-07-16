@@ -168,7 +168,8 @@ class NonHunterAdmin(admin.ModelAdmin):
 
 
 class SiteAdmin(admin.ModelAdmin):
-    search_fields = ('line1',)
+    list_filter = ('town_owned',)
+    search_fields = ('number', 'secondary_number', 'street',)
 
 
 admin.site.register(AdjacentSite, AdjacentSiteAdmin)
