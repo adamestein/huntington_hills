@@ -89,7 +89,7 @@ class Report(ReportBase):
         return details, summaries
 
     def _create_summary(self, **kwargs):
-        summary = {
+        return {
             'locations': self.logs.distinct().values_list('location').count(),
             'number_locs_deer_shot': self.logs.exclude(deer__isnull=True).distinct().values_list('location').count(),
             'number_hunters': len(kwargs['hunters']),
@@ -100,6 +100,5 @@ class Report(ReportBase):
             'years': self.get_year_info(**kwargs)
         }
 
-        return summary
 
     

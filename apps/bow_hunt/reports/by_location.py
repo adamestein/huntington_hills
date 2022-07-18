@@ -22,7 +22,7 @@ class Report(ReportBase):
         context.update({
             'location_details': location_details,
             'location_summaries': location_summaries,
-            'summary': self._create_summary()
+            'summary': self._create_summary(**kwargs)
         })
 
         return self.render_to_response(context)
@@ -91,9 +91,9 @@ class Report(ReportBase):
 
         return details, summaries
 
-    def _create_summary(self):
-        summary = {
-            'number_locations': len(self.sites),
+    def _create_summary(self, **kwargs):
+        return {
+            'number_locations': len(kwargs['locations']),
             'required_tracking': self.logs.filter(deer__tracking=True).count(),
             'total_days_hunted': self.logs.exclude(hunter__isnull=True).count(),
             'total_deer_shot': self.deer_count(self.logs),
@@ -101,6 +101,5 @@ class Report(ReportBase):
             'years': self.years
         }
 
-        return summary
 
     

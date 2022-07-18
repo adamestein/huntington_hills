@@ -261,8 +261,51 @@ class Site(models.Model):
     adjacent_sites = models.ManyToManyField(AdjacentSite, blank=True)
 
     class Meta:
-        ordering = ('street', 'number')
+        ordering = ('number', 'street')
         unique_together = ('number', 'street', 'zip_code')
+
+    @property
+    def adjacent_site_list(self):
+        adj_list = []
+
+        self._adjacent_site_list(self.adjacent_sites.all(), adj_list, 0)
+
+        return adj_list
+
+    def _adjacent_site_list(self, sites, adj_list, depth):
+        for adj_site in sites:
+            if adj_site.is_durand_eastman_golf_course:
+                land_type = 'Durand Eastman Golf Course'
+            elif adj_site.is_durand_eastman_park:
+                land_type = 'Durand Eastman Park'
+            elif adj_site.is_hh_commons:
+                land_type = 'HH Commons'
+            elif adj_site.is_irondequoit_bay_park_west:
+                land_type = 'Irondequoit Bay Park West'
+            elif adj_site.is_irondequoit_town_land:
+                land_type = 'Irondequoit town'
+            elif adj_site.is_vacant:
+                land_type = 'vacant'
+            else:
+                raise RuntimeError(f'Unknown land type for {adj_site}')
+
+            if depth:
+                adj_list[-1] += f', which in turn, is adjacent to {adj_site.acres} acres of {land_type} land'
+            else:
+                adj_list.append(f'This property is adjacent to {adj_site.acres} acres of {land_type} land')
+
+            if adj_site.adjacent_sites.count():
+                self._adjacent_site_list(adj_site.adjacent_sites.all(), adj_list, depth + 1)
+            else:
+                adj_list[-1] += '.'
+
+    @property
+    def full_address(self):
+        return str(self) + f', Rochester, {self.zip_code}'
+
+    @property
+    def location_aliases(self):
+        return self.location_set.values_list('label', flat=True).distinct().order_by('label')
 
     def __str__(self):
         number = f'{self.number}/{self.secondary_number}' if self.secondary_number else self.number
