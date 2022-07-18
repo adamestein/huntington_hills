@@ -1,0 +1,186 @@
+{% extends "residents/resident_base.html" %}
+{% load static %}
+
+{% block residents_title %}Site Report{% endblock %}
+{% block header %}Site Report{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.0/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.2.3/css/fixedHeader.dataTables.min.css" />
+
+    <style>
+        caption {
+            color: royalblue;
+
+        }
+
+        h2 {
+            margin-bottom: 0.25em !important;
+        }
+
+        .h2Nth {
+            margin-top: 2em !important;
+        }
+
+        .maxminsize {
+            color: orange;
+        }
+
+        .never {
+            color: green;
+        }
+
+        .spacer {
+            height: 1em;
+        }
+
+        .summaries {
+            border: 1px solid black;
+            width: 90%;
+        }
+
+        table {
+            font-size: 0.8em;
+            margin-bottom: 2em;
+        }
+
+        table.display tbody tr:hover td {
+            background-color: #ffa !important;
+        }
+
+        th {
+            text-align: right;
+            vertical-align: top;
+        }
+
+        .town_owned {
+            color: brown;
+        }
+
+        .unknown {
+            color: #FF7F7F;
+        }
+    </style>
+{% endblock %}
+
+{% block resident_content %}
+    {% include "bow_hunt/_ipd_log_warnings.html" %}
+
+    <h2>Report Summary</h2>
+
+    <table id="id_report_summary_table">
+        <tr>
+            <th># Sites:</th>
+            <td>{{ summary.number_locations }} selected out of {{ summary.total_locations }}</td>
+        </tr>
+
+        <tr class="spacer"></tr>
+
+        <tr>
+            <th>Maximum Size:</th>
+            <td>
+                {% if summary.maximum_size %}
+                    {{ summary.maximum_size|floatformat:"2" }} acres
+                {% else %}
+                    <span class="unknown">&lt;unknown&gt;</span>
+                {% endif %}
+            </td>
+        </tr>
+
+        <tr>
+            <th>Minimum Size:</th>
+            <td>
+                {% if summary.minimum_size %}
+                    {{ summary.minimum_size|floatformat:"2" }} acres
+                {% else %}
+                    <span class="unknown">&lt;unknown&gt;</span>
+                {% endif %}
+            </td>
+        </tr>
+
+        <tr>
+            <th>Median Size:</th>
+            <td>
+                {% if summary.median_size %}
+                    {{ summary.median_size|floatformat:"2" }} acres
+                {% else %}
+                    <span class="unknown">&lt;unknown&gt;</span>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+
+    <h2 class="h2Nth">Site Summaries</h2>
+
+    {% for site in sites %}
+        <table class="summaries">
+            <caption>{{ site }}</caption>
+
+            <tbody>
+                <tr>
+                    <th>Full Address:</th>
+                    <td>
+                        {{ site.full_address }}
+                        {% if site.town_owned %}
+                            (<span class="town_owned">town owned</span>)
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Size:</th>
+                    <td>
+                        {% if site.acres|escape == "None" %}
+                            <span class="unknown">&lt;unknown&gt;</span>
+                        {% else %}
+                            {{ site.acres }} acres
+                            {% if site.acres == summary.maximum_size %}
+                                (<span class="maxminsize">max</span>)
+                            {% elif site.acres == summary.minimum_size %}
+                                (<span class="maxminsize">min</span>)
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Location Aliases:</th>
+                    <td>
+                        {% for alias in site.location_aliases %}
+                            {{ alias }}<br />
+                        {% endfor %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Adjacent To:</th>
+                    <td>
+                        {% for adj_site_str in site.adjacent_site_list %}
+                            <div {% if not forloop.first %}style="margin-top: 0.5em;"{% endif %}>
+                                {{ adj_site_str }}
+                            </div>
+                        {% endfor %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Hunted On:</th>
+                    <td>
+                        {% if site.hunted_on > 0 %}
+                            {{ site.hunted_on }} time{{ site.hunted_on|pluralize }} since 2018
+                        {% else %}
+                            <span class="never">Never</span>
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Comments:</th>
+                    <td>{{ site.comment }}</td>
+                </tr>
+            </tbody>
+        </table>
+    {% endfor %}
+{% endblock %}

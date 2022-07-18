@@ -6,7 +6,7 @@ from django.utils import six
 from django.utils.encoding import force_text
 from django.utils.html import conditional_escape
 
-from .models import Deer, Hunter, Location, Log, LogSheet
+from .models import Deer, Hunter, Location, Log, LogSheet, Site
 
 from library.forms import MultipleSelectWithAdd, SelectWithAdd
 
@@ -14,6 +14,18 @@ logger = logging.getLogger(__name__)
 
 DEER_PREFIX = 'deer'
 HUNTER_PREFIX = 'hunter'
+
+
+def _get_year_field():
+    year_choices = [
+        (year, year) for year in
+        LogSheet.objects.dates('date', 'year')
+        .annotate(year=ExtractYear('date'))
+        .order_by('year')
+        .values_list('year', flat=True)
+    ]
+
+    return forms.MultipleChoiceField(choices=year_choices, label='', widget=forms.SelectMultiple(attrs={'size': 20}))
 
 
 class DeerForm(forms.ModelForm):
@@ -74,15 +86,7 @@ DeerFormSet = forms.formset_factory(DeerForm, extra=0)
 
 
 class HunterAnalysisForm(forms.Form):
-    year_choices = [
-        (year, year) for year in
-        LogSheet.objects.dates('date', 'year')
-        .annotate(year=ExtractYear('date'))
-        .order_by('year')
-        .values_list('year', flat=True)
-    ]
-
-    years = forms.MultipleChoiceField(choices=year_choices, label='', widget=forms.SelectMultiple(attrs={'size': 20}))
+    years = _get_year_field()
 
     hunter_choices = [(hunter.id, str(hunter)) for hunter in Hunter.objects.exclude(first_name='<unknown>')]
 
@@ -158,15 +162,7 @@ HunterFormSet = forms.formset_factory(HunterForm, extra=0)
 
 
 class LocationAnalysisForm(forms.Form):
-    year_choices = [
-        (year, year) for year in
-        LogSheet.objects.dates('date', 'year')
-        .annotate(year=ExtractYear('date'))
-        .order_by('year')
-        .values_list('year', flat=True)
-    ]
-
-    years = forms.MultipleChoiceField(choices=year_choices, label='', widget=forms.SelectMultiple(attrs={'size': 20}))
+    years = _get_year_field()
 
     location_choices = [
         (location, location)
@@ -196,3 +192,11 @@ class LocationForm(forms.Form):
 
 class LogSheetForm(forms.Form):
     log_sheet = forms.ModelChoiceField(LogSheet.objects.all(), widget=SelectWithAdd())
+
+
+class SiteAnalysisForm(forms.Form):
+    site_choices = [(site, site) for site in Site.objects.exclude(street='')]
+
+    sites = forms.MultipleChoiceField(
+        choices=site_choices, label='', widget=forms.SelectMultiple(attrs={'size': 20})
+    )

@@ -44,7 +44,14 @@
             <ul class="arrow_bullet">
                 <li><a href="{% url 'bow_hunt:log_sheet' %}">View Daily Log Sheets</a></li>
                 <li><a href="{% url 'bow_hunt:hunter_analysis' %}">View Hunter Analysis</a></li>
-                <li><a href="{% url 'bow_hunt:location_analysis' %}">View Location Analysis</a></li>
+                <li>
+                    <a href="{% url 'bow_hunt:location_analysis' %}">View Location Analysis</a>
+                    (properties as listed in the IPD Daily Bow Hunt Logs)
+                </li>
+                <li>
+                    <a href="{% url 'bow_hunt:site_analysis' %}">View Site Analysis</a>
+                    (physical properties that one or more <em>locations</em> can map to)
+                </li>
             </ul>
         </fieldset>
     {% endif %}
