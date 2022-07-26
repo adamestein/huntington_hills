@@ -21,9 +21,10 @@ class Report(LoginRequiredMixin, IsBowHuntMixin, ProcessFormView, TemplateView):
         )
 
         for site in self.sites:
-            site.hunted_on = Log.objects.filter(
-                location__in=site.location_set.all()
-            ).exclude(hunter__isnull=True).count()
+            site.hunted_on = Log.objects\
+                .filter(location__in=site.location_set.all())\
+                .exclude(hunter__isnull=True)\
+                .exclude(incorrect_warnings__label='Listed hunter didn\'t actually hunt here').count()
 
         context = {
             'sites': self.sites,
