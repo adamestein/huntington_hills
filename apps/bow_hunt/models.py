@@ -35,7 +35,7 @@ class DataWarning(models.Model):
         (MISSING_WARNING, 'Missing')
     )
 
-    label = models.CharField(max_length=50)
+    label = models.CharField(max_length=70)
     description = models.CharField(blank=True, max_length=200)
     type = models.PositiveSmallIntegerField(choices=warning_choices)
 
