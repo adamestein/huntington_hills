@@ -48,7 +48,7 @@ class FetchLogSheetsByYear(LoginRequiredMixin, IsBowHuntMixin, AJAXResponseMixin
                         'comment': '',
                         'deer': [{'str': deer.as_str, 'tracking': deer.tracking} for deer in log.deer_set.all()],
                         'name': log.nonhunter.description,
-                        'warnings': []
+                        'warnings': '[]'
                     }
                 else:
                     hunter = None
