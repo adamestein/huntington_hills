@@ -133,14 +133,14 @@ class UpdateBoardMembers(LoginRequiredMixin, IsStaffMixin, UpdateView):
     template_name = 'staff/update_board_members.html'
 
     def form_valid(self, form):
-        data = form.cleaned_data
+        elected_date = form.cleaned_data['elected_date']
 
-        for field in form.changed_data:
-            if field != 'elected_date':
+        for position, person in form.cleaned_data.items():
+            if position != 'elected_date':
                 BoardTerm.objects.create(
-                    elected_date=data['elected_date'],
-                    office=BoardTerm.office_abbr(field),
-                    person=data[field]
+                    elected_date=elected_date,
+                    office=BoardTerm.office_abbr(position),
+                    person=person
                 )
 
         return super().form_valid(form)
