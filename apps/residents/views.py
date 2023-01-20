@@ -18,7 +18,7 @@ class BoardMembersListView(LoginRequiredMixin, TemplateView):
             person = getattr(board, office)
 
             try:
-                start_year = BoardTerm.objects.filter(person=person).last().elected_date.year
+                start_year = BoardTerm.objects.filter(person=person).first().elected_date.year
             except AttributeError:
                 start_year = 'N/A'
 
