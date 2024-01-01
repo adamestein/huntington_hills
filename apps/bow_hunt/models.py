@@ -79,7 +79,10 @@ class Deer(models.Model):
         action = 'shot' if self.tracking else 'killed'
         cause = self.log.hunter if self.log.hunter else self.log.nonhunter.description
 
-        msg = f'[{self.log.log_sheet.date}/{cause}] {action} {self.as_str}'
+        try:
+            msg = f'[{self.log.log_sheet.date}/{cause}] {action} {self.as_str}'
+        except AttributeError:
+            msg = f'[{self.log.log_sheet_non_ipd.date}/{cause}] {action} {self.as_str}'
         msg += f' at {self.log.location.label}'
         return msg
 
