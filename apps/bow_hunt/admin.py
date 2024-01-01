@@ -9,6 +9,51 @@ from .models import (
 )
 
 
+class _LogSheetYearFilter(admin.SimpleListFilter):
+    parameter_name = 'year'
+    title = 'year'
+
+    def lookups(self, request, model_admin):
+        if str(model_admin) in ['bow_hunt.LogAdmin', 'bow_hunt.DeerAdmin']:
+            years = [
+                (year, year) for year in
+                LogSheet.objects.dates('date', 'year')
+                .annotate(year=ExtractYear('date'))
+                .order_by('year')
+                .values_list('year', flat=True)
+            ] + [
+                (year, year) for year in
+                LogSheetNonIPD.objects.dates('date', 'year')
+                .annotate(year=ExtractYear('date'))
+                .order_by('year')
+                .values_list('year', flat=True)
+            ]
+        else:
+            years = [
+                (year, year) for year in
+                model_admin.model.objects.dates('date', 'year')
+                .annotate(year=ExtractYear('date'))
+                .order_by('year')
+                .values_list('year', flat=True)
+            ]
+
+        return sorted(years)
+
+    def queryset(self, request, queryset):
+        if self.value() is not None:
+            if queryset.model.__name__ == 'Deer':
+                query = Q(log__log_sheet__date__year=self.value()) | Q(log__log_sheet_non_ipd__date__year=self.value())
+                return queryset.filter(query)
+            elif queryset.model.__name__ == 'Log':
+                query = Q(log_sheet__date__year=self.value()) | Q(log_sheet_non_ipd__date__year=self.value())
+                return queryset.filter(query)
+            elif queryset.model.__name__ in ['LogSheet', 'LogSheetNonIPD']:
+                return queryset.filter(date__year=self.value())
+            else:
+                raise RuntimeError(f'do not know how to filter years for {queryset.model.__name__}')
+        return queryset
+
+
 class AdjacentSiteAdminForm(forms.ModelForm):
     class Meta:
         fields = '__all__'
@@ -33,11 +78,13 @@ class AdjacentSiteAdminForm(forms.ModelForm):
         return cleaned_data
 
 
+@admin.register(AdjacentSite)
 class AdjacentSiteAdmin(admin.ModelAdmin):
     form = AdjacentSiteAdminForm
     list_filter = ('is_hh_commons', 'is_vacant')
 
 
+@admin.register(DataWarning)
 class DataWarningAdmin(admin.ModelAdmin):
     list_filter = ('type',)
 
@@ -79,8 +126,10 @@ class DeerAdminForm(forms.ModelForm):
         return cleaned_data
 
 
+@admin.register(Deer)
 class DeerAdmin(admin.ModelAdmin):
     form = DeerAdminForm
+    list_filter = (_LogSheetYearFilter,)
     raw_id_fields = ('log',)
     search_fields = ('log__hunter__first_name', 'log__hunter__last_name')
 
@@ -99,11 +148,13 @@ class HunterAdminForm(forms.ModelForm):
             raise ValidationError('Need a first or last name, both can not be blank')
 
 
+@admin.register(Hunter)
 class HunterAdmin(admin.ModelAdmin):
     form = HunterAdminForm
     search_fields = ('first_name', 'last_name')
 
 
+@admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
     list_filter = ('year',)
     search_fields = ('label',)
@@ -134,78 +185,29 @@ class LogAdminForm(forms.ModelForm):
         return cleaned_data
 
 
-class _LogSheetYearFilter(admin.SimpleListFilter):
-    log_sheet_class = None
-    parameter_name = 'year'
-    title = 'year'
-
-    def lookups(self, request, model_admin):
-        if str(model_admin) == 'bow_hunt.LogAdmin':
-            years = [
-                (year, year) for year in
-                LogSheet.objects.dates('date', 'year')
-                .annotate(year=ExtractYear('date'))
-                .order_by('year')
-                .values_list('year', flat=True)
-            ] + [
-                (year, year) for year in
-                LogSheetNonIPD.objects.dates('date', 'year')
-                .annotate(year=ExtractYear('date'))
-                .order_by('year')
-                .values_list('year', flat=True)
-            ]
-        else:
-            years = [
-                (year, year) for year in
-                model_admin.model.objects.dates('date', 'year')
-                .annotate(year=ExtractYear('date'))
-                .order_by('year')
-                .values_list('year', flat=True)
-            ]
-
-        return sorted(years)
-
-    def queryset(self, request, queryset):
-        if self.value() is not None:
-            try:
-                query = Q(log_sheet__date__year=self.value()) | Q(log_sheet_non_ipd__date__year=self.value())
-                return queryset.filter(query)
-            except FieldError:
-                return queryset.filter(date__year=self.value())
-        return queryset
-
-
+@admin.register(Log)
 class LogAdmin(admin.ModelAdmin):
     form = LogAdminForm
     list_filter = (_LogSheetYearFilter,)
     search_fields = ('hunter__first_name', 'hunter__last_name')
 
 
+@admin.register(LogSheet)
 class LogSheetAdmin(admin.ModelAdmin):
     list_filter = (_LogSheetYearFilter,)
 
 
+@admin.register(LogSheetNonIPD)
 class LogSheetNonIPDAdmin(admin.ModelAdmin):
     list_filter = (_LogSheetYearFilter,)
 
 
+@admin.register(NonHunter)
 class NonHunterAdmin(admin.ModelAdmin):
     raw_id_fields = ('log',)
 
 
+@admin.register(Site)
 class SiteAdmin(admin.ModelAdmin):
     list_filter = ('town_owned',)
     search_fields = ('number', 'secondary_number', 'street',)
-
-
-admin.site.register(AdjacentSite, AdjacentSiteAdmin)
-admin.site.register(DataWarning, DataWarningAdmin)
-admin.site.register(Deer, DeerAdmin)
-admin.site.register(Hunter, HunterAdmin)
-admin.site.register(Location, LocationAdmin)
-admin.site.register(Log, LogAdmin)
-admin.site.register(LogSheet, LogSheetAdmin)
-admin.site.register(LogSheetNonIPD, LogSheetNonIPDAdmin)
-admin.site.register(NonHunter, NonHunterAdmin)
-admin.site.register(Officer)
-admin.site.register(Site, SiteAdmin)
