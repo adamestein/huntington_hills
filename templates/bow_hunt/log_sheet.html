@@ -103,7 +103,7 @@
 
                 let year = $(this).find("option:selected").val();
 
-                if (year.length && year !== "2017") {
+                if (year.length) {
                     $("#busy_text").text("Retrieving data");
                     $("body").addClass("busy");
 
@@ -111,7 +111,8 @@
                         "{% url 'bow_hunt:fetch_log_sheet_by_year' %}",
                         {"year": year},
                         function(response) {
-                            let logSheets = JSON.parse(response);
+                            let data = JSON.parse(response);
+                            let logSheets = data['log_sheet_data'];
 
                             // First hunter row
                             const logRowTemplate1 = (data) => `
@@ -170,6 +171,14 @@
 
                                 if (lsIndex > 0) {
                                     logSheetDiv.append("<hr class='table_separator' />");
+                                }
+
+                                if (sheet["fields"]["weather"] === undefined) {
+                                    sheet["fields"]["weather"] = 'not available';
+                                }
+
+                                if (sheet["fields"]["temp"] === undefined) {
+                                    sheet["fields"]["temp"] = 'not available';
                                 }
 
                                 logSheetDiv.append(`
@@ -403,6 +412,21 @@
                                 "option", {maxDate: maxDate, minDate: minDate}
                             ).datepicker("setDate", "10/04/2021");
 
+                            if (data["log_sheet_non_ipd_count"]) {
+                                let msg;
+
+                                if(data["log_sheet_ipd_count"]) {
+                                    msg = "The IPD did NOT create some logs used, so that data is by non-IPD observation only.";
+                                } else {
+                                    msg = "The IPD did NOT create a daily log for this year, so all the data presented is by non-IPD observation only.";
+                                }
+
+                                $("#log_sheet_warning_msg").text(msg);
+                                $("#log_sheet_warning").show();
+                            } else {
+                                $("#log_sheet_warning").hide();
+                            }
+
                             $("#jump_to").show();
 
                             $("body").removeClass("busy");
@@ -413,13 +437,9 @@
                         );
                         $("body").removeClass("busy");
                     });
-                } else if (year === "2017") {
-                    // Remove if any hunting info for 2017 is found, the regular code above will run instead
-                    $(".warning").hide();
-                    $("#jump_to").hide();
-                    logSheetDiv.text("IPD did not keep records for 2017.")
                 } else {
                     $(".warning").hide();
+                    $("#log_sheet_warning").hide();
                     $("#jump_to").hide();
                     logSheetDiv.append("No year selected.");
                 }
@@ -446,6 +466,12 @@
     <div id="jump_to" style="display: none; margin-bottom: 2em;">
         Jump to: <input id="datepicker" type="text" />
     </div>
+
+    <p class="warning" id="log_sheet_warning">
+        <strong>
+            <span class="note">Note</span>: <span id="log_sheet_warning_msg"></span>
+        </strong>
+    </p>
 
     {% include "bow_hunt/_ipd_log_warnings.html" with can_mouse_over=1 %}
 

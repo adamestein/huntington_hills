@@ -1,12 +1,14 @@
 import logging
 
 from django import forms
+from django.core.exceptions import ValidationError
+from django.db import ProgrammingError
 from django.db.models.functions import ExtractYear
 from django.utils import six
 from django.utils.encoding import force_text
 from django.utils.html import conditional_escape
 
-from .models import Deer, Hunter, Location, Log, LogSheet, Site
+from .models import Deer, Hunter, Location, Log, LogSheet, LogSheetNonIPD, Site
 
 from library.forms import MultipleSelectWithAdd, SelectWithAdd
 
@@ -25,7 +27,21 @@ def _get_year_field():
         .values_list('year', flat=True)
     ]
 
-    return forms.MultipleChoiceField(choices=year_choices, label='', widget=forms.SelectMultiple(attrs={'size': 20}))
+    try:
+        year_choices += [
+            (year, year) for year in
+            LogSheetNonIPD.objects.dates('date', 'year')
+            .annotate(year=ExtractYear('date'))
+            .order_by('year')
+            .values_list('year', flat=True)
+        ]
+    except ProgrammingError:
+        # Need to ignore if the LogSheetNonIPD doesn't exist, so we can migrate and create it
+        pass
+
+    return forms.MultipleChoiceField(
+        choices=sorted(year_choices), label='', widget=forms.SelectMultiple(attrs={'size': 20})
+    )
 
 
 class DeerForm(forms.ModelForm):
@@ -98,11 +114,12 @@ class HunterAnalysisForm(forms.Form):
 class HunterForm(forms.ModelForm):
     hunter_formset_number = forms.IntegerField(widget=forms.HiddenInput())
     location_id = forms.IntegerField(widget=forms.HiddenInput())    # Store only the ID, so we can avoid the large list
-    log_sheet_id = forms.IntegerField(widget=forms.HiddenInput())   # Store only the ID, so we can avoid the large list
+    log_sheet_id = forms.IntegerField(widget=forms.HiddenInput(), required=False)           # Same reason as above
+    log_sheet_non_ipd_id = forms.IntegerField(widget=forms.HiddenInput(), required=False)   # Same reason as above
     pk = forms.IntegerField(required=False, widget=forms.HiddenInput())  # Need this to add instance to form later
 
     class Meta:
-        exclude = ['location', 'log_sheet']
+        exclude = ['location', 'log_sheet', 'log_sheet_non_ipd']
         model = Log
         widgets = {
             'hunter': SelectWithAdd(),
@@ -114,6 +131,16 @@ class HunterForm(forms.ModelForm):
         return self._as_table('hunter') + \
                '<tr><th>Deer</th><td></td></tr>' + \
                self._as_table('comment')
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        if cleaned_data['log_sheet_id'] and cleaned_data['log_sheet_non_ipd_id']:
+            raise ValidationError('Both Log Sheet ID and Log Sheet Non IPD ID are set to a value')
+        elif cleaned_data['log_sheet_id'] is None and cleaned_data['log_sheet_non_ipd_id'] is None:
+            raise ValidationError('Either the Log Sheet ID or the Log Sheet Non IPD ID needs to have a value')
+
+        return cleaned_data
 
     def _as_table(self, field_name):
         bf = self[field_name]
@@ -140,6 +167,7 @@ class HunterForm(forms.ModelForm):
                     <td>
                         {six.text_type(self['pk'])}
                         {six.text_type(self['log_sheet_id'])}
+                        {six.text_type(self['log_sheet_non_ipd_id'])}
                         {six.text_type(self['location_id'])}
                         {six.text_type(self['hunter_formset_number'])}
                         {six.text_type(bf)}{help_text}<br />
@@ -192,6 +220,10 @@ class LocationForm(forms.Form):
 
 class LogSheetForm(forms.Form):
     log_sheet = forms.ModelChoiceField(LogSheet.objects.all(), widget=SelectWithAdd())
+
+
+class NonIPDLogSheetForm(forms.Form):
+    log_sheet_non_ipd = forms.ModelChoiceField(LogSheetNonIPD.objects.all(), widget=SelectWithAdd(), label='Log sheet')
 
 
 class SiteAnalysisForm(forms.Form):

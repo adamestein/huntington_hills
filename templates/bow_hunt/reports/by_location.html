@@ -105,6 +105,20 @@
 {% block resident_content %}
     {% include "bow_hunt/_ipd_log_warnings.html" %}
 
+    <p class="warning" style="display: block !important;">
+        {% if log_sheet_non_ipd_count %}
+            {% if log_sheet_ipd_count %}
+                <strong>
+                    <span class="note">Note</span>: The IPD did NOT create some logs used, so that data is by non-IPD observation only.
+                </strong>
+            {% else %}
+                <strong>
+                    <span class="note">Note</span>: The IPD did NOT create a daily log for this year, so all the data presented is by non-IPD observation only.
+                </strong>
+            {% endif %}
+        {% endif %}
+    </p>
+
     <h2>Report Summary</h2>
 
     <table id="id_report_summary_table">
@@ -112,7 +126,7 @@
             <th style="vertical-align: top;">Covered Years:</th>
             <td>
                 {% for year, days in summary.years.items %}
-                    {{ year }} ({{ days }} day season)<br />
+                    {{ year }} ({{ days }} day season according to number of logs recorded)<br />
                 {% endfor %}
             </td>
         </tr>

@@ -1,9 +1,12 @@
 from django import forms
 from django.contrib import admin
 from django.core.exceptions import FieldError, ValidationError
+from django.db.models import Q
 from django.db.models.functions import ExtractYear
 
-from .models import AdjacentSite, DataWarning, Deer, Hunter, Location, Log, LogSheet, NonHunter, Officer, Site
+from .models import (
+    AdjacentSite, DataWarning, Deer, Hunter, Location, Log, LogSheet, LogSheetNonIPD, NonHunter, Officer, Site
+)
 
 
 class AdjacentSiteAdminForm(forms.ModelForm):
@@ -132,22 +135,41 @@ class LogAdminForm(forms.ModelForm):
 
 
 class _LogSheetYearFilter(admin.SimpleListFilter):
-    title = 'year'
+    log_sheet_class = None
     parameter_name = 'year'
+    title = 'year'
 
     def lookups(self, request, model_admin):
-        return [
-            (year, year) for year in
-            LogSheet.objects.dates('date', 'year')
-            .annotate(year=ExtractYear('date'))
-            .order_by('year')
-            .values_list('year', flat=True)
-        ]
+        if str(model_admin) == 'bow_hunt.LogAdmin':
+            years = [
+                (year, year) for year in
+                LogSheet.objects.dates('date', 'year')
+                .annotate(year=ExtractYear('date'))
+                .order_by('year')
+                .values_list('year', flat=True)
+            ] + [
+                (year, year) for year in
+                LogSheetNonIPD.objects.dates('date', 'year')
+                .annotate(year=ExtractYear('date'))
+                .order_by('year')
+                .values_list('year', flat=True)
+            ]
+        else:
+            years = [
+                (year, year) for year in
+                model_admin.model.objects.dates('date', 'year')
+                .annotate(year=ExtractYear('date'))
+                .order_by('year')
+                .values_list('year', flat=True)
+            ]
+
+        return sorted(years)
 
     def queryset(self, request, queryset):
         if self.value() is not None:
             try:
-                return queryset.filter(log_sheet__date__year=self.value())
+                query = Q(log_sheet__date__year=self.value()) | Q(log_sheet_non_ipd__date__year=self.value())
+                return queryset.filter(query)
             except FieldError:
                 return queryset.filter(date__year=self.value())
         return queryset
@@ -160,6 +182,10 @@ class LogAdmin(admin.ModelAdmin):
 
 
 class LogSheetAdmin(admin.ModelAdmin):
+    list_filter = (_LogSheetYearFilter,)
+
+
+class LogSheetNonIPDAdmin(admin.ModelAdmin):
     list_filter = (_LogSheetYearFilter,)
 
 
@@ -179,6 +205,7 @@ admin.site.register(Hunter, HunterAdmin)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(Log, LogAdmin)
 admin.site.register(LogSheet, LogSheetAdmin)
+admin.site.register(LogSheetNonIPD, LogSheetNonIPDAdmin)
 admin.site.register(NonHunter, NonHunterAdmin)
 admin.site.register(Officer)
 admin.site.register(Site, SiteAdmin)

@@ -1,8 +1,8 @@
 {% extends "residents/resident_base.html" %}
 {% load static %}
 
-{% block residents_title %}Add Bow Hunt Logs{% endblock %}
-{% block header %}Add Bow Hunt Logs{% endblock %}
+{% block residents_title %}Add Bow Hunt Logs {% if non_ipd %}(non IPD){% endif %}{% endblock %}
+{% block header %}Add Bow Hunt Logs {% if non_ipd %}(non IPD){% endif %}{% endblock %}
 
 {% block css %}
     {{ block.super }}
@@ -79,8 +79,12 @@
         let prevOptSelected = null;
 
         $(document).ready(function() {
+            let id1 = document.getElementById("id_log_sheet");
+            let id2 = document.getElementById("id_log_sheet_non_ipd");
+            let id_log_sheet = (id1) ? id1 : id2;
+
             // jQuery's handlers don't work, need to use raw JavaScript for this
-            document.getElementById("id_log_sheet").onchange = function() {
+            id_log_sheet.onchange = function() {
                 let sheetID = $(this).find("option:selected").val();
 
                 if (sheetID) {
@@ -93,7 +97,7 @@
 
                         $.get(
                             "{% url 'bow_hunt:fetch_log_sheet_data' %}",
-                            {"sheet_id": sheetID},
+                            {"non_ipd": "{{ non_ipd }}", "sheet_id": sheetID},
                             function(response) {
                                 let data = JSON.parse(response);
                                 loadHunterForms(data["log_forms"], data["locations"]);
@@ -306,7 +310,7 @@
             });
 
             // If the log sheet menu has a selected entry, display the next step
-            let logSheet = $("#id_log_sheet");
+            let logSheet = $(id_log_sheet);
             if (logSheet.find(":selected").val().length) {
                 logSheet.trigger("change");
             }
@@ -355,6 +359,7 @@
             `);
 
             $(`#id_hunter-${hunterFormCount}-log_sheet_id`).val($("#id_log_sheet").find(":selected").val());
+            $(`#id_hunter-${hunterFormCount}-log_sheet_non_ipd_id`).val($("#id_log_sheet_non_ipd").find(":selected").val());
             $(`#id_hunter-${hunterFormCount}-location_id`).val(locID.data("location_id"));
 
             parent.next().find("th:contains('Deer')").next().append(`

@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from .base import ReportBase
 from ..models import Hunter, Log, Site
 
@@ -10,20 +12,24 @@ class Report(ReportBase):
         self.total_deer_shot = 0
 
     def post(self, request, *args, **kwargs):
-        self.logs = Log.objects.filter(hunter__in=kwargs['hunters'], log_sheet__date__year__in=kwargs['years'])
+        query = Q(log_sheet__date__year__in=kwargs['years']) | Q(log_sheet_non_ipd__date__year__in=kwargs['years'])
+        self.logs = Log.objects.filter(query, hunter__in=kwargs['hunters'])
         super().post(request, *args, **kwargs)
 
         context = self.get_context_data(**kwargs)
 
         # Because some deer are shot by unknown hunters, we need to count using the full Log, not just the
         # filtered version
-        self.total_deer_shot = self.deer_count(Log.objects.filter(log_sheet__date__year__in=kwargs['years']))
+        query = Q(log_sheet__date__year__in=kwargs['years']) | Q(log_sheet_non_ipd__date__year__in=kwargs['years'])
+        self.total_deer_shot = self.deer_count(Log.objects.filter(query))
 
         hunter_details, hunter_summaries = self._create_hunter_summaries(**kwargs)
 
         context.update({
             'hunter_details': hunter_details,
             'hunter_summaries': hunter_summaries,
+            'log_sheet_ipd_count': Log.objects.filter(log_sheet__date__year__in=kwargs['years']).count(),
+            'log_sheet_non_ipd_count': Log.objects.filter(log_sheet_non_ipd__date__year__in=kwargs['years']).count(),
             'summary': self._create_summary(**kwargs)
         })
 
@@ -34,12 +40,14 @@ class Report(ReportBase):
         summaries = {}
 
         for year in kwargs['years']:
+            log_sheet_query = Q(log_sheet__date__year=year) | Q(log_sheet_non_ipd__date__year=year)
+
             if year not in summaries:
                 details[year] = {}
                 summaries[year] = {}
 
             for hunter in Hunter.objects.filter(id__in=kwargs['hunters']):
-                hunter_logs = self.logs.filter(hunter=hunter, log_sheet__date__year=year)
+                hunter_logs = self.logs.filter(log_sheet_query, hunter=hunter)
                 hunter_name = str(hunter)
 
                 summary_days_hunted = hunter_logs.distinct().values_list('log_sheet').count()

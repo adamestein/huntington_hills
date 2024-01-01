@@ -150,7 +150,8 @@ class Location(models.Model):
 
 
 class Log(models.Model):
-    log_sheet = models.ForeignKey('LogSheet')
+    log_sheet = models.ForeignKey('LogSheet', blank=True, default=None, null=True)
+    log_sheet_non_ipd = models.ForeignKey('LogSheetNonIPD', blank=True, default=None, null=True)
 
     location = models.ForeignKey('Location')
     hunter = models.ForeignKey('Hunter', blank=True, null=True)
@@ -171,18 +172,20 @@ class Log(models.Model):
         unique_together = ('log_sheet', 'location', 'hunter')
 
     def __str__(self):
+        log_sheet = self.log_sheet if self.log_sheet else self.log_sheet_non_ipd
+
         if self.deer_set.all():
             if self.hunter:
-                msg = f'[{self.log_sheet.date}] {self.hunter.name} shot deer at {self.location.label}'
+                msg = f'[{log_sheet.date}] {self.hunter.name} shot deer at {self.location.label}'
             else:
                 msg = (
-                    f'[{self.log_sheet.date}] deer killed at {self.location.label} due to '
+                    f'[{log_sheet.date}] deer killed at {self.location.label} due to '
                     f'{self.nonhunter.description}'
                 )
         elif self.hunter:
-            msg = f'[{self.log_sheet.date}] {self.hunter.name} did not shoot any deer at {self.location.label}'
+            msg = f'[{log_sheet.date}] {self.hunter.name} did not shoot any deer at {self.location.label}'
         else:
-            msg = f'[{self.log_sheet.date}] no hunting occurred at {self.location.label}'
+            msg = f'[{log_sheet.date}] no hunting occurred at {self.location.label}'
 
         if self.incorrect_warnings.all().exists():
             msg += ' (data incorrect in log)'
@@ -192,14 +195,13 @@ class Log(models.Model):
         return msg
 
 
-class LogSheet(models.Model):
+# noinspection PyUnresolvedReferences
+class LogSheetBase(models.Model):
     date = models.DateField(unique=True)
-    weather = models.CharField(max_length=50)
-    temp = models.CharField(max_length=10)
     comment = models.CharField(blank=True, max_length=200)
-    officer = models.ForeignKey('Officer')
 
     class Meta:
+        abstract = True
         ordering = ('date',)
 
     @property
@@ -217,6 +219,17 @@ class LogSheet(models.Model):
 
     def __str__(self):
         return f'Log sheet for {self.date.strftime("%B %d, %Y")}'
+
+
+class LogSheet(LogSheetBase):
+    weather = models.CharField(max_length=50)
+    temp = models.CharField(max_length=10)
+    officer = models.ForeignKey('Officer')
+
+
+class LogSheetNonIPD(LogSheetBase):
+    class Meta:
+        verbose_name_plural = 'Log sheets (non IPD)'
 
 
 class NonHunter(models.Model):
