@@ -4,7 +4,7 @@ from django.db.models.functions import Coalesce
 from django.views.generic import TemplateView
 from django.views.generic.edit import ProcessFormView
 
-from ..models import LogSheet, Site
+from ..models import LogSheet, LogSheetNonIPD, Site
 
 from library.contrib.auth.mixins import IsBowHuntMixin
 
@@ -35,7 +35,8 @@ class ReportBase(LoginRequiredMixin, IsBowHuntMixin, ProcessFormView, TemplateVi
     def get_year_info(**kwargs):
         years = {}
         for year in kwargs['years']:
-            years[year] = LogSheet.objects.filter(date__year=year).count()
+            years[year] = LogSheet.objects.filter(date__year=year).count() + \
+                          LogSheetNonIPD.objects.filter(date__year=year).count()
         return years
 
     def post(self, request, *args, **kwargs):

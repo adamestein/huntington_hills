@@ -5,7 +5,7 @@ from django.core import serializers
 from django.utils.html import escape
 from django.views.generic import TemplateView
 
-from .models import LogSheet
+from .models import LogSheet, LogSheetNonIPD
 
 from library.contrib.auth.mixins import IsBowHuntMixin
 from library.views.generic.mixins.ajax import AJAXResponseMixin
@@ -17,14 +17,27 @@ class FetchLogSheetsByYear(LoginRequiredMixin, IsBowHuntMixin, AJAXResponseMixin
     content_type = 'application/json'
 
     def get_context_data(self, **kwargs):
+        log_sheets = list(LogSheet.objects.filter(date__year=self.request.GET['year'])) + \
+                     list(LogSheetNonIPD.objects.filter(date__year=self.request.GET['year']))
+        return self._get_context_data(log_sheets)
+
+    @staticmethod
+    def _get_context_data(log_sheets):
         deer_count = 0
         incorrect_log_data = False
         log_sheet_data = []
+        log_sheet_ipd_count = 0
+        log_sheet_non_ipd_count = 0
         missing_log_data = False
 
-        for log_sheet in LogSheet.objects.filter(date__year=self.request.GET['year']):
+        for log_sheet in log_sheets:
             log_data = []
             prev_location = None
+
+            if isinstance(log_sheet, LogSheetNonIPD):
+                log_sheet_non_ipd_count += 1
+            else:
+                log_sheet_ipd_count += 1
 
             for log in log_sheet.log_set.all().order_by('location', 'hunter__last_name', 'hunter__first_name'):
                 if log.incorrect_warnings.all().exists():
@@ -75,18 +88,27 @@ class FetchLogSheetsByYear(LoginRequiredMixin, IsBowHuntMixin, AJAXResponseMixin
 
             deer_count += log_sheet.deer_taken
 
+            try:
+                officer = log_sheet.officer.name
+            except AttributeError:
+                officer = 'outside IPD'
+
             log_sheet_data.append({
                 'deer_taken': log_sheet.deer_taken,
                 'deer_taken_to_date': deer_count,
                 'incorrect_log_data': incorrect_log_data,
                 'logs': log_data,
                 'missing_log_data': missing_log_data,
-                'officer': log_sheet.officer.name,
+                'officer': officer,
                 'sheet': serializers.serialize('json', [log_sheet]),    # serialize() needs an iterable, hence the []
                 'total_archers': log_sheet.total_archers
             })
 
-        return log_sheet_data
+        return {
+            'log_sheet_data': log_sheet_data,
+            'log_sheet_ipd_count': log_sheet_ipd_count,
+            'log_sheet_non_ipd_count': log_sheet_non_ipd_count
+        }
 
 
 class LogSheetView(LoginRequiredMixin, IsBowHuntMixin, TemplateView):
@@ -97,10 +119,13 @@ class LogSheetView(LoginRequiredMixin, IsBowHuntMixin, TemplateView):
 
         # Can't get distinct() to work with MySQL, so we'll do it by hand to get a distinct list of years
         years = {}
+
         for log_sheet in LogSheet.objects.all():
             years[log_sheet.date.year] = True
 
-        # If there is any info on 2017 hunting, can remove the addition (IPD did not keep log in 2017)
-        context['years'] = ['2017'] + list(years.keys())
+        for log_sheet in LogSheetNonIPD.objects.all():
+            years[log_sheet.date.year] = True
+
+        context['years'] = sorted(years.keys())
 
         return context

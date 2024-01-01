@@ -33,7 +33,7 @@ class SelectWithAdd(forms.Select):
         self.popup_add = _create_popup_anchor(defaults)
 
     def render(self, name, value, attrs=None, renderer=None):
-        field_name = re.sub(r'.*-([0-9]+|__prefix__)-', '', name)
+        field_name = re.sub(r'.*-(\d+|__prefix__)-', '', name)
 
         html = super(SelectWithAdd, self).render(name, value, attrs, renderer)
         return mark_safe(

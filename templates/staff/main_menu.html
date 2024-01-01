@@ -45,8 +45,11 @@
             <legend>Bow Hunt</legend>
 
             <ul class="arrow_bullet">
-                <li style="padding-bottom: 2em;"><a href="{% url 'bow_hunt:add_logs' %}">Add Logs</a></li>
-                <li><a href="{% url 'bow_hunt:log_sheet' %}">Daily Log Sheets</a></li>
+                <li><a href="{% url 'bow_hunt:add_logs' %}">Add IPD Logs</a></li>
+                <li style="padding-bottom: 2em;">
+                    <a href="{% url 'bow_hunt:add_non_ipd_logs' %}">Add Non IPD Logs</a>
+                </li>
+                <li><a href="{% url 'bow_hunt:log_sheet' %}">Daily Log Sheets (IPD and Non IPD)</a></li>
                 <li><a href="{% url 'bow_hunt:hunter_analysis' %}">Hunter Analysis</a></li>
                 <li><a href="{% url 'bow_hunt:location_analysis' %}">Location Analysis</a></li>
                 <li><a href="{% url 'bow_hunt:site_analysis' %}">Site Analysis</a></li>

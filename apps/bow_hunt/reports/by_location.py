@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from .base import ReportBase
 from ..models import Log, Site
 
@@ -7,9 +9,8 @@ class Report(ReportBase):
     years = None
 
     def post(self, request, *args, **kwargs):
-        self.logs = Log.objects\
-            .filter(location__label__in=kwargs['locations'], log_sheet__date__year__in=kwargs['years'])\
-            .exclude(hunter__isnull=True)
+        query = Q(log_sheet__date__year__in=kwargs['years']) | Q(log_sheet_non_ipd__date__year__in=kwargs['years'])
+        self.logs = Log.objects.filter(query, location__label__in=kwargs['locations']).exclude(hunter__isnull=True)
 
         super().post(request, *args, **kwargs)
 
@@ -22,6 +23,8 @@ class Report(ReportBase):
         context.update({
             'location_details': location_details,
             'location_summaries': location_summaries,
+            'log_sheet_ipd_count': Log.objects.filter(log_sheet__date__year__in=kwargs['years']).count(),
+            'log_sheet_non_ipd_count': Log.objects.filter(log_sheet_non_ipd__date__year__in=kwargs['years']).count(),
             'summary': self._create_summary(**kwargs)
         })
 
@@ -32,16 +35,18 @@ class Report(ReportBase):
         summaries = {}
 
         for year in kwargs['years']:
+            query = Q(log_sheet__date__year=year) | Q(log_sheet_non_ipd__date__year=year)
+
             if year not in summaries:
                 details[year] = {}
                 summaries[year] = {}
 
             # Because some deer are shot by unknown hunters, we need to count using the full Log, not just the
             # filtered version
-            total_deer_shot = self.deer_count(Log.objects.filter(log_sheet__date__year=year))
+            total_deer_shot = self.deer_count(Log.objects.filter(query))
 
             for location in self.sites:
-                location_logs = self.logs.filter(location__site=location, log_sheet__date__year=year)
+                location_logs = self.logs.filter(query, location__site=location)
 
                 summary_days_hunted = location_logs.distinct().values('log_sheet__date').count()
                 summary_deer_shot = self.deer_count(location_logs)
