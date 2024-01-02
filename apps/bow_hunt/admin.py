@@ -1,11 +1,12 @@
 from django import forms
 from django.contrib import admin
-from django.core.exceptions import FieldError, ValidationError
+from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.db.models.functions import ExtractYear
 
 from .models import (
-    AdjacentSite, DataWarning, Deer, Hunter, Location, Log, LogSheet, LogSheetNonIPD, NonHunter, Officer, Site
+    AdjacentSite, DataWarning, Deer, HHCommonsHunting, Hunter, Location, Log, LogSheet, LogSheetNonIPD, NonHunter,
+    Officer, Site
 )
 
 
@@ -47,7 +48,7 @@ class _LogSheetYearFilter(admin.SimpleListFilter):
             elif queryset.model.__name__ == 'Log':
                 query = Q(log_sheet__date__year=self.value()) | Q(log_sheet_non_ipd__date__year=self.value())
                 return queryset.filter(query)
-            elif queryset.model.__name__ in ['LogSheet', 'LogSheetNonIPD']:
+            elif queryset.model.__name__ in ['HHCommonsHunting', 'LogSheet', 'LogSheetNonIPD']:
                 return queryset.filter(date__year=self.value())
             else:
                 raise RuntimeError(f'do not know how to filter years for {queryset.model.__name__}')
@@ -134,6 +135,11 @@ class DeerAdmin(admin.ModelAdmin):
     search_fields = ('log__hunter__first_name', 'log__hunter__last_name')
 
 
+@admin.register(HHCommonsHunting)
+class HHCommonsHuntingAdmin(admin.ModelAdmin):
+    list_filter = (_LogSheetYearFilter,)
+
+
 class HunterAdminForm(forms.ModelForm):
     class Meta:
         fields = '__all__'
@@ -211,3 +217,6 @@ class NonHunterAdmin(admin.ModelAdmin):
 class SiteAdmin(admin.ModelAdmin):
     list_filter = ('town_owned',)
     search_fields = ('number', 'secondary_number', 'street',)
+
+
+admin.site.register(Officer)

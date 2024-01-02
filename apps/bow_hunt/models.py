@@ -1,6 +1,8 @@
 from django.core.validators import MinValueValidator
 from django.db import models
 
+from residents.models import Person
+
 
 class AdjacentSite(models.Model):
     acres = models.FloatField()
@@ -85,6 +87,24 @@ class Deer(models.Model):
             msg = f'[{self.log.log_sheet_non_ipd.date}/{cause}] {action} {self.as_str}'
         msg += f' at {self.log.location.label}'
         return msg
+
+
+class HHCommonsHunting(models.Model):
+    approved_property = models.ForeignKey('Location')
+    hunter = models.ForeignKey('Hunter')
+    hh_rep = models.ForeignKey(Person, verbose_name='HH rep')
+    date = models.DateField()
+    time_shot = models.TimeField(blank=True, default=None, null=True)
+    time_retrieved = models.TimeField(blank=True, default=None, null=True)
+    location_notes = models.TextField(blank=True, max_length=50)
+    comment = models.TextField(blank=True, null=True)
+
+    class Meta:
+        ordering = ('date', 'time_shot', 'hunter')
+        verbose_name_plural = 'HH Commons hunting'
+
+    def __str__(self):
+        return f'[{self.date}] deer shot by {self.hunter.name} and ran off {self.approved_property.label}'
 
 
 class Hunter(models.Model):
