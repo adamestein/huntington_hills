@@ -1,6 +1,7 @@
 from django.conf.urls import url
 
 from .add import AddLogs, AddNonIPDLogs, FetchLogSheetData
+from .commons import CommonsHunting
 from .daily_log_sheets import FetchLogSheetsByYear, LogSheetView
 from .analysis import HunterAnalysis, LocationAnalysis, SiteAnalysis
 
@@ -9,6 +10,7 @@ urlpatterns = [
     url(r'^analysis/by_hunter/$', HunterAnalysis.as_view(), name='hunter_analysis'),
     url(r'^analysis/by_location/$', LocationAnalysis.as_view(), name='location_analysis'),
     url(r'^analysis/by_site/$', SiteAnalysis.as_view(), name='site_analysis'),
+    url(r'^commons/$', CommonsHunting.as_view(), name='commons_hunting'),
     url(r'^log_sheet/$', LogSheetView.as_view(), name='log_sheet'),
     url(r'^log_sheet/add_logs/$', AddLogs.as_view(), name='add_logs'),
     url(r'^log_sheet/add_non_ipd_logs/$', AddNonIPDLogs.as_view(), name='add_non_ipd_logs'),

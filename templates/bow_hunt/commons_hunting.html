@@ -1,0 +1,101 @@
+{% extends "residents/resident_base.html" %}
+{% load static %}
+
+{% block residents_title %}Hunting on the Commons{% endblock %}
+{% block header %}Hunting on the Commons{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.0/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.2.3/css/fixedHeader.dataTables.min.css" />
+
+    <style>
+        .quote {
+            display: inline-block;
+            font-style: italic;
+            padding: 1em 4em 2em;
+            text-indent: -2em;
+        }
+    </style>
+{% endblock %}
+
+{% block js %}
+    <script src="//code.jquery.com/jquery-3.5.1.min.js" type="text/javascript"></script>
+    <script src="https://cdn.datatables.net/1.12.0/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/fixedheader/3.2.3/js/dataTables.fixedHeader.min.js"></script>
+
+    <script type='text/javascript'>
+        $(document).ready(function() {
+            $(".exceptions_table").DataTable({
+                bInfo: false,
+                columnDefs: [
+                    {
+                        targets: [1, 2],
+                        className: 'dt-body-center'
+                    }
+                ],
+                paging: false,
+                searching: false
+            });
+
+            $("#DataTables_Table_0_wrapper").css("font-size", "70%").css("margin-top", "1em");
+
+            $(".year_heading").slice(1).css("margin-top", "2em");
+        });
+    </script>
+{% endblock %}
+
+{% block resident_content %}
+    <p>
+        While hunting is not permitted on the Huntington Hills Commons generally, exceptions are sometimes made as
+        outlined in the <a href="http://www.huntingtonhillsinc.org/docs/Deer_Bow_Hunt_Proxy_Protocol.pdf">
+        Deer Bow Hunt Proxy Protocol</a> document.
+    </p>
+
+    <p>
+        Section 13 states:
+        <br />
+        <span class="quote">
+            13: The President (Vice President or proxy) will send the information gathered in item 12 to the rest of
+            the board in a timely fashion and the data will be recorded on the HH Inc. website, and also reported
+            at the HH Inc. annual meeting.
+        </span>
+    </p>
+
+    <p>To that end, this page lists the exceptions when hunting was permitted on the Commons.</p>
+
+    <hr />
+
+    {% regroup exceptions by date as exception_list %}
+
+    {% for exception in exception_list %}
+        <h3 class="year_heading">[{{ exception.grouper.year }}]</h3>
+
+        <table class="cell-border compact display exceptions_table">
+            <thead>
+                <tr>
+                    <th title="Date of the hunting exception">Date</th>
+                    <th title="Approximate time deer was shot on approved property">Time Shot</th>
+                    <th title="Approximate time carcass was retrieved by the hunter from Commons">Time Retrieved</th>
+                    <th title="Name of the hunter">Hunter</th>
+                    <th title="Name of the HH person who accompanied the IPD and/or hunter">HH Rep</th>
+                    <th title="Approved property deer ran off onto the Commons from">Property</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for event in exception.list %}
+                    <tr>
+                        <td>{{ event.date|date:"d/m/Y" }}</td>
+                        <td>{{ event.time_shot|time:"h:i a" }}</td>
+                        <td>{{ event.time_retrieved|time:"h:i a" }}</td>
+                        <td>{{ event.hunter.name }}</td>
+                        <td>{{ event.hh_rep.full_name }}</td>
+                        <td>{{ event.approved_property.label }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+{% endblock %}
