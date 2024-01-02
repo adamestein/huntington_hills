@@ -7,10 +7,44 @@
 {% block css %}
     {{ block.super }}
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.0/css/jquery.dataTables.min.css" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.2.3/css/fixedHeader.dataTables.min.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/smoothness/jquery-ui.css" />
 
     <style>
+        .exceptions_table {
+            border-collapse: collapse;
+            font-size: 80%;
+            margin-top: 2em;
+            width: 100%;
+        }
+
+        .exceptions_table td {
+            border: 2px solid black;
+            padding: 2px;
+            text-align: center;
+        }
+
+        .exceptions_table th {
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .exceptions_table tr td:first-child {
+            border-left: 0;
+        }
+
+        .exceptions_table tr td:last-child {
+            border-right: 0;
+        }
+
+        .note_label {
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .notes {
+            text-align: left !important;
+        }
+
         .quote {
             display: inline-block;
             font-style: italic;
@@ -22,25 +56,10 @@
 
 {% block js %}
     <script src="//code.jquery.com/jquery-3.5.1.min.js" type="text/javascript"></script>
-    <script src="https://cdn.datatables.net/1.12.0/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/fixedheader/3.2.3/js/dataTables.fixedHeader.min.js"></script>
+    <script src="//code.jquery.com/ui/1.13.1/jquery-ui.min.js" type="text/javascript"></script>
 
     <script type='text/javascript'>
         $(document).ready(function() {
-            $(".exceptions_table").DataTable({
-                bInfo: false,
-                columnDefs: [
-                    {
-                        targets: [1, 2],
-                        className: 'dt-body-center'
-                    }
-                ],
-                paging: false,
-                searching: false
-            });
-
-            $("#DataTables_Table_0_wrapper").css("font-size", "70%").css("margin-top", "1em");
-
             $(".year_heading").slice(1).css("margin-top", "2em");
         });
     </script>
@@ -72,30 +91,52 @@
     {% for exception in exception_list %}
         <h3 class="year_heading">[{{ exception.grouper.year }}]</h3>
 
-        <table class="cell-border compact display exceptions_table">
-            <thead>
-                <tr>
-                    <th title="Date of the hunting exception">Date</th>
-                    <th title="Approximate time deer was shot on approved property">Time Shot</th>
-                    <th title="Approximate time carcass was retrieved by the hunter from Commons">Time Retrieved</th>
-                    <th title="Name of the hunter">Hunter</th>
-                    <th title="Name of the HH person who accompanied the IPD and/or hunter">HH Rep</th>
-                    <th title="Approved property deer ran off onto the Commons from">Property</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for event in exception.list %}
+        {% for event in exception.list %}
+            <table class="exceptions_table">
+                <thead>
                     <tr>
-                        <td>{{ event.date|date:"d/m/Y" }}</td>
-                        <td>{{ event.time_shot|time:"h:i a" }}</td>
-                        <td>{{ event.time_retrieved|time:"h:i a" }}</td>
-                        <td>{{ event.hunter.name }}</td>
-                        <td>{{ event.hh_rep.full_name }}</td>
-                        <td>{{ event.approved_property.label }}</td>
+                        <th title="Date of the hunting exception">Date</th>
+                        <th title="Approximate time deer was shot on approved property">Time Shot</th>
+                        <th title="Approximate time carcass was retrieved by the hunter from Commons">Time Retrieved</th>
+                        <th title="Name of the hunter">Hunter</th>
+                        <th title="Name of the HH person who accompanied the IPD and/or hunter">HH Rep</th>
+                        <th title="Approved property deer ran off onto the Commons from">Property</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+
+                <tbody>
+                    {% for event in exception.list %}
+                        <tr>
+                            <td>{{ event.date|date:"d/m/Y" }}</td>
+                            <td>{{ event.time_shot|time:"h:i a" }}</td>
+                            <td>{{ event.time_retrieved|time:"h:i a" }}</td>
+                            <td>{{ event.hunter.name }}</td>
+                            <td>{{ event.hh_rep.full_name }}</td>
+                            <td>{{ event.approved_property.label }}</td>
+                        </tr>
+
+                        {% if event.location_notes %}
+                            <tr>
+                                <td  class="notes" colspan="6">
+                                    <span class="note_label">Location Notes:</span>
+                                    <br />
+                                    {{ event.location_notes|linebreaks }}
+                                </td>
+                            </tr>
+                        {% endif %}
+
+                        {% if event.comment %}
+                            <tr>
+                                <td  class="notes" colspan="6">
+                                    <span class="note_label">Comment:</span>
+                                    <br />
+                                    {{ event.comment|linebreaks }}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
     {% endfor %}
 {% endblock %}
