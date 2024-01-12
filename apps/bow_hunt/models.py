@@ -52,6 +52,7 @@ class Deer(models.Model):
     GENDER_FEMALE = 'F'
     GENDER_MALE = 'M'
     GENDER_CHOICES = ((GENDER_FEMALE, 'Female (Doe)'), (GENDER_MALE, 'Male (Buck)'))
+    GENDER_CHOICES_SHORT = ((GENDER_FEMALE, 'F'), (GENDER_MALE, 'M'))
 
     count = models.PositiveSmallIntegerField(default=0)
     gender = models.CharField(
@@ -61,7 +62,7 @@ class Deer(models.Model):
     points = models.PositiveSmallIntegerField(
         blank=True, default=None, help_text='(set only if deer is male, set to 0 if unknown)', null=True
     )
-    tracking = models.BooleanField(default=False)
+    tracking = models.NullBooleanField(default=False)
 
     class Meta:
         ordering = ('log',)
