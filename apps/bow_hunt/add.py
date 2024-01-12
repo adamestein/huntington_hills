@@ -9,13 +9,91 @@ from django.utils.safestring import mark_safe
 from django.views.generic import FormView, TemplateView
 
 from .forms import (
-    DEER_PREFIX, HUNTER_PREFIX, DeerForm, DeerFormSet, HunterForm, HunterFormSet, LocationForm, LogSheetForm,
-    NonIPDLogSheetForm
+    DEER_PREFIX, HUNTER_PREFIX,
+    DeerForm, DeerFormSet, FinalReportFormSet, HunterForm, HunterFormSet, LocationForm, LogSheetForm, NonIPDLogSheetForm
 )
-from .models import Location, Log, LogSheet, LogSheetNonIPD
+from .models import Deer, Hunter, Location, Log, LogSheet, LogSheetNonIPD
 
 from library.contrib.auth.mixins import IsBowHuntMixin
 from library.views.generic.mixins.ajax import AJAXResponseMixin
+
+
+class AddIPDFinalReport(LoginRequiredMixin, IsBowHuntMixin, FormView):
+    success_url = reverse_lazy('staff:main_menu')
+    template_name = 'bow_hunt/add_final_report.html'
+
+    def form_valid(self, formset):
+        num_records = len(formset.forms)
+
+        for index, form in enumerate(formset.forms):
+            log_sheet, _ = LogSheetNonIPD.objects.get_or_create(date=form.cleaned_data['date'])
+
+            if self.request.POST[f'form-{index}-hunter_combobox'] != str(form.cleaned_data['hunter']):
+                name = self.request.POST[f'form-{index}-hunter_combobox'].rsplit(' ')
+                if len(name) == 1:
+                    name.append('')
+
+                hunter, _ = Hunter.objects.get_or_create(first_name=name[0], last_name=name[1])
+            else:
+                hunter = form.cleaned_data['hunter']
+
+            if self.request.POST[f'form-{index}-location_combobox'] != form.cleaned_data['location'].label:
+                location, _ = Location.objects.get_or_create(
+                    label=self.request.POST[f'form-{index}-location_combobox'],
+                    year=self.request.GET['year'],
+                    defaults={
+                        'line_item_number': Location.objects.filter(year=self.request.GET['year']).count() + 1
+                    }
+                )
+            else:
+                location = form.cleaned_data['location']
+
+            log, _ = Log.objects.get_or_create(
+                hunter=hunter,
+                location=location,
+                log_sheet_non_ipd=log_sheet
+            )
+
+            deer, deer_created = Deer.objects.get_or_create(
+                gender=form.cleaned_data['sex'],
+                log=log,
+                points=form.cleaned_data['points'],
+                defaults={
+                    'count': 0,
+                    'tracking': None
+                }
+            )
+
+            deer.count += 1
+            deer.save()
+
+        success(
+            self.request,
+            f'Successfully processed {num_records} record{"s"[:num_records ^ 1]} from the IPD Final Report'
+        )
+
+        return super().form_valid(formset)
+
+    def get_context_data(self, **kwargs):
+        # Instead of a form, we are using a formset in ['form']
+
+        year = self.request.GET.get('year', '')
+
+        if 'form' not in kwargs:
+            # Create the formset if we have the year, otherwise set to None to get past super().get_context_data()
+            kwargs['form'] = FinalReportFormSet(form_kwargs={'year': year}) if year else None
+
+        context = super().get_context_data(**kwargs)
+        context['year'] = year
+        return context
+
+    def post(self, request, *args, **kwargs):
+        formset = FinalReportFormSet(self.request.POST, form_kwargs={'year': 2023})
+
+        if formset.is_valid():
+            return self.form_valid(formset)
+        else:
+            return self.form_invalid(formset)
 
 
 class AddLogsBase(LoginRequiredMixin, IsBowHuntMixin, FormView, metaclass=ABCMeta):

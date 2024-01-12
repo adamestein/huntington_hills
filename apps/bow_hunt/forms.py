@@ -101,6 +101,41 @@ class DeerForm(forms.ModelForm):
 DeerFormSet = forms.formset_factory(DeerForm, extra=0)
 
 
+class FinalReportForm(forms.Form):
+    date = forms.DateField(widget=forms.DateInput(attrs={'required': 'required', 'size': '8em'}))
+    location = forms.ModelChoiceField(Location.objects.none(), empty_label=None)
+    hunter = forms.ModelChoiceField(Hunter.objects.exclude(first_name='<unknown>'), empty_label=None)
+    sex = forms.ChoiceField(choices=Deer.GENDER_CHOICES_SHORT)
+    points = forms.IntegerField(required=False, widget=forms.NumberInput(attrs={'size': '3.5em'}))
+
+    def __init__(self, **kwargs):
+        self.year = kwargs.pop('year')
+        super().__init__(**kwargs)
+
+        self.fields['location'].queryset = Location.objects.filter(year=self.year).order_by('label')
+        self.fields['location'].label_from_instance = self.label_from_instance
+        self.initial['location'] = kwargs.get('initial', {'location': []})['location']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        gender = cleaned_data['sex']
+        points = cleaned_data['points']
+
+        if gender == Deer.GENDER_MALE and points is None:
+            self.add_error('points', 'Male deer need the number of points specified')
+        elif gender == Deer.GENDER_FEMALE and points is not None:
+            self.add_error('points', 'Points is set but the gender is Female')
+
+        return cleaned_data
+
+    @staticmethod
+    def label_from_instance(obj):
+        return force_text(obj.label)
+
+
+FinalReportFormSet = forms.formset_factory(FinalReportForm, extra=1)
+
+
 class HunterAnalysisForm(forms.Form):
     years = _get_year_field()
 
