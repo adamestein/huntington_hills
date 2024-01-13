@@ -38,6 +38,7 @@ class AddIPDFinalReport(LoginRequiredMixin, IsBowHuntMixin, FormView):
                 hunter = form.cleaned_data['hunter']
 
             if self.request.POST[f'form-{index}-location_combobox'] != form.cleaned_data['location'].label:
+                raise RuntimeError('Need to update to save location site (used by hunter report)')
                 location, _ = Location.objects.get_or_create(
                     label=self.request.POST[f'form-{index}-location_combobox'],
                     year=self.request.GET['year'],

@@ -48,7 +48,7 @@ class Report(ReportBase):
             for location in self.sites:
                 location_logs = self.logs.filter(query, location__site=location)
 
-                summary_days_hunted = location_logs.distinct().values('log_sheet__date').count()
+                summary_days_hunted = location_logs.distinct().values('log_sheet__date', 'log_sheet_non_ipd__date').count()
                 summary_deer_shot = self.deer_count(location_logs)
                 summary_deer_tracked = location_logs.filter(deer__tracking=True).count()
                 summary_percent_shot = summary_deer_shot / total_deer_shot * 100 if total_deer_shot else 0
