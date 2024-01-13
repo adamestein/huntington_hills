@@ -50,7 +50,7 @@ class Report(ReportBase):
                 hunter_logs = self.logs.filter(log_sheet_query, hunter=hunter)
                 hunter_name = str(hunter)
 
-                summary_days_hunted = hunter_logs.distinct().values_list('log_sheet').count()
+                summary_days_hunted = hunter_logs.distinct().values_list('log_sheet', 'log_sheet_non_ipd').count()
                 summary_deer_shot = self.deer_count(hunter_logs)
                 summary_deer_tracked = hunter_logs.filter(deer__tracking=True).count()
                 summary_percent_shot = summary_deer_shot / self.total_deer_shot * 100 if self.total_deer_shot else 0
@@ -102,7 +102,7 @@ class Report(ReportBase):
             'number_locs_deer_shot': self.logs.exclude(deer__isnull=True).distinct().values_list('location').count(),
             'number_hunters': len(kwargs['hunters']),
             'required_tracking': self.logs.filter(deer__tracking=True).count(),
-            'total_days_hunted': self.logs.distinct().values_list('log_sheet').count(),
+            'total_days_hunted': self.logs.distinct().values_list('log_sheet', 'log_sheet_non_ipd').count(),
             'total_deer_shot': self.total_deer_shot,
             'total_hunters': Hunter.objects.exclude(first_name='<unknown>').count(),
             'years': self.get_year_info(**kwargs)
