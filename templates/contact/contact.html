@@ -1,0 +1,31 @@
+{% extends "residents/base.html" %}
+{% load static %}
+
+{% block title %}Contacts for Huntington Hills{% endblock %}
+{% block header %}Contact{% endblock %}
+
+{% block navbar %}{% include "_full_navbar.html" with active="contact" %}{% endblock %}
+
+{% block resident_content %}
+    <p>
+        For questions regarding the Huntington Hills, Inc. Association or area, please contact the 
+        <a href="{% url 'contact:board' %}">Huntington Hills Board</a>. If you are a resident, you can view contact
+        information for individual 
+        <a href="{% url 'resident:board' %}">board members</a>.
+    </p>
+    
+    <p>
+        <a href="{% url 'contact:mailing_lists' %}">Mailing lists</a> can be utilized to send messages to other 
+        residents of Huntington Hills.
+    </p>
+    
+    <p>
+        To submit news, events, or pictures (for the <a href="{% url 'gallery:gallery' %}">Gallery</a>), please contact 
+        <a href="{% url 'contact:adam' %}">Adam Stein</a>.
+    </p>
+    
+    <p>
+        For questions, problems, or suggestions with this website (or anything else NOT mentioned above), 
+        please contact the <a href="{% url 'contact:webmaster' %}">Webmaster.</a>
+    </p>
+{% endblock %}

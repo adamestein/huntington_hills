@@ -1,0 +1,44 @@
+{% extends "residents/base.html" %}
+
+{% block title %}Email Form: {{ recipient }}{% endblock %}
+{% block header %}Email Form: {{ recipient }}{% endblock %}
+
+{% block resident_content %}
+    <p>Please fill out the form and click <em>Submit</em>.</p>
+           
+    <form method="POST">
+        {% csrf_token %}
+        
+        <table>
+            <tr>
+                <td><p>Enter your name:</p></td>
+                <td>{{ form.name }}</td>
+            </tr>
+            
+            <tr>
+                <td><p>Enter your email address:</p></td>
+                <td>{{ form.email }}</td>
+            </tr>
+
+            <tr>
+                <td style="vertical-align: top;"><p>Enter your message:</p></td>
+                <td>{{ form.message }}</td>
+            </tr>
+            
+            <tr>
+                <td></td>
+                <td>
+                    {% if form.captcha.errors %}
+                        {{ form.captcha.errors }}<br />
+                    {% endif %}
+                
+                    {{ form.captcha }}
+                </td>
+            </tr>
+            
+            <tr>
+                <td><input type="submit" value="Submit" /></td>
+            </tr>
+        </table>
+    </form>
+{% endblock %}

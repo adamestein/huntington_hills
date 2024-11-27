@@ -1,5 +1,3 @@
-from datetime import date
-
 from easy_pdf.views import PDFTemplateView
 
 from django.contrib.auth.mixins import LoginRequiredMixin

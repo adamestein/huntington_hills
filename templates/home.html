@@ -1,0 +1,117 @@
+{% extends "residents/base.html" %}
+
+{% block title %}Huntington Hills, Irondequoit, NY{% endblock %}
+{% block header %}Huntington Hills, Irondequoit, NY{% endblock %}
+
+{% block navbar %}{% include "_full_navbar.html" with active="home" %}{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <script type='text/javascript'>
+        $(document).ready(function() {
+            $.get("/news/current/",).done(function(data) {
+                $("#retrieving_message").remove();
+                $("#boxOne").append(data);
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block resident_content %}
+    <p>
+        Welcome to the Huntington Hills, Inc. website. This site is designed to help the residents of 
+        Huntington Hills access information about the area we call home and share community information 
+        with their neighbors.
+    </p>
+    
+    <p>
+        On this site you will find meeting notices, official news such as the Huntington Hills Association 
+        Meeting Minutes and news and events from other neighborhood clubs and committees. You will also 
+        find a useful neighborhood classified section and a section connecting you to important sites such 
+        as the Town and the County. You will find official County Tax Maps and EPOD maps on our site.
+    </p>
+    
+    <p>This site also contains a wealth of information relevant to Huntington Hills such as:</p>
+    
+    <ul>
+        <li>
+            <a style="font-weight: bold;" href="docs.html">Documents</a>: Click here, and you will have 
+            access to Tax Maps, the EPOD Maps of the Town of Irondequoit, the By-Laws of Huntington Hills, 
+            Inc. and updated information about projects affecting our area, such as the Spring
+            Valley Project.
+        </li>
+    </ul>
+    
+    <ul>
+        <li>
+            <a style="font-weight: bold;" href="/gallery/">Gallery</a>:
+            This is a site where each of you can share photographs of interest for members of Huntington 
+            Hills or anyone viewing our website. Scenic pictures of the area, pictures of area wildlife, 
+            your home, or anything else of interest are all welcome. Just forward them to our Webmaster for 
+            posting.
+        </li>
+    </ul>
+    
+    <p>
+        Some areas of our website are for members only and will be password protected. Information about 
+        access to these areas will be published in the mailing of the minutes.
+    </p>
+    
+    <p>
+        This site is intended to provide important information about Huntington Hills, Inc. as well as to 
+        share items of interest with others in our community. Please use the 
+        <a href="contact.html"><span style="font-weight: bold;">Contact</span></a> section to comment on 
+        the site, its contents and to add your own contributions to 
+        <span style="font-style: italic;">www.HuntingtonHillsInc.org</span>.
+    </p>
+    
+    <div id="boxOne">
+        <h2 class="boxes">
+            <a href="/news/archived/">News &amp; Updates</a>
+        </h2>
+        
+        <p id="retrieving_message">Retrieving news...</p>
+    </div>
+    
+    <div id="boxTwo">
+        <h2 class="boxes"><a href="classifieds.html">Community Corner</a></h2>
+        <p>Nothing at the moment</p>
+    </div>
+    
+    <div id="boxThree">
+        <h2 class="boxes">Links &amp; Resources</h2>
+        
+        <p>
+            <a target="_blank" href="http://www.monroecounty.gov/" title="Monroe County">
+                Monroe County
+            </a> ››<br />
+            
+            <a target="_blank" href="http://www.irondequoit.org/" title="Town of Irondequoit">
+                Town of Irondequoit
+            </a> ››<br />
+            
+            <a target="_blank" href="http://en.wikipedia.org/wiki/Irondequoit" title="Town of Irondequoit">
+                Irondequoit (on Wikipedia)
+            </a> ››
+        </p>
+        
+        <p>
+            <a target="_blank" href="http://www.eicsd.k12.ny.us/" title="East Irondequoit School District">
+                East Irondequoit School District
+            </a> ››
+        </p>
+        
+        <p>
+            <a href="http://rcityweb.com/" target="_blank">
+                Rochester Yellow Pages
+            </a> ››<br />
+            
+            <a href="http://www.monroecounty.gov/p/dmap-Irondequoit.pdf" target="_blank">
+                Town of Irondequoit Map
+            </a> ››
+        </p>
+    </div>
+    
+    <div id="footer2"></div>
+{% endblock %}

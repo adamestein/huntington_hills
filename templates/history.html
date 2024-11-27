@@ -1,0 +1,689 @@
+{% load static %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+    <head>
+        <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type" />
+        <title>History of Huntington Hills</title>
+
+        <link rel="stylesheet" href="{% static "css/forested.css" %}" />
+  
+        <meta content="History of Huntington Hills from inception (1922) to 2005" name="description" />
+        <meta http-equiv="CONTENT-TYPE" content="text/html; charset=utf-8" />
+        <meta name="generator" content="Bluefish 2.2.12" />
+        <meta name="author" content="Adam Stein" />
+        <meta name="CREATED" content="20050115;10190000" />
+        <meta name="CHANGEDBY" content="Donald T. Becker" />
+        <meta name="CHANGED" content="20060522;9030000" />
+
+        <style type="text/css">
+            <!--
+                @page { size: 8.5in 11in; margin: 0.79in }
+                P { margin-bottom: 0.08in }
+            -->
+        </style>
+    </head>
+    
+    <body style="direction: ltr;">
+        <div id="forest_header">
+            <div style="float: left;" class="forest_body">
+                <div style="float: left; width: 200px;">
+                    <div class="bar">A History Of Huntington Hills, Inc.
+                        <br />
+                        1922 to 2005
+                    </div>
+                    
+                    <div class="colleft"></div>
+                    
+                    <div class="bar">Links</div>
+                    
+                    <div class="colleft">
+                        <p><a href="{{ settings.HOME_LINK }}">Home</a></p>
+                        <p><a href="{{ settings.ABOUT_LINK }}">About</a></p>
+                        <p><a href="{{ settings.DOCUMENTS_LINK }}">Documents</a></p>
+                        <p>History</p>
+                        <p><a href="{{ settings.GALLERY_LINK }}">Gallery</a></p>
+                        <p><a href="{{ settings.CONTACT_LINK }}">Contact</a></p>
+                        <p><a href="{{ settings.SEARCH_LINK }}">Search</a></p>
+                        <p><a href="{{ settings.TECHNICAL_LINK }}">Technical Details</a></p>
+                    </div>
+                    
+                    <div class="bar">More History</div>
+                    
+                    <div class="colleft">
+                        <p style="font-weight: bold;">Maps</p>
+                        
+                        <p class="bartxt">
+                            <a href="{% get_media_prefix %}docs/Maps/Plat_Book-1902.pdf" target="_blank">Map</a> 
+                            of Irondequoit. This is taken from the 1902
+							<a href="http://en.wikipedia.org/wiki/Plat" target="_blank">Plat</a>
+							Book (by J. M. Lathrop & Company) covering 
+							<a href="http://www.monroecounty.gov/">Monroe County</a>.
+                        </p>
+                        
+                        <p class="bartxt">
+                            <a href="{% get_media_prefix %}docs/Maps/Plat_Book-1959.pdf" target="_blank">Map</a> of 
+                            the Huntington Hills subdivision (showing lots 17-22). This is taken from the 1959
+							<a href="http://en.wikipedia.org/wiki/Plat" target="_blank">Plat</a>
+							Book (by G.M. Hopkins Co.) covering the towns of
+							<a href="http://www.irondequoit.org/" target="_blank">Irondequoit</a>
+							and <a href="http://www.townofbrighton.org/" target="_blank">Brighton</a>.
+							Online is the first page from that book and the
+							<a href="http://www.irondequoit.org/" target="_blank">Irondequoit</a>
+							map that covers the Huntington Hills subdivision.
+                        </p>
+                        
+                        <hr style="height: 4px; width: 50%;" />
+                    
+                        <p style="font-weight: bold;">Historic Photos</p>
+                        
+                        <p class="bartxt">
+                            <a href="{% url 'gallery:gallery' %}sam-ruggeri/page/1/">Postcard pictures</a> are 
+                            available online. [submitted by <a href="mailto:seruggeri@msn.com">Sam Ruggeri</a>]
+                        </p>
+                        
+                        <p class="bartxt">
+                            <a href="{% url 'gallery:gallery' %}tim-golan/page/1/">Old photographs</a> are also 
+                            available online. [submitted by <a href="mailto:tanadad@frontiernet.net">Tim Golan</a>]
+                        </p>
+                        
+                        <p class="bartxt">
+                            <a href="{% url 'gallery:gallery' %}don-becker/page/2/">Pictures</a> of 
+                            <a href="http://www.lib.rochester.edu/index.cfm?page=933" target="_blank">
+                                Alcesta Huntington
+                            </a>.
+                            [submitted by <a href="mailto:dbecker2@rochester.rr.com%3E">Don Becker</a>]
+                        </p>
+                        
+                        <p class="bartxt">
+                            1950's ad for 
+                            <a href="{% get_media_prefix %}docs/History/Trimble/1950-Trimbles-practical-safety-crib-Kiddle-Koop-1.jpg" target="blank">
+                                Maurice Trimble's Practical Safety Crib
+                            </a>
+                        </p>
+                        
+                        <p class="bartxt">
+                            <a href="https://mattshearer.co.uk/1979/08/25/swimming-huntington-hills-neighbourhood-pool/">
+                                Pictures
+                            </a> of the Center Entrance swimming pool August 25, 1979. [web page by
+                            Matt Shearer]
+                        </p>
+                        
+                        <hr style="height: 4px; width: 50%;" />
+                        
+                        <p class="bartxt" style="font-weight: bold;">Rochester Suburban Directories</p>
+                        
+                        <p class="bartxt">
+                            <a href="http://www3.libraryweb.org/lh.aspx?id=474188" target="_blank">Directories</a> 
+                            for Irondequoit are available online thanks to the 
+                            <a href="http://www3.libraryweb.org/home2.aspx" target="_blank">
+                                Monroe County Library Sytem
+                            </a>.
+                        </p>
+                        
+                        <p class="bartxt">Currently, only the years 1930 through 1940 are available.</p>
+                        
+                        <hr style="height: 4px; width: 50%;" />
+                        
+                        <p class="bartxt">
+                            <a href="{% get_media_prefix %}docs/History/Durand_Letter-1922.pdf">
+                                Henry Durand Letter
+                            </a>
+                        </p>
+                        
+                        <p class="bartxt">
+                            Letter from <span style="font-style: italic;">Henry S. Durand</span> to 
+                            <span style="font-style: italic;">Clarence D. Van Zandt</span> (Mayor of Rochester) 
+                            in 1922.
+                        </p>
+                        
+                        <p class="bartxt">
+                            It appears Durand was unaware of the agreement to keep the sale of the Huntington 
+                            estate within the family.
+                        </p>
+                        
+                        <p class="bartxt">
+                            Note the map showing that Zoo Road was Wisner Rd at the time of Durand's letter.
+                        </p>
+                        
+                        <p class="bartxt">This letter shows how poorly Durand was treated.</p>
+                        
+                        <p class="bartxt">[submitted by <a href="mailto:tanadad@frontiernet.net">Tim Golan</a>]</p>
+                        
+                        <hr style="height: 2px; width: 50%;" />
+
+                        <p class="bartxt"><a href="{% get_media_prefix %}docs/History/poetry.html">Poetry</a></p>
+                        
+                        <p class="bartxt">
+                            1930's poem about Irondequoit. [submitted by 
+                            <a href="mailto:adam@csh.rit.edu">Adam Stein</a>]
+                        </p>
+                        
+                        <hr style="height: 2px; width: 50%;" />
+                        
+                        <p class="bartxt">
+                            <a href="{% get_media_prefix %}docs/History/Rochester_Ski_Club/Rochester_Ski_Club.html">
+                                Rochester Ski Club
+                            </a>
+                        </p>
+                        
+                        <p class="bartxt">
+                            The original Rochester Ski Club was in Huntington Hills. [submitted by 
+                            <a href="mailto:tanadad@frontiernet.net">Tim Golan</a>]
+                        </p>
+                        
+                        <hr style="height: 2px; width: 50%;" />
+                        
+                        <p class="bartxt">
+                            <a href="http://www.libraryweb.org/%7Edigitized/books/Irondequoit_Centennial_Album.pdf" 
+                               target="_blank">
+                                Irondequoit Centennial Album 1839-1939
+                            </a>
+                        </p>
+                        
+                        <p class="bartxt">
+                            Huntington Hills is mentioned in the centennial album on the bottom of page 19.
+                            [submitted by <a href="mailto:adam@csh.rit.edu">Adam Stein</a>]
+                        </p>
+                        
+                        <hr style="height: 2px; width: 50%;" />
+                        
+                        <p class="bartxt">
+                            <a href="{% get_media_prefix %}docs/History/Library_History.pdf">
+                                <span style="text-decoration: underline;">Library History</span>
+                            </a>
+                        </p>
+                        
+                        <p class="bartxt">
+                            The Library System in Irondequoit was started in 1947 by a small group of residents; 
+                            two lived on Center Entrance. <span style="font-style: italic;">Carol Golan</span> at 
+                            95 Center Entrance and <span style="font-style: italic;">Kitty Tuthill</span> at 155
+                            Center Entrance. Several residents of Huntington Hills volunteered at the branches. 
+                            [submitted by <a href="mailto:tanadad@frontiernet.net">Tim Golan</a>]
+                        </p>
+                        
+                        <hr style="height: 2px; width: 50%;" />
+                        
+                        <p class="bartxt">
+                            <a href="{% get_media_prefix %}docs/History/HGH_Club_1953.pdf">
+                                Center Entrance Pool Club (1953)
+                            </a>
+                        </p>
+                        
+                        <p class="bartxt">
+                            D&amp;C article titled
+                            <span style="font-style: italic;">Unique Club Provides Pool For Huntington Hills</span>. 
+                            [submitted by <a href="mailto:tanadad@frontiernet.net">Tim Golan</a>]
+                        </p>
+                        
+                        <hr style="height: 2px; width: 50%;" />
+                        
+                        <p class="bartxt">
+                            <a href="{% get_media_prefix %}docs/History/HGH_Short_History.pdf">
+                                Hammer, Grog &amp; Hat Club
+                            </a>
+                        </p>
+                        
+                        <p class="bartxt">
+                            Short history of the Hammer, Grog &amp; Hat Club. [submitted by 
+                            <a href="mailto:colombo@lawyer.com">Jeanne M. Colombo</a>, written by 
+                            Dr. Suzanne Rodgers]
+                        </p>
+                        
+                        <hr style="height: 2px; width: 50%;" />
+                        
+                        <p class="bartxt">
+                            <a target="_blank" 
+                               href="http://www.youtube.com/channel/UCMizLaUidrOfovnrgCaIP7A/videos?view=0">
+                                Videos
+                            </a>
+                        </p>
+                        
+                        <p class="bartxt">
+                            In the 1940's through the 1960's, residents used Kodak 16mm movie file to record 
+                            neighborhood events. Recently, several of these were digitized and published on the 
+                            <span style="font-style: italic;">Huntington Hills</span> 
+                            <a href="https://www.youtube.com/" target="_blank">YouTube</a> channel.
+                        </p>
+                        
+                        <p class="bartxt">
+                            Uploaded movies include a parade with a glimpse of the famous Rolls-Royce of John 
+                            Mcfarlane, ski club skiing, and the HGH club pool (to name just a few).
+                        </p>
+                        
+                        <hr style="height: 2px; width: 50%;" />
+                        
+                        <p class="bartxt">
+                            <a href="docs/History/Irondequoit_Story/">
+                                Irondequoit Story: a history of the town of Irondequoit (suburb of Rochester, 
+                                county of Monroe, state of New York) covering the years 1839-1957
+                            </a>
+                        </p>
+                        
+                        <p class="bartxt">
+                            History of Rochester, most specifically Irondequoit, from 1839 to 1957. Huntington 
+                            Hills is mentioned briefly.
+                        </p>
+                        
+                        <hr style="height: 2px; width: 50%;" />
+                        
+                        <p>
+                            <a target="_blank" href="{% get_media_prefix %}docs/History/Juniors_Worst.pdf">
+                                Juniors Worst Tennis Exhibition in 1958
+                            </a>
+                        </p>
+                        
+                        <p class="bartxt">
+                            Jim Allen, David Tuthill, and Tim Golan met for lunch and reminisced about the Juniors 
+                            Worst exhibition. Tim then provided the file for the Huntington Hills website. 
+                            [submitted by <a href="mailto:tanadad@frontiernet.net">Tim Golan</a>]
+                        </p>
+                        
+                        <hr style="height: 2px; width: 50%;" />
+                        
+                        <p class="bartxt">
+                            <a href="{% get_media_prefix %}docs/History/Cookbook.pdf">Huntington Hills Cookbook</a>
+                        </p>
+                        
+                        <p class="bartxt">
+                            This cookbook was most likely created in the early to mid 1960's. Most are from Center 
+                            Entrance although <span style="font-style: italic;">Bagg</span> and 
+                            <span style="font-style: italic;">McMaster</span> were on lower Hoffman.
+                            <span style="font-style: italic;">Hodges</span> was on Wisner. There are some from 
+                            <span style="font-style: italic;">Jeanette Trimble</span> (original family). 
+                            [submitted by <a href="mailto:tanadad@frontiernet.net">Tim Golan</a>]
+                        </p>
+                        
+                        <hr style="height: 2px; width: 50%;" />
+                        
+                        <p class="bartxt">
+                            <a href="{% get_media_prefix %}docs/History/Tuthill_Fire_1966.pdf">1966 Tuthill Fire</a>
+                        </p>
+                        
+                        <p class="bartxt">
+                            The fire that destroyed the Tuthill residence in 1966 had a direct effect on how 
+                            emergency calls are made today. [submitted by 
+                            <a href="mailto:tanadad@frontiernet.net">Tim Golan</a>]
+                        </p>
+                        
+                        <hr style="height: 2px; width: 50%;" />
+                        
+                        <p class="bartxt">
+                            <a href="{% get_media_prefix %}docs/History/Tour_of_Irondequoit_Homes-06_03_1979.pdf">
+                                Tour of Irondequoit Homes
+                            </a>
+                        </p>
+                        
+                        <p class="bartxt">
+                            Fourth tour of Homes presented by the 
+                            <a href="http://www.irondequoitlibrary.org/friends-of-the-library/" target="_blank">
+                                Friends of Irondequoit Public Libraries
+                            </a>.
+                            This tour visits homes on Center Road. [submitted by 
+                            <a href="mailto:tanadad@frontiernet.net">Tim Golan</a>]
+                        </p>
+                        
+                        <hr style="height: 2px; width: 50%;" />
+                        
+                        <p class="bartxt">
+                            <a href="{% get_media_prefix %}docs/History/Irondequoit_Memories-Irondequoit_Post-12_02_2010.jpg">
+                                Irondequoit Memories (12/02/2010)
+                            </a>
+                        </p>
+                        
+                        <p class="bartxt">
+                            An <a href="{% get_media_prefix %}docs/History/Irondequoit_Memories-Irondequoit_Post-12_02_2010.jpg">article</a>
+                            appears in the
+                            <a href="http://irondequoitpost.com/" target="_blank">Irondequoit Post</a> about 
+                            <a href="history.html">Huntington Hills history</a> by 
+                            <a href="http://www.irondequoit.org/town-departments/town-historian" target="_blank">
+                                Patricia Wayne
+                            </a>, Irondequoit town historian.
+                        </p>
+                        
+                        <hr style="height: 2px; width: 50%;" />
+                        
+                        <p class="bartxt">
+                            <a href="{% get_media_prefix %}docs/History/Deer_Hunting.pdf">
+                                Deer Law and Regulations (03/2016)
+                            </a>
+                        </p>
+                        
+                        <p class="bartxt">
+                            History of the legal issues pertaining to the Culling of the Irondequoit Deer Herd 
+                            as of March 2016. [submitted by 
+                            <a href="mailto:colombo@lawyer.com">Jeanne M. Colombo</a>]
+                        </p>
+                    </div>
+                </div>
+                
+                <div style="float: right; width: 548px;">
+                    <div class="colright">
+                        <p class="txt">
+                            Huntington Hills, Incorporated, is a residential tract of land and the home of 65 
+                            families. This wooded area of about 200 acres, is bounded on the north by Durand-Eastman 
+                            Park and on the east by Wisner Road. It is located in the town of Irondequoit in Monroe 
+                            County, New York.
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            Many years ago as Lake Ontario receded from what is now Ridge Road, all of this area 
+                            appeared and that is the reason for the predominately sandy soil with some sections, 
+                            mostly by Hoffman Road, which contain pockets of clay. Anyone who has done gardening 
+                            in the New England area will appreciate the lack of rocks in this area. Digging in our 
+                            soil has been described as like cutting through cheese.
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            Huntington Hills began when Mr. E. Maurice Trimble purchased about 200 acres from 
+                            Alfred J. Elston in 1922 for about $20,000.00.&nbsp; Alfred worked for Alcesta F.
+                            Huntington. When Alcesta died in 1919, she willed all her land to Alfred.
+                        </p>
+                        
+                        <p class="txt">
+                            Alcesta was one of six children of Elon Huntington, who died in 1889, leaving his 
+                            real property to his children. Elon Huntington was one of the founders of the University 
+                            of Rochester and on its first Board of Trustees from 1850 to 1889. Alcesta bought out 
+                            her brothers and sisters. She had been given 63 acres in 1889 by her father. In 1902,
+                            Alcesta acquired 80 more acres from the estate of Mathias Hoffman. She lived part time 
+                            in what was originally a carriage house at the corner of Hoffman and Wisner Road. 
+                            It's possible she acquired this carriagle house when she bought the 80 acres. She allowed
+                            Alfred Elston to convert it into a full house so that he could move himself and his 
+                            family in. Sometime after, she added a private wing for herself (complete with separate 
+                            entrance and staircase to her bedroom).
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            Maurice and Jeanette Trimble built a summer home on Center Road which they winterized 
+                            and made their permanent home 10 years later. Mr. Trimble took care of the woods and 
+                            pathways, leading a group of neighbors in this for 40 years. He knew each and every tree, 
+                            and when you wanted to cut down a tree in those days, you had to ask Mr. Trimble. He 
+                            personally oversaw the planting of pine trees all along the Center Entrance road, giving 
+                            the road a beauty rarely found in other residential areas.
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            Maurice Trimble was the prime mover in establishing Huntington Hills the way it is 
+                            today. His wife Jeanette was the granddaughter of Elon Huntington and the daughter 
+                            of Horace Hooker and Susan Huntington. Horace Hooker was in the nursery business
+                            selling fruit trees. He was a Lt. in the Civil War and when the war was over he went 
+                            into partnership with his father-in-law, Elon Huntington. The new business was called 
+                            Genesee Falls Nursery. At that time many apple trees were planted on the flat areas of 
+                            Huntington Hills. There were Russets, Greenings and Baldwins.
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            In 1922 Mr. Trimble decided to sell some of the acreage that he owned. He hired George 
+                            Newell, a surveyor, to make a topographical survey of this very irregular terrain. There
+                            were three residential areas in the flat lands or &#8220;hog backs&#8221; and the rest of 
+                            the land in between was left as the Common Areas or, as said today, green belts (forever 
+                            green). Premises were subdivided into 74 residential lots, 75 Garden plots and
+                            the Common Areas of about 54.05 acres, with private roadways and pathways being part of 
+                            the &#8220;commons&#8221;. (The boundaries of the original parcel have remained the 
+                            boundaries of the Corporation). A subdivision map was officially filed in the Monroe 
+                            County Clerk&#8217;s office on February 28, 1922 as well as a map showing the original 
+                            Garden Plots dated June 12, 1922. These Garden Plots are now part of the overall Commons.
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            Mr. Trimble invited several of his friends, Wesley Angle (president of Stromberg Carlson),
+                            William Boswell, Roland Will, William Gorsline, Sara Durand Moore and Samuel Durand as 
+                            first prospects to purchase lots in Huntington Hills. When Boswell and Will bought their 
+                            lots, they also purchased surplus World War One army barracks and installed them as their 
+                            summer homes. After that Mr. Trimble made a restriction that further home plans were to be
+                            approved by an architect selected by the corporation. These summer homes were built by 
+                            original purchasers from 1922 to 1926, and most of them, albeit upgraded and remodeled 
+                            are still located on Center Road. Samuel Durand bought several lots on the north side of
+                            the sub-division and gave them to Durand-Eastman Park. Few lots were sold because of the 
+                            depression of 1928. But George Long, founder of Sea Breeze Park had the courage to buy 
+                            and build, and under contract built several other homes.
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            Mr. Trimble also built a sizable dam just south of the south line of Durand-Eastman Park, 
+                            with timbers taken from the woods of Huntington Hills, making a shallow lake of about 
+                            six acres. It was stocked with fish and used for ice skating in the winter. However, it 
+                            lasted only three years before washing out. It was then rebuilt using interlocking steel 
+                            piling, but again it did not hold. Remains of this project can still be found today, but
+                            the lake is now again swamp or wet lands.
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            Initially, the only problem then was lack of water. Only a 2&#8221; main running
+                            from Culver Road via Fairlea supplied the growing number of homes. Things could get 
+                            rather desperate during the summer months when the demand for water was at its peak. 
+                            Fortunately, soon after a disastrous fire, the Sea Breeze Water District provided 
+                            Huntington Hills with 6&#8221; mains, fire hydrants and a more relaxed feeling
+                            about its water supply.
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            A Stock Corporation, Huntington Hills, Inc. was formed with 74 shares of no par stock 
+                            authorized. The commons and roadways were conveyed to the corporation and each buyer 
+                            of a residential lot received a garden plot and one share of stock as well as a right in
+                            common with other owners to use the &#8220;commons&#8221; and roadways. The 
+                            &#8220;commons&#8221; included private, wooded trails, private roads such as Center 
+                            Entrance, and various rights of ways allowing access to lots which would otherwise be
+                            inaccessible. The directors submitted an annual budget to cover taxes on commons, 
+                            liability insurance and other corporate expenses. Each owner was assessed a prorate share 
+                            of between $5.00 and $10.00 per year.
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">The Original Restrictive Covenant Agreement in 1922 was:</p>
+                        
+                        <ol class="txt">
+                            <li>No building lot could be subdivided.</li>
+                            <li>
+                                Each lot had a garden plot, for farming only. The garden plot could not be built 
+                                upon, nor could it be sold separately. (The garden plots were near Spring Valley 
+                                Drive and Hoffman Road).
+                            </li>
+                            <li>
+                                Each building lot by shared ownership had access to the common lands, but did 
+                                not have individual rights.
+                            </li>
+                        </ol>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            In 1949, the stock corporation was dissolved and a membership corporation was formed 
+                            with the same name. This was done because stock shares were often lost and not 
+                            transferred to a buyer and because New York State required franchise tax returns 
+                            each year and raised the minimum annual tax to $250.00. Commons and roadways were 
+                            conveyed to the new corporation with each owner of a lot becoming a member with voting 
+                            rights. (The By-laws were amended on November 25, 1996 to allow members to vote by
+                            proxy). Directors were then elected and were responsible for the &#8220;commons&#8221;.
+                            The By-laws of Huntington Hills, Inc. were adopted January 10, 1949, revised 
+                            February 19, 1953 and revised October 29, 1970.
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            Annual assessments were made to members. However, such assessments, as well as the 
+                            garden plot taxes, went frequently unpaid and unfortunately garden plots were 
+                            occasionally not conveyed with a residential lot. In 1974-75 the town of Irondequoit
+                            threatened that the assessment on the &#8220;commons&#8221; would be increased from 
+                            $2,000.00 to $10,000.00 and that the assessment of the garden plots would be increased from 
+                            $50.00 per lot to an amount sufficient to pay for preparation and mailing of tax bills.
+                            Due to unpaid taxes, the County had foreclosed 8 or 10 garden plots which were subsequently 
+                            auctioned and bid upon by land speculators. Since tract restrictions prohibited the resale 
+                            of any garden plot without an accompanying residential lot, purchasers were allowed to own
+                            them but were not allowed to build on them. As a result of the restrictions, title 
+                            companies would not insure them and the purchasers could not convey them with good title.
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            An effort was made by the members of Huntington Hills, Inc. to repurchase the garden 
+                            plots so that they could be returned to the &#8220;commons&#8221;. Funds were raised 
+                            but the negotiations failed. On April 20, 1976 in cooperation with the Town Assessors 
+                            Office, all but 16 of the 74 garden plots were conveyed by separate owners to Huntington 
+                            Hills, Inc., and were made a part of the &#8220;commons&#8221;.&nbsp; The garden plot
+                            portion of Huntington Hills was disclaimed and abandoned and removed from tax rolls, 
+                            except for 16 lots conveyed. On April 28, 1976, the Corporation conveyed to each owner 
+                            of a residential lot a 1/74th fractional share of the combined &#8220;commons&#8221;
+                            and former garden plots. Such a share became a part of the title to each residential lot.
+                            The Corporation has retained the right for its directors to &#8220;impose reasonable 
+                            regulation on use, as shall not be harmful to the natural state of common areas,
+                            including manner of maintenance of roads, pathways, gardening areas, cutting of trees, 
+                            clearing of brush and other uses as approved by the directors as shall not be harmful 
+                            to the natural state of the premises or to the environment.&#8221; Since then, the 
+                            directors have been successful in securing all but 4 of the 16 remaining lots and
+                            have added them to the commons.
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            The Town tax rolls now indicate about 63.5 acres of commons. Maps, which are 
+                            available upon request, show the common lands, right of ways and the trails that lead 
+                            through them, together with the layout of all the building lots. The purpose of the 
+                            Commons (which now includes the formerly named Garden Plots) is to provide a forever 
+                            wild and natural area for the private enjoyment of the Huntington Hills, Inc. residents 
+                            and enhancement of our homeowners&#8217; property values.
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            Hoffman Road became a public roadway in 1996. Spring Valley Drive, Rainbow Drive and 
+                            Conifer Lane remain private. North, Center and South Entrances, and the road off Center 
+                            Entrance, Dogwood Lane, are private.
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            The ownership and use of roadways and common areas is all a matter of record in the 
+                            Monroe County Clerk&#8217;s Office and should appear on the Abstracts of Title if the 
+                            residential lot was purchased since April of 1976.
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            Charter members of the corporation were those who owned residential lots when the 
+                            Membership Corporation was formed in 1949. As houses have been sold, the buyers have been
+                            considered to automatically become members. The By-laws provide for annual and special 
+                            meetings of members, assessments payable by members, election of directors, meetings of 
+                            directors and the election of corporate officers by the directors as well as the usual
+                            corporate detail. Officers serve for two years and may be reelected. An annual meeting is 
+                            held usually in November. The Directors call for an assessment, as needed, at the annual
+                            meeting. (The assessment must be voted upon if over $300.00). In recent years, the 
+                            assessment has been between $10.00 and $35.00 per year, except for 2004 when a special 
+                            assessment was $200.00 to cover anticipated one time expenses. The money has been used 
+                            for ordinary costs, such as the payment of premiums on liability insurance, taxes paid 
+                            on the common lands, copying and mailings. Annual taxes are paid by the treasurer.
+                            A liability insurance policy covers the officers and directors against suit.
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            Historically, the Association appears to have been a deliberately loose banding of 
+                            homeowners. However, the Corporation does have legal authority, based upon the written 
+                            covenants in all of our deeds (as shown in the abstracts of title), to formally
+                            act to protect and enforce those covenants. On occasion the members act as sub-groups 
+                            and at other times we act as one. For example, the residents of Center Entrance and 
+                            Dogwood Lane may elect to join the Hammer Grog and Hat Club which manages a tennis court
+                            and swimming pool, that they alone support. All residents of Center Entrance and its side 
+                            road, Dogwood Lane, assess themselves to have their two roads blacktopped. Likewise, 
+                            South Entrance owners have their own deeded pool and are responsible for their own
+                            road paving. North Entrance has three homes, and their owners are responsible for their 
+                            own roadway, too. There is the Huntington Hills Garden Club, which obtains its base 
+                            membership from Huntington Hills, Inc. Finally, with the approval of the directors, the 
+                            Commons Committee has been formed. This ad hoc committee has been helpful in maintaining 
+                            and updating relevant maps of Huntington Hills, surveying and recording its flora and fauna, and
+                            assisting in keeping the trails of the "commons" clear of debris.
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            If you plan a new free-standing building, you are asked to submit drawings and plans 
+                            to the Board of Directors so that the architectural committee can review. Additions to 
+                            existing structures need approval of the Town and other governmental agencies. Mostly, 
+                            we try to be good neighbors, mindful of the rights of each other, working together on 
+                            common causes to improve our neighborhood.
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            Huntington Hills is one of the best, and last, remaining wooded areas in the County.
+                            Its natural beauty, seclusion and protection from encroachment, with easy access to the 
+                            City of Rochester, make Huntington Hills a very desirable place to live. Upon first 
+                            visit, one is amazed at the dense woods, deep ravines and beautiful streams. The area 
+                            is home to a diverse population of plants and animals. Among them are American chestnut 
+                            trees, cherry trees, pine trees, maple trees, oak trees, woodpeckers, nuthatches, wild 
+                            turkeys, fox, deer and many others. With the continued interest of Huntington
+                            Hills&#8217; members, the natural beauty of the area will be preserved for each others 
+                            enjoyment as well as for future members.
+                        </p>
+                    </div>
+                    
+                    <div style="margin-left: 3em; width: 38em;" class="colright txt">
+                        <p class="txt">
+                            <span style="font-style: italic;">
+                                The above &#8220;History of Huntington Hills, Inc. 1922 to 2004&#8221; has been 
+                                compiled from previous &#8220;Histories&#8221; written by Carol Golan and
+                                Jeanne Colombo, with contributions from Marsden Tuthill and Frank Giangiobbe. 
+                                Historical corrections were made in 2016 by Adam Stein from information
+                                provided by Mary Jones.
+                            </span>
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        <p class="txt">
+                            Donald T. Becker<br />
+                            President<br />
+                            November 2005
+                        </p>
+                    </div>
+                    
+                    <div class="colright">
+                        Addendum: Hoffman Road became a public roadway in 1996. 
+                        <a href="{% get_media_prefix %}docs/Town_Resolutions/2017-277.pdf">
+                            Center Entrance and Dogwood Lane became public roadways in 2017
+                        </a>. Spring Valley Drive, Rainbow Drive, Conifer Lane, North Entrance, and South Entrance 
+                        remain private.
+                    </div>
+                </div>
+                
+                <div style="width: 750px;">
+                    <div style="float: right; margin-right: 5px;">
+                        <p class="hidden_txt">
+                            design by 
+                            <a href="http://www.jordanmarshall.org/" target="_jmm" class="hidden_txt">luibh</a>
+                            | content by Huntington Hills Association, Inc. (All Rights Reserved)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

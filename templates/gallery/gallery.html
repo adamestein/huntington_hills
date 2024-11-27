@@ -1,7 +1,7 @@
 {% load static %}
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html style="direction: ltr;" lang="en">
+<html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
         <meta name="description" content="Photographs of Huntington Hills" />
@@ -84,14 +84,14 @@
 
             <div id="footer">
                 <span>
-                    <a href="http://www.huntingtonhillsinc.org/index.html">Home</a> |
-                    <a href="http://www.huntingtonhillsinc.org/about.html">About</a> |
-                    <a href="http://www.huntingtonhillsinc.org/docs.html">Documents</a> |
-                    <a href="http://www.huntingtonhillsinc.org/history.html">History</a> |
+                    <a href="{{ settings.HOME_LINK }}">Home</a> |
+                    <a href="{{ settings.ABOUT_LINK }}">About</a> |
+                    <a href="{{ settings.DOCUMENTS_LINK }}">Documents</a> |
+                    <a href="{{ settings.HISTORY_LINK }}">History</a> |
                     Gallery |
-                    <a href="http://www.huntingtonhillsinc.org/contact.html">Contact</a> |
-                    <a href="http://www.huntingtonhillsinc.org/search.html">Search</a> |
-                    <a href="http://www.huntingtonhillsinc.org/technical.html">Technical Details</a>
+                    <a href="{{ settings.CONTACT_LINK }}">Contact</a> |
+                    <a href="{{ settings.SEARCH_LINK }}">Search</a> |
+                    <a href="{{ settings.TECHNICAL_LINK }}">Technical Details</a>
                 </span>
             </div>
 

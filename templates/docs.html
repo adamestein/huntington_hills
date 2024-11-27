@@ -1,0 +1,1134 @@
+{% extends "residents/base.html" %}
+{% load static %}
+
+{% block residents_title %}Documents &amp; Maps{% endblock %}
+{% block header %}Documents &amp; Maps{% endblock %}
+
+{% block navbar %}{% include "_full_navbar.html" with active="documents" %}{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+    
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/smoothness/jquery-ui.css" />
+    
+    <style>
+        .menu_item {
+            font-weight: bold;
+        }
+
+        .ui-accordion-content {
+            height: auto !important;
+        }
+
+        .ui-accordion-header, .ui-state-default {
+            background: #92b86d !important;
+            border: 1px solid #92b86d;
+            color: white !important;
+            font-size: 100% !important;
+            margin: 2px 0 0 0 !important;
+            padding: .5em .5em .5em .7em !important;
+        }
+
+        .ui-state-active,
+        .ui-widget-content .ui-state-active,
+        .ui-widget-header .ui-state-active,
+        a.ui-button:active,
+        .ui-button:active,
+        .ui-button.ui-state-active:hover {
+            background: #7c9a5e !important;
+            border: 1px solid #7c9a5e !important;
+        }
+
+        .submenu {
+            font-size: 120% !important;
+        }
+    </style>
+{% endblock %}
+
+{% block js %}
+    {{ block.super }}
+    
+    <script src="//code.jquery.com/ui/1.13.1/jquery-ui.min.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".accordion").accordion({
+                active: false,
+                collapsible: true
+            });
+
+            $(".menu").menu();
+        });
+    </script>
+{% endblock %}
+
+{% block resident_content %}
+    <p>
+        All documents are in
+        <a href="http://en.wikipedia.org/wiki/Portable_Document_Format" target="_blank">PDF</a>
+        format. You will need a viewer such as
+        <a href="http://www.adobe.com/products/acrobat/readstep.html" target="_blank">Adobe Reader</a>, 
+        <a href="http://www.gnome.org/projects/evince/" target="_blank">Evince</a>, or
+        <a href="https://okular.kde.org/" target="_blank">Okular</a>. Some documents are also
+        available in image formats such as 
+        <a href="http://en.wikipedia.org/wiki/Jpeg" target="_blank">JPEG</a> (which your web
+        browser should already be able to view).
+    </p>
+
+    <div class="accordion">
+        <h3>Online Documents</h3>
+
+        <div>
+            <ul class="menu">
+                <li>
+                    <div class="menu_item">Budgets</div>
+                    
+                    <ul>
+                        <li>
+                            <div>
+                                <a href="{% get_media_prefix %}members/Budgets/2008/2007_Financial_Activity_Final.pdf" 
+                                   target="_blank">
+                                    <strong>2007</strong> Statement of Financial Activity and Account Balance
+                                </a>
+                            </div>
+                        </li>
+    
+                        <li>
+                            <div>
+                                <a href="{% get_media_prefix %}members/Budgets/2008/2008_Proposed_Budget_Final.pdf" 
+                                   target="_blank">
+                                    Proposed Budget for <strong>2008</strong>
+                                </a>
+    
+                            </div>
+                        </li>
+    
+                        <li>
+                            <div>
+                                <a href="{% get_media_prefix %}members/Budgets/2008/2009_Proposed_Budget_Final.pdf" 
+                                   target="_blank">
+                                    Proposed Budget for <strong>2009</strong>
+                                </a>
+                            </div>
+                        </li>
+    
+                        <li>
+                            <div>
+                                <a href="{% get_media_prefix %}members/Budgets/2009/2009_Actual_2010_Proposed.pdf" 
+                                   target="_blank">
+                                    Actual Budget for <strong>2009</strong> and Proposed for <strong>2010</strong>
+                                </a>
+                            </div>
+                        </li>
+    
+                        <li>
+                            <div>
+                                <a href="{% get_media_prefix %}members/Budgets/2014_Actual.pdf" target="_blank">
+                                    Actual Budget for <strong>2014</strong>
+                                </a>
+                            </div>
+                        </li>
+    
+                        <li>
+                            <div>
+                                <a href="{% get_media_prefix %}members/Budgets/2015_Proposed.pdf" target="_blank">
+                                    Proposed Budget for <strong>2015</strong>
+                                </a>
+                            </div>
+                        </li>
+    
+                        <li> 
+                            <div>
+                                <a href="{% get_media_prefix %}members/Budgets/2015_Actual.pdf" target="_blank">
+                                    Actual Budget for <strong>2015</strong>
+                                </a>
+                            </div>
+                        </li>
+    
+                        <li>
+                            <div>
+                                <a href="{% get_media_prefix %}members/Budgets/2016_Approved.pdf" target="_blank">
+                                    Approved Budget for <strong>2016</strong>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+    
+                <li>
+                    <div>
+                        <a class="menu_item" target="_blank" href="{% get_media_prefix %}docs/By-Laws.pdf">By-Laws</a>
+                        
+                        <p style="font-size: 90%;">
+                            Set of laws that each property owner <em>must</em> follow
+                        </p>
+                    </div>
+                </li>
+                                        
+                <li>
+                    <div>
+                        <a href="{% get_media_prefix %}docs/Town_Resolutions/2017-277.pdf" class="menu_item" 
+                           target="_blank">
+                            Conversion of Center Entrance and Dogwood Lane from private to Town (public) roads
+                        </a>
+                        
+                        <p style="font-size: 90%;">
+                            An extraction of the minutes from the Town Board November 21, 2017 meeting regarding
+                            resolution 2017-277 where it was voted to accept Center Entrance and Dogwood Lane
+                            as Town owned roads.
+                        </p>
+                    </div>
+                </li>
+                
+                <li>
+                    <div>
+                        <a class="menu_item" href="{% get_media_prefix %}docs/Deer_Bow_Hunt_Proxy_Protocol.pdf" 
+                           target="_blank">
+                            Deer Bow Hunt Proxy Protocol
+                        </a>
+                        
+                        <p style="font-size: 90%;">
+                            Set of rules to cover tracking wounded deer on the Commons during the annual Irondequoit 
+                            Bow Hunt
+                        </p>
+                    </div>
+                </li>
+                
+                <li>
+                    <div>
+                        <a class="menu_item" target="_blank" href="/bow_hunt/commons/">
+                            Exceptions to hunting on the Commons
+                        </a>
+                        
+                        <p style="font-size: 90%;">
+                            Information regarding the exception events that took place as per the 
+                            <a href="{% get_media_prefix %}docs/Deer_Bow_Hunt_Proxy_Protocol.pdf">
+                                proxy protocol document
+                            </a>
+                        </p>
+                    </div>
+                </li>
+    
+                <li>
+                    <div class="menu_item">
+                        <a href="{% get_media_prefix %}docs/Commons_Maintenance_Guidelines-01_11_2017.pdf" target="_blank">
+                            Guideline for Maintenance of HHI Commons Property
+                        </a>
+                    </div>
+                </li>
+    
+                <li>
+                    <div class="menu_item">
+                        <a href="{% get_media_prefix %}docs/HHBrochure.pdf" target="_blank">
+                            Huntington Hills Commons Map &amp; Rules of Use
+                        </a>
+                    </div>
+                </li>
+    
+                <li>
+                    <div class="menu_item">Minutes</div>
+    
+                    <ul>
+                        <li>
+                            <div>November 8, 2006</div>
+    
+                            <ul>
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/01_25_2007/CoverLetter.pdf" 
+                                           class="submenu" target="_blank">
+                                            Cover letter
+                                        </a>
+                                    </div>
+                                </li>
+    
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/01_25_2007/Minutes.pdf" 
+                                           class="submenu" target="_blank">
+                                            Minutes
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+    
+                        <li>
+                            <div>October 30, 2007</div>
+    
+                            <ul>
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/02_10_2008/CoverLetter.pdf" 
+                                           class="submenu" target="_blank">
+                                            Cover letter
+                                        </a>
+                                    </div>
+                                </li>
+    
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/02_10_2008/Minutes.pdf" 
+                                           class="submenu" target="_blank">
+                                            Minutes
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+    
+                        <li>
+                            <div>November 12, 2008</div>
+    
+                            <ul>
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/Minutes-11_12_2008.pdf" 
+                                           class="submenu" target="_blank">
+                                            Minutes
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+    
+                        <li>
+                            <div>January 11, 2010</div>
+    
+                            <ul>
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/Minutes-01_11_2010.pdf" 
+                                           class="submenu" target="_blank">
+                                            Minutes
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+    
+                        <li>
+                            <div>March 29, 2011</div>
+    
+                            <ul>
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/Minutes-03_29_2011.pdf" 
+                                           class="submenu" target="_blank">
+                                            Minutes
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+    
+                        <li>
+                            <div>January 3, 2012</div>
+    
+                            <ul>
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}docs/Huntington_Hills_2012-Legacy_Letter.pdf" 
+                                           class="submenu" target="_blank" >
+                                            Document
+                                        </a> regarding the
+                                        <a href="http://www.irondequoitpost.com/latestnews/x2011271369/Rezoning-request-for-senior-living-complex-sparks-debate-in-Irondequoit"
+                                           class="submenu"  target="_blank">
+                                            Legacy
+                                        </a> project
+                                    </div>
+                                </li>
+    
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/Minutes-01_03_2012.pdf" 
+                                           class="submenu" target="_blank">
+                                            Minutes
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+    
+                        <li>
+                            <div>January 22, 2013</div>
+    
+                            <ul>
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/Minutes-01_22_2013.pdf" 
+                                           class="submenu" target="_blank">
+                                            Minutes
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+    
+                        <li>
+                            <div>January 22, 2014</div>
+    
+                            <ul>
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/Minutes-01_22_2014.pdf" 
+                                           class="submenu" target="_blank">
+                                            Minutes
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+    
+                        <li>
+                            <div>January 14, 2015</div>
+    
+                            <ul>
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/Agenda-01_14_2015.pdf"
+                                           class="submenu" target="_blank" >
+                                            Agenda
+                                        </a>
+                                    </div>
+                                </li>
+    
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/Minutes-01_14_2015.pdf"
+                                           class="submenu"  target="_blank">
+                                            Minutes
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+    
+                        <li>
+                            <div>February 9, 2015</div>
+    
+                            <ul>
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/Minutes-02_09_2015.pdf"
+                                           class="submenu"  target="_blank">
+                                        Board of directors meeting minutes
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+    
+                        <li>
+                            <div>January 13, 2016</div>
+    
+                            <ul>
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/Minutes-01_13_2016.pdf"
+                                           class="submenu"  target="_blank">
+                                            Minutes
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+    
+                        <li>
+                            <div>January 11, 2017</div>
+    
+                            <ul>
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/01_11_2017/2017_Assessment_Invoice.pdf"
+                                           class="submenu"  target="_blank">
+                                            2017 Assessment Invoice
+                                        </a>
+                                    </div>
+                                </li>
+    
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/01_11_2017/Late_Charge_Proposal.pdf"
+                                           class="submenu"  target="_blank">
+                                            Late Charge for Past Due Assessment Payments
+                                        </a>
+                                    </div>
+                                </li>
+    
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/01_11_2017/Minutes.pdf"
+                                           class="submenu"  target="_blank">
+                                            Minutes
+                                        </a>
+                                    </div>
+                                </li>
+    
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/01_11_2017/Treasurer_Report.pdf"
+                                           class="submenu"  target="_blank">
+                                            Treasurer Report
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <div>January 10, 2018</div>
+    
+                            <ul>
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/01_10_2018/2017_Income_Expense_Statement.pdf"
+                                           class="submenu"  target="_blank">
+                                            2017 Income Expense Statement
+                                        </a>
+                                    </div>
+                                </li>
+                                
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/01_10_2018/2018_Proposed_Budget_and_Assessment.pdf"
+                                           class="submenu"  target="_blank">
+                                            2018 Proposed Budget and Assessment
+                                        </a>
+                                    </div>
+                                </li>
+                                
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}docs/Town_Resolutions/2017-277.pdf" class="menu_item"
+                                           target="_blank">
+                                            Conversion of Center Entrance and Dogwood Lane from private to Town (public) 
+                                            roads
+                                        </a>
+                                    </div>
+                                </li>
+                                
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/01_10_2018/Agenda.pdf"
+                                           class="submenu"  target="_blank">
+                                            Agenda
+                                        </a>
+                                    </div>
+                                </li>
+                                
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/01_10_2018/Minutes.pdf"
+                                           class="submenu"  target="_blank">
+                                            Minutes
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                           <div>January 9, 2019</div>
+                           
+                           <ul>
+                               <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/01_09_2019/Minutes.pdf"
+                                           class="submenu"  target="_blank">
+                                            Agenda & Minutes
+                                        </a>
+                                    </div>
+                                </li>
+                                
+                                <li>
+                                    <div>
+                                        <a href="{% get_media_prefix %}members/Minutes/01_09_2019/Financial_Operations.pdf"
+                                           class="submenu"  target="_blank">
+                                            Financial Operations
+                                        </a>
+                                    </div>
+                                </li>
+                           </ul>
+                        </li>
+                        
+                        <li>
+                           <div>January 6, 2020</div>
+                           
+                           <ul>
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_06_2020/Agenda.pdf"
+                                           class="submenu"  target="_blank">
+                                           Agenda
+                                       </a>
+                                   </div>
+                               </li>
+                                                                       
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_06_2020/Proposed_Budget_+_Assessment.pdf"
+                                           class="submenu"  target="_blank">
+                                           Financial Budget &amp; Assessment
+                                       </a>
+                                   </div>
+                               </li>
+                               
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_06_2020/Income_Expenses.pdf"
+                                           class="submenu"  target="_blank">
+                                           Financial Income Expenses
+                                       </a>
+                                   </div>
+                               </li>
+                               
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_06_2020/Meeting_Notice.pdf"
+                                           class="submenu"  target="_blank">
+                                           Meeting Notice
+                                       </a>
+                                   </div>
+                               </li>
+                               
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_06_2020/Minutes.pdf"
+                                           class="submenu"  target="_blank">
+                                           Minutes
+                                       </a>
+                                   </div>
+                               </li>
+                           </ul>
+                        </li>
+                        
+                        <li>
+                           <div>January 6, 2021</div>
+                           
+                           <ul>
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_06_2021/2020_Income_Expense_Statement_for_January_2021_Annual_Meeting.pdf"
+                                           class="submenu"  target="_blank">
+                                           2020 Income Expense Statement
+                                       </a>
+                                   </div>
+                               </li>
+                               
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_06_2021/2021_Proposed_Budget_and_Assessment_at__65.pdf"
+                                           class="submenu"  target="_blank">
+                                           2021 Proposed Budget and Assessment at $65
+                                       </a>
+                                   </div>
+                               </li>
+                               
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_06_2021/Meeting_Notice.pdf"
+                                           class="submenu"  target="_blank">
+                                           Meeting Notice
+                                       </a>
+                                   </div>
+                               </li>
+                               
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_06_2021/2021_Annual_HH_Inc_meeting_minutes.pdf"
+                                           class="submenu"  target="_blank">
+                                           Minutes
+                                       </a>
+                                   </div>
+                               </li>
+                           </ul>
+                        </li>
+                        
+                        <li>
+                           <div>January 10, 2022</div>
+                           
+                           <ul>
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_10_2022/2021_Income_Expense_Statement_for_January_2022_Annual_Meeting.pdf"
+                                           class="submenu"  target="_blank">
+                                           2021 Income Expense Statement
+                                       </a>
+                                   </div>
+                               </li>
+                               
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_10_2022/2022_Proposed_Budget_and_Assessment_at_65.pdf"
+                                           class="submenu"  target="_blank">
+                                           2022 Proposed Budget and Assessment at $65
+                                       </a>
+                                   </div>
+                               </li>
+                               
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_10_2022/Meeting_Notice.pdf"
+                                           class="submenu"  target="_blank">
+                                           Meeting Notice
+                                       </a>
+                                   </div>
+                               </li>
+                               
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_10_2022/HHI_Minutes_with_Attachments.pdf"
+                                           class="submenu"  target="_blank">
+                                           Minutes (with attachments)
+                                       </a>
+                                   </div>
+                               </li>
+                           </ul>
+                        </li>
+                        
+                        <li>
+                           <div>January 16, 2023</div>
+                           
+                           <ul>
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_16_2023/2022_Income_Expense_Statement_for_January_2023_Annual_Meeting.pdf"
+                                           class="submenu"  target="_blank">
+                                           2022 Income Expense Statement
+                                       </a>
+                                   </div>
+                               </li>
+                               
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_16_2023/2023_Proposed_HH_Budget_Final.pdf"
+                                           class="submenu"  target="_blank">
+                                           2023 Proposed Budget and Assessment at $65
+                                       </a>
+                                   </div>
+                               </li>
+                               
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_16_2023/agenda.pdf"
+                                           class="submenu"  target="_blank">
+                                           Agenda
+                                       </a>
+                                   </div>
+                               </li>
+                               
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_16_2023/notice.pdf"
+                                           class="submenu"  target="_blank">
+                                           Meeting Notice
+                                       </a>
+                                   </div>
+                               </li>
+                               
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_16_2023/2023_HHInc_Mtg_minutes.pdf"
+                                           class="submenu"  target="_blank">
+                                           Minutes
+                                       </a>
+                                   </div>
+                               </li>
+                           </ul>
+                        </li>
+                        
+                        <li>
+                           <div>January 16, 2024</div>
+                           
+                           <ul>
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_16_2024/2023_Income_Statement1.pdf"
+                                           class="submenu"  target="_blank">
+                                           2023 Income Statement
+                                       </a>
+                                   </div>
+                               </li>
+                               
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_16_2024/2024_Proposed_Budget_Final_80.pdf"
+                                           class="submenu"  target="_blank">
+                                           2024 Proposed Budget and Assessment at $80
+                                       </a>
+                                   </div>
+                               </li>
+                               
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_16_2024/agenda.pdf"
+                                           class="submenu"  target="_blank">
+                                           Agenda
+                                       </a>
+                                   </div>
+                               </li>
+                               
+                               <li>
+                                   <div>
+                                       <a href="{% get_media_prefix %}members/Minutes/01_16_2024/HHInc_Annual_Mtg_2024_final.pdf"
+                                           class="submenu"  target="_blank">
+                                           Minutes
+                                       </a>
+                                   </div>
+                               </li>
+                           </ul>
+                        </li>
+                    </ul>
+                </li>
+                
+                <li>
+                    <div>
+                        <a href="{% get_media_prefix %}docs/Deeds/132_Spring_Valley_Drive-Quit_Claim_Deed.pdf" 
+                           class="menu_item" target="_blank">
+                            Quitclaim deed for 132 Spring Valley Drive
+                        </a>
+                        
+                        <p style="font-size: 90%;">
+                            Deed showing the transfer of 132 Spring Valley Drive from Dr. Laura Morrissey to Huntington 
+                            Hills.
+                        </p>
+                    </div>
+                </li>
+    
+                <li>
+                    <div>
+                        <a href="{% url 'resident:information' %}" 
+                           class="menu_item" target="_blank">
+                            Residents List
+                        </a>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="accordion">
+                <h3>Spring Valley Project</h3>
+
+                <div>
+                    <p>
+                        The goal of this project is to control the flooding that happens
+                        during heavy rains in the areas of Spring Valley Drive, Conifer
+                        Lane and Hoffman Road.
+                    </p>
+
+                    <p>
+                        The October 3rd proposal is for the complete Spring Valley
+                        Flood Control Project. The January 11th proposal is a detailed
+                        proposal to elevate Hoffman Road and Conifer Lane and to add
+                        additional culverts under both roads.
+                    </p>
+
+                    <p>
+                        <a href="http://www.labellapc.com/home.php" target="_blank">LaBella Associates</a> 
+                        are now in the process of obtaining the permits required
+                        so the town can begin the work on schedule.
+                        <a href="http://www.irondequoit.org/content/view/141/340/" target="_blank">
+                            Marty Piecuch
+                        </a>, Irondequoit Commissioner of Public Works has commented, “If all goes well with 
+                        the approval process, we can expect this work to be completed this summer”.
+                    </p>
+
+                    <ul>
+                        <li>
+                            <a href="{% get_media_prefix %}docs/Spring_Valley/proposal-10_03_2006.pdf" 
+                               target="_blank">
+                                Proposal (October 3, 2006)
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{% get_media_prefix %}docs/Spring_Valley/proposal-01_11_2007.pdf" 
+                               target="_blank">
+                                Proposal (January 11, 2007)
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{% get_media_prefix %}docs/Spring_Valley/schedule.png" target="_blank">
+                                Schedule
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="accordion">
+                <h3>Archived</h3>
+            
+                <div>
+                    <ul class="menu">
+                        <li>
+                            <div>
+                                <a href="{% get_media_prefix %}docs/Center_Entrance/Road_Maintenance_Agreement.pdf" 
+                                   class="menu_item" target="_blank">
+                                    Road Maintenance Agreement for Center Entrance and Dogwood Lane
+                                </a>
+                                
+                                <p style="font-size: 90%;">
+                                    This agreement went into effect September 1, 1986, until November 20, 2017.
+                                    On November 21, 2017, Center Entrance and Dogwood Lane became Irondequoit 
+                                    Town roads at which point this agreement was no longer needed.
+                                </p>
+
+                                <p style="font-size: 90%;">
+                                    An official document that was filed with the County of Monroe and was part of 
+                                    the deeds for the folks living on Center Entrance and Dogwood Land.
+                                    <a href="{% get_media_prefix %}docs/Center_Entrance/Background.pdf" 
+                                       target="_blank">
+                                        Background
+                                    </a> information on this agreement is also available.
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <h3>Online Maps</h3>
+        
+        <div>
+            <h2 class="medium">Durand East Park</h2>
+
+            <p>
+                Old <a href="{% get_media_prefix %}docs/Maps/Durand_Eastman_Park.pdf" target="_blank">map</a> of
+                <a href="http://www.monroecounty.gov/parks-durandeastman.php" target="_blank">
+                    Durand Eastman Park
+                </a> which includes Huntington Hills. Courtesy of John and Lisa Fields.
+            </p>
+
+            <hr style="height: 3px; width: 100%;" />
+
+            <h2 class="medium">Huntington Hills subdivision</h2>
+
+            <p>
+                Original
+                <a href="{% get_media_prefix %}docs/Maps/Huntington_Hills-02_28_1922.pdf" target="_blank">map</a>
+                of the Huntington Hills subdivision as filed February 28, 1922.  Courtesy of
+                John and Lisa Fields.
+            </p>
+
+            <p>
+                Survey
+                <a href="{% get_media_prefix %}docs/Maps/Huntington_Hills-01_10_2007.pdf" target="_blank">
+                    map
+                </a>
+                by <a href="http://local.yahoo.com/details?id=11757607" target="_blank">
+                Walter P. Lisowski Surveyors</a> dated January 10, 2007.
+            </p>
+
+            <p>
+                <a href="{% get_media_prefix %}docs/Maps/Plat_Book-1959.pdf" target="_blank">Map</a> of the 
+                Huntington Hills subdivision (showing lots 17-22). This is taken from the 1959
+                <a href="http://en.wikipedia.org/wiki/Plat" target="_blank">Plat</a>
+                Book (by G.M. Hopkins Co.) covering the towns of
+                <a href="http://www.irondequoit.org/" target="_blank">Irondequoit</a>
+                and <a href="http://www.townofbrighton.org/" target="_blank">Brighton</a>.
+                Online is the first page from that book and the
+                <a href="http://www.irondequoit.org/" target="_blank">Irondequoit</a>
+                map that covers the Huntington Hills subdivision.
+            </p>
+
+            <p>
+                While not an endorsement, <a href="http://www.historicmapworks.com/"
+                target="_blank">Historic Map Works</a> has the 1924 maps for
+                <a href="http://www.irondequoit.org/" target="_blank">Irondequoit</a>
+                (by <a href="http://digital.library.pitt.edu/maps/mapsexplained.html"
+                target="_blank">G.M. Hopkins Co.</a>) for sale
+                <a href="http://www.historicmapworks.com/Sections/Maps/Browse_Atlases/ViewAtlasPlatesUS-7120-NY.htm"
+                   target="_blank">online
+                </a>.
+                The Huntington Hills subdivision is on 
+                <a href="http://www.historicmapworks.com/Sections/Maps/viewPlateUS-18114.htm" target="_blank">
+                    plate 004
+                </a>.
+            </p>
+            
+            <hr style="height: 3px; width: 100%;" />
+            
+            <h2 class="medium">Commons Acreage</h2>
+            
+            <p>
+                <a href="{% get_media_prefix %}docs/Commons_Acreage.pdf" target="_blank">Document</a> which shows 
+                maps of the Commons as well as the size (in acres) for each. The total size for all Commons areas is 
+                54.14 acres.
+            </p>
+            
+            <p>
+              A <a href="{% get_media_prefix %}docs/Maps/Commons_Acreage_Map.jpg" target="_blank">map</a> showing 
+                the Commons areas listed in the document.
+            </p>
+            
+            <hr style="height: 3px; width: 100%;" />
+                            
+            <h2 class="medium">Tax Maps</h2>
+            
+            <ul>
+                <li>
+                    <a target="_blank" href="{% get_media_prefix %}docs/Maps/Tax/062.017_2006-05-23.pdf">map 1</a>
+                </li>
+                <li>
+                    <a href="{% get_media_prefix %}docs/Maps/Tax/062.018_2006-04-26.pdf" target="_blank">map 2</a>
+                </li>
+                <li>
+                    <a href="{% get_media_prefix %}docs/Maps/Tax/077.005_2006-04-26.pdf" target="_blank">map 3</a>
+                </li>
+                <li>
+                    <a href="{% get_media_prefix %}docs/Maps/Tax/077.006_2006-04-26.pdf" target="_blank">map 4</a>
+                </li>
+            </ul>
+            
+            <hr style="height: 3px; width: 100%;" />
+                            
+            <h2 class="medium">
+                Town of Irondequoit 
+                <a href="http://www.irondequoit.org/doing-business-2/maps" target="_blank">EPOD</a>
+                Maps
+            </h2>
+            
+            <p>
+                Clicking on 
+                <a href="http://www.irondequoit.org/doing-business-2/maps" target="_blank">EPOD</a> 
+                will show zoning information that should answer most questions regarding 
+                <a href="http://www.irondequoit.org/doing-business-2/maps" target="_blank">EPOD</a> 
+                restrictions. Residents should be aware of these restrictions in our community and
+                when to approach the town with variance requests if needed.
+            </p>
+            
+            <p>
+                Maps are available in <a href="http://en.wikipedia.org/wiki/Pdf" target="_blank">PDF</a>
+                and <a href="http://en.wikipedia.org/wiki/Jpeg" target="_blank">JPEG</a>
+                formats. The <a href="http://en.wikipedia.org/wiki/Jpeg" target="_blank">JPEG</a>
+                format loads quicker, but the <a href="http://en.wikipedia.org/wiki/Pdf" target="_blank">PDF</a>
+                format has more flexibility for scrolling and zooming.
+            </p>
+            
+            <table style="text-align: left; width: 100%;" border="0" cellpadding="2" cellspacing="2">
+                <tbody>
+                    <tr>
+                        <td>
+                            <ul>
+                                <li>
+                                    <a href="{% get_media_prefix %}docs/Maps/EPOD/ir_flood_map.pdf" target="_blank">
+                                        Floodplains (PDF)
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+                        
+                        <td>
+                            <ul>
+                                <li>
+                                    <a href="{% get_media_prefix %}docs/Maps/EPOD/ir_flood_map.jpg" 
+                                       target="_blank">
+                                        Floodplains (JPEG)
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <ul>
+                                <li>
+                                    <a href="{% get_media_prefix %}docs/Maps/EPOD/ir_steep_map.pdf" target="_blank">
+                                        Steep Slopes (PDF)
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+                        
+                        <td>
+                            <ul>
+                                <li>
+                                    <a href="{% get_media_prefix %}docs/Maps/EPOD/ir_steep_map.jpg" 
+                                       target="_blank">
+                                        Steep Slopes (JPEG)
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <ul>
+                                <li>
+                                    <a href="{% get_media_prefix %}docs/Maps/EPOD/ir_wood_map.pdf" target="_blank">
+                                        Woodlots (PDF)
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+                        
+                        <td>
+                            <ul>
+                                <li>
+                                    <a href="{% get_media_prefix %}docs/Maps/EPOD/ir_wood_map.jpg" target="_blank">
+                                        Woodlots (JPEG)
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr><td style="height: 1px;" colspan="2" rowspan="1"><br /></td></tr>
+                    
+                    <tr>
+                        <td>
+                            <ul>
+                                <li>
+                                    <a href="{% get_media_prefix %}docs/Maps/EPOD/ir_nyswet_map.pdf" 
+                                       target="_blank">
+                                        NYS DEC Wetlands (PDF)
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+                        
+                        <td>
+                            <ul>
+                                <li>
+                                    <a href="{% get_media_prefix %}docs/Maps/EPOD/ir_nyswet_map.jpg" 
+                                       target="_blank">
+                                        NYS DEC Wetlands (JPEG)
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <ul>
+                                <li>
+                                    <a href="{% get_media_prefix %}docs/Maps/EPOD/ir_nwiwet_map.pdf" 
+                                       target="_blank">
+                                        Federal Wetlands (PDF)
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+                        
+                        <td>
+                            <ul>
+                                <li>
+                                    <a href="{% get_media_prefix %}docs/Maps/EPOD/ir_nwiwet_map.jpg" 
+                                       target="_blank">
+                                        Federal Wetlands (JPEG)
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

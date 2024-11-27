@@ -1,0 +1,84 @@
+{% extends "residents/base.html" %}
+{% load static %}
+
+{% block residents_title %}Mailing Lists{% endblock %}
+{% block header %}Mailing Lists{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+    
+    <style>
+        li {
+            margin-bottom: 1em;
+        }
+    </style>
+{% endblock %}
+
+{% block resident_content %}
+    <p>There are currently six mailing lists:</p>
+    
+    <ol>
+        <li>
+            <dl>
+                <dt><a href="mailto:board@huntingtonhillsinc.org">board@huntingtonhillsinc.org</a></dt>
+                <dd>
+                    This list is used to communicate to the current Huntington Hills board. If you send an email
+                    from the <a href="{% url 'contact:contact' %}" >Contact</a> page to the board, 
+                    this is the email that is used. You may also use it directly. Emails send to this address need
+                    to be approved to reduce the amount of spam that is sent to board members. All non-spam emails
+                    are always approved.
+                </dd>
+            </dl>
+        </li>
+        
+        <li>
+            <dl>
+                <dt><a href="mailto:center@huntingtonhillsinc.org">center@huntingtonhillsinc.org</a></dt>
+                <dd>
+                    This list is only for those residents that live on Center Entrance.
+                </dd>
+            </dl>
+        </li>
+                
+        <li>
+            <dl>
+                <dt>notices@huntingtonhillsinc.org</dt>
+                <dd>
+                    This list is used by the board to send official messages (like notice of the annual meeting for example). Only
+                    board members can send messages to this list.
+                </dd>
+            </dl>
+        </li>
+                
+        <li>
+            <dl>
+                <dt><a href="mailto:residents@huntingtonhillsinc.org">residents@huntingtonhillsinc.org</a></dt>
+                <dd>
+                    This list is meant to be used by Huntington Hills
+                    residents to communicate with each other. &nbsp;You can only send a
+                    message from your subscribed email (the email you receive list messages).
+                </dd>
+            </dl>
+        </li>
+                
+        <li>
+            <dl>
+                <dt><a href="mailto:spring_valley@huntingtonhillsinc.org">spring_valley@huntingtonhillsinc.org</a></dt>
+                <dd>
+                    This list is only for those residents that live on Spring Valley Drive.
+                </dd>
+            </dl>
+        </li>
+        
+        <li>
+            <dl>
+                <dt>website-updates@huntingtonhillsinc.org</dt>
+                <dd>
+                    Announcements about changes or updates to the
+                    Huntington Hills website are communicated with this list.
+                    &nbsp;Only the webmaster can send messages to this list.
+                </dd>
+            </dl>
+        </li>
+    </ol>
+{% endblock %}

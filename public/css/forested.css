@@ -1,0 +1,80 @@
+body {
+	padding: 0px 13% 0px;
+	background-color: #DEDED6;
+	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #635A42;
+}
+
+a:link {
+	text-decoration: underline; 
+}
+
+a:visited {
+	text-decoration: underline;
+}
+
+a:hover {
+	text-decoration: overline underline;
+}
+
+p {
+	margin: 0;
+}
+
+.txt {
+	background-color: inherit;
+	color: #635A42;
+}
+
+.hidden_txt {
+	background-color: inherit;
+	color: #C0C0B0;
+}
+
+.bar {
+	padding: 5px 0px 5px 0px; 
+	text-align: center; 
+	width: 200px; 
+	background-color: #635A42; 
+	color: #DEDED6;
+}
+
+.bar2 {
+	padding: 5px 0px 5px 0px; 
+	text-align: center; 
+	width: 548px; 
+	background-color: #635A42; 
+	color: #DEDED6;
+}
+
+.bartxt {
+	background-color: inherit;
+	color: #635A42;
+	width: 180px;
+}
+
+.colleft {
+	padding: 5px 5px 5px 5px; 
+	width: 200px;
+}
+
+.colright {
+	padding: 5px 5px 5px 5px;
+	width: 540px;
+}
+
+.forest_body {
+	background-color: #E7DEC6;
+	width: 748px;
+	border: #635A42 1px solid;
+	color: #635A42;
+}
+
+#forest_header {
+	width: 750px;
+	height: 100px;
+	background-image: url(../img/forested.png);
+	background-repeat: no-repeat;
+}
+

@@ -1,0 +1,47 @@
+{% extends "residents/base.html" %}
+{% load static %}
+
+{% block title %}About Huntington Hills{% endblock %}
+{% block header %}About Huntington Hills{% endblock %}
+
+{% block navbar %}{% include "_full_navbar.html" with active="about" %}{% endblock %}
+
+{% block resident_content %}
+    <p>
+        Huntington Hills, Incorporated, is a residential tract of land and the home of 65 families.&nbsp; This 
+        wooded area of about 200 acres, is bounded on the north by 
+        <a href="http://www.monroecounty.gov/parks-durandeastman.php" target="_blank">Durand-Eastman Park</a> and on the
+        east by Wisner Road.&nbsp; It is located in the <a href="http://www.irondequoit.org/" target="_blank">Town
+        of Irondequoit</a> in <a href="http://www.monroecounty.gov/" target="_blank">Monroe County</a>, 
+        New York.
+    </p>
+    
+    <p>
+        The Restrictive Covenant Agreement for Huntington Hills is:
+    </p>
+    
+    <ol>
+        <li>No building lot can be subdivided.</li>
+        
+        <li>
+            The plans for new homes to be built on building lots should be approved by the architectural review 
+            board of Huntington Hills.
+        </li>
+        
+        <li>
+            Each building lot by shared ownership has access to the common lands, but do not have individual rights.
+        </li>
+    </ol>
+    
+    <p>(Also see <a href="{% get_media_prefix %}docs/By-Laws.pdf" target="_blank">Huntington Hills, Inc. By-Laws</a>)</p>
+    
+    <p>
+        Huntington Hills is one of the best, and last, remaining wooded areas in the County.&nbsp; Its natural beauty, 
+        seclusion and protection from encroachment, with easy access to the City of Rochester, make Huntington Hills a 
+        very desirable place to live. Upon first visit, one is amazed at the dense woods, deep ravines and beautiful
+        streams. The area is home to a diverse population of plants and animals. Among them are American chestnut 
+        trees, cherry trees, pine trees, maple trees, oak trees, woodpeckers, nuthatches, wild turkeys, fox, deer and 
+        many others. With the continued interest of Huntington Hills’ members, the natural beauty of the area
+        will be preserved for each others enjoyment as well as for future members.
+    </p>
+{% endblock %}

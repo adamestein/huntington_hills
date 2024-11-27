@@ -1,0 +1,28 @@
+{% extends "residents/base.html" %}
+{% load static %}
+
+{% block title %}Search the Huntington Hills website{% endblock %}
+{% block header %}Search{% endblock %}
+
+{% block navbar %}{% include "_full_navbar.html" with active="search" %}{% endblock %}
+
+{% block resident_content %}
+    <p>Search this site using various search engines.</p>
+    
+    <form action="http://www.google.com/search" method="get">
+        <fieldset> 
+            <input name="sitesearch" value="huntingtonhillsinc.org" type="hidden" /> 
+            <input name="q" size="31" maxlength="255" value="" type="text" /> 
+            <input value="Google Search" type="submit" /> 
+        </fieldset>
+    </form>
+    
+    <form method="get" action="http://search.yahoo.com/search">
+        <fieldset>
+            <input name="vs" value="huntingtonhillsinc.org" type="hidden" />
+            <input name="fr" value="yscpb" type="hidden" />
+            <input name="p" size="31" maxlength="255" type="text" />
+            <input value="Yahoo Search" type="submit" />
+        </fieldset>
+    </form>
+{% endblock %}

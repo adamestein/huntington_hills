@@ -1,0 +1,109 @@
+{% extends "residents/base.html" %}
+{% load static %}
+
+{% block title %}Technical Details of the Huntington Hills website{% endblock %}
+{% block header %}Technical Details{% endblock %}
+
+{% block navbar %}{% include "_full_navbar.html" with active="technical" %}{% endblock %}
+
+{% block resident_content %}
+    <h2 class="medium">Author</h2>
+        
+    <p>
+        The <a href="/">Huntington Hills website</a> was created and is maintained by 
+        <a href="http://www.csh.rit.edu/%7Eadam/">Adam Stein</a> 
+        (<a href="mailto:adam@huntingtonhillsinc.org">adam@huntingtonhillsinc.org</a>).
+    </p>
+
+    <h2 class="medium">Tools</h2>
+
+    <p>
+        <a href="http://www.nvu.com/" target="_blank">Nvu</a> was originally used to create the web pages. 
+        <a href="http://www.nvu.com/" target="_blank">Nvu</a> is a complete Web Authoring System for Linux 
+        desktop users as well as Microsoft Windows and Macintosh users to rival programs like 
+        <span style="font-weight: bold;" class="veryStrongEmphasis">FrontPage</span> and 
+        <span style="font-weight: bold;" class="veryStrongEmphasis">Dreamweaver</span>.
+    </p>
+
+    <p>
+        <a href="http://www.nvu.com/" target="_blank">Nvu</a> was replaced by 
+        <a href="http://kompozer.net/" target="_blank">Kompozer</a>. 
+        <a href="http://kompozer.net/" target="_blank">Kompozer</a> picks up where 
+        <a href="http://www.nvu.com/" target="_blank">Nvu</a> stopped (as 
+        <a href="http://www.nvu.com/" target="_blank">Nvu</a> is no longer supported).
+    </p>
+    
+    <p>
+        <a href="http://kompozer.net/" target="_blank">Kompozer</a> has been replaced by
+        <a href="http://bluefish.openoffice.nl/index.html">Bluefish</a> due to
+        <a href="http://kompozer.net/" target="_blank">Kompozer</a> no longer being supported. 
+        <a href="http://bluefish.openoffice.nl/index.html">Bluefish</a> is a powerful editor targeted 
+        towards programmers and webdevelopers, with many options to write websites, scripts and 
+        programming code.
+    </p>
+    
+    <p>
+        <a href="https://www.djangoproject.com/" target="_blank">Django</a> is a 
+        <a href="https://www.python.org/" target="_blank">Python</a> web framework. It is used to support
+        pages that display dynamic data.
+    </p>
+
+    <h2 class="medium">Web Design Templates</h2>
+    
+    <p>
+        Three different templates were used in the design of this site. All templates came from 
+        <a href="http://www.oswd.org/" target="_blank">Open Source Web Design</a>.
+    </p>
+    
+    <h3 class="medium">Forested</h3>
+    
+    <p>
+        The 
+        <a href="http://www.oswd.org/design/information/id/2354" target="_blank">
+            <span style="font-style: italic;">Forested</span>
+        </a> design is a simple theme that invokes an old 1920's feel.
+    </p>
+    
+    <h3 class="medium">Photogenic</h3>
+    
+    <p>
+        The 
+        <a href="http://www.openwebdesign.org/viewdesign.phtml?id=2186&amp;referer=%2Fuserinfo.phtml%3Fuser%3DJack" 
+           target="_blank">
+            <span style="font-style: italic;">Photogenic</span>
+        </a> design is a simple theme for an image gallery.
+    </p>
+    
+    <h3 class="medium">Tree Hugger</h3>
+    
+    <p>
+        The 
+        <a href="http://www.openwebdesign.org/viewdesign.phtml?id=3078&amp;referer=%2Fuserinfo.phtml%3Fuser%3Dpogy366" 
+           target="_blank">
+            <span style="font-style: italic;">Tree Hugger</span>
+        </a> design was tested on a Windows machine in Firefox 1.5, Internet Explorer 6.0, Netscape 8.1, Opera 
+        7.54 and should hold its own in a text browser.
+    </p>
+    
+    <p>It's using valid XHTML 1.0 (strict) and CSS with a WCAG-A rating.</p>
+    
+    <p>
+        This design is released under the 
+        <a href="http://creativecommons.org/licenses/by/1.0/" title="The Creative Commons License">
+        creative commons
+        </a> license, so do what you want with it and have fun!
+    </p>
+    
+    <h2 class="medium">Admin</h2>
+
+    <p>
+        All admin functions require an admin username and password (which is different from the 
+        <span style="font-style: italic;">members-only</span> username and password).
+    </p>
+    
+    <p>Admin Functions:</p>
+    
+    <ul>
+        <li><a href="{% url 'staff:main_menu' %}" target="_blank">Admin Main Menu</a></li>
+    </ul>
+{% endblock %}
