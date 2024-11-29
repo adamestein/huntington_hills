@@ -17,9 +17,9 @@ urlpatterns = ([
     url(r'^auth/', include('authentication.urls')),
     url(r'^bow_hunt/', include('bow_hunt.urls')),
     url(r'^contact/', include('contact.urls')),
-    url(r'^docs/$', TemplateView.as_view(template_name='docs.html'), name='docs'),
+    url(r'^docs/', include('docs.urls')),
     url(r'^gallery/', include('gallery.urls')),
-    url(r'^history/$', TemplateView.as_view(template_name='history.html'), name='history'),
+    url(r'^history/', include('history.urls')),
     # url(r'^media/members/(?:.*)$', MediaAuthChecker.as_view(), name='media'),     # See if we can use this
     url(r'^news/', include('news.urls')),
     url(r'^resident/', include('residents.urls')),
@@ -27,7 +27,4 @@ urlpatterns = ([
     url(r'^staff/', include('staff.urls')),
     url(r'^technical/$', TemplateView.as_view(template_name='technical.html'), name='technical'),
     url(r'^tinymce/', include('tinymce.urls'))
-])
-
-# Check if we need this
-# + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))

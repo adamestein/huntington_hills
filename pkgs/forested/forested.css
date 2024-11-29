@@ -48,12 +48,6 @@ p {
 	color: #DEDED6;
 }
 
-.bartxt {
-	background-color: inherit;
-	color: #635A42;
-	width: 180px;
-}
-
 .colleft {
 	padding: 5px 5px 5px 5px; 
 	width: 200px;
@@ -67,6 +61,7 @@ p {
 .forest_body {
 	background-color: #E7DEC6;
 	width: 748px;
+	height: 425px;
 	border: #635A42 1px solid;
 	color: #635A42;
 }
@@ -74,7 +69,6 @@ p {
 #forest_header {
 	width: 750px;
 	height: 100px;
-	background-image: url("/static/img/forested.png");
+	background-image: url(forested.png);
 	background-repeat: no-repeat;
 }
-

@@ -1,0 +1,90 @@
+{% extends "history/base.html" %}
+{% load static %}
+
+{% block title %}Rochester Ski Club{% endblock %}
+{% block description %}History of the Rochester Ski Club{% endblock %}
+
+{% block right_content %}
+    <p style="text-align: center;" class="txt">
+        <a target="_blank" href="{% static 'img/rochester_ski_club/sign.jpg' %}">
+            <img style="width: 200px; height: 81px;" alt="Ski Club Sign" src="{% static 'img/rochester_ski_club/sign-small.jpg' %}" />
+        </a>
+    </p>
+
+    <p class="txt">
+        <a href="mailto:tanadad@frontiernet.net">Tim Golan</a> reports that the original Rochester Ski Club
+        was located somewhere off
+        <a target="_blank" href="http://maps.google.com/maps?f=q&amp;hl=en&amp;geocode=&amp;time=&amp;date=&amp;ttype=&amp;q=hoffman+road,+14622&amp;sll=37.0625,-95.677068&amp;sspn=43.443045,64.160156&amp;ie=UTF8&amp;z=15&amp;iwloc=addr&amp;om=0">
+            Hoffman Road
+        </a>. He doesn't recall if it was on Huntington Hills or adjacent land. They had a tow-rope. He thinks the
+        tow-rope was moved sometime in the late 1950's to
+        <a target="_blank" href="http://maps.google.com/maps?f=q&amp;hl=en&amp;geocode=&amp;time=&amp;date=&amp;ttype=&amp;q=343 Huntington Hills Center,+14622&amp;sll=43.22089,-77.56573&amp;sspn=0.019608,0.031328&amp;ie=UTF8&amp;z=16&amp;iwloc=addr&amp;om=0">
+            343 Center Entrance</a>.
+    </p>
+
+    <p class="txt">
+        Tim also mentions that the club operated on Thursday evenings and on some weekends. The hill was lit for
+        night skiing.
+    </p>
+
+    <p class="txt">
+        At some point the club was dissolved and the tow was moved to the
+        <a href="{% get_media_prefix %}docs/History/Tuthill_Fire_1966.pdf">Tuthill property</a>. It was used very
+        little after that.
+    </p>
+
+    <p class="txt">
+        Today, the <a href="http://www.rochesterskiclub.com/" target="_blank">Rochester Ski Club</a> is very much
+        alive and active (if their calendar of events is any indication).
+    </p>
+
+    <p class="txt">
+        According to the club's
+        <a href="http://www.rochesterskiclub.com/OfficersHistory.htm" target="_blank">history</a>,
+        Dr. Roland Stevens organized the first ski club. It wasn't until the club's second year that the group
+        moved to the Huntington Hills area. The founding members cleared a slope and installed a tow-rope that
+        was powered by a Ford engine. Nighttime skiing was provided by lights from gasoline lanterns.
+    </p>
+
+    <p class="txt">
+        Within a few years of moving into Huntington Hills,
+        <a href="mailto:adam@csh.rit.edu?Subject=Rochester%20Ski%20Club%20History">Adam &amp; Gina Stein</a>
+        found the <a href="{% static 'img/rochester_ski_club/tow_rope_box.jpg' %}" target="_blank">site</a> of
+        the old tow-rope. An <a href="{% static 'img/rochester_ski_club/sign.jpg' %}" target="_blank">old sign</a>
+        was discovered as well. Also found are probably the
+        <a href="{% static 'img/rochester_ski_club/remains.jpg' %}" target="_blank">remains of the Ford</a>
+        used to power the rope.
+    </p>
+
+    <p class="txt">
+        <a href="{% static 'img/rochester_ski_club/tow_rope_box.jpg' %}">
+            <img src="{% static 'img/rochester_ski_club/tow_rope_box-small.jpg' %}"
+                 alt="Location of the tow rope"
+                 style="border: 0 solid;  vertical-align: middle; width: 200px; height: 133px;" /></a>
+        <span style="font-size: 80%; font-style: italic; padding-left: 0.25em;">Location of the tow-rope</span>
+    </p>
+
+    <p class="txt">
+        All that's left is the <a href="http://en.wikipedia.org/wiki/Pulley" target="_blank">pulley</a> and the
+        frame of the box it must have been in.
+    </p>
+
+    <p style="" class="txt">
+        <span style="font-size: 80%; font-style: italic; padding-right: 0.25em;">
+            Pulley used by the tow-rope</span>&nbsp
+            <a href="{% static 'img/rochester_ski_club/pulley.jpg' %}">
+                <img style="border: 0 solid; vertical-align: middle; width: 200px; height: 133px;" alt="Pulley used by the tow-rope"
+                     src="{% static 'img/rochester_ski_club/pulley-small.jpg' %}" />
+            </a>
+    </p>
+
+    <p style="" class="txt">
+        <a href="{% static 'img/rochester_ski_club/pulley.jpg' %}">
+            <img style="border: 0 solid; vertical-align: middle; width: 200px; height: 133px;"
+                 alt="Remains of the Ford used to power the tow rope"
+                 src="{% static 'img/rochester_ski_club/remains-small.jpg' %}" /></a>
+        <span style="font-size: 80%; font-style: italic; padding-left: 0.25em;">
+            Remains of the Ford used to power the tow-rope
+        </span>
+    </p>
+{% endblock %}

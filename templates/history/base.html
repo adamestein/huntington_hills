@@ -1,0 +1,61 @@
+{% load static %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+    <head>
+        <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type" />
+        <title>{% block title %}{% endblock %}</title>
+
+        <link rel="stylesheet" href="{% static "css/forested.css" %}" />
+
+        <style type="text/css">
+            <!--
+                @page { size: 8.5in 11in; margin: 0.79in }
+                P { margin-bottom: 0.08in }
+            -->
+        </style>
+    </head>
+    
+    <body style="direction: ltr;">
+        <div id="forest_header"></div>
+    
+        <div style="float: left;" class="forest_body">
+            <div style="float: left; width: 200px;">
+                <div class="bar">{% block description %}{% endblock %}</div>
+                
+                <div class="colleft"></div>
+                
+                <div class="bar">Links</div>
+                
+                <div class="colleft">
+                    <p><a href="{{ settings.HOME_LINK }}">Home</a></p>
+                    <p><a href="{{ settings.ABOUT_LINK }}">About</a></p>
+                    <p><a href="{{ settings.DOCUMENTS_LINK }}">Documents</a></p>
+                    <p>History</p>
+                    <p><a href="{{ settings.GALLERY_LINK }}">Gallery</a></p>
+                    <p><a href="{{ settings.CONTACT_LINK }}">Contact</a></p>
+                    <p><a href="{{ settings.SEARCH_LINK }}">Search</a></p>
+                    <p><a href="{{ settings.TECHNICAL_LINK }}">Technical Details</a></p>
+                </div>
+            
+                {% block left_content %}{% endblock %}
+            </div>
+        
+            <div style="float: right; width: 548px;">
+                <div class="colright">
+                    {% block right_content %}{% endblock %}
+                </div>
+            </div>
+            
+            <div style="width: 750px;">
+                <div style="float: right; margin-right: 5px;">
+                    <p class="hidden_txt">
+                        design by 
+                        <a href="http://www.jordanmarshall.org/" target="_jmm" class="hidden_txt">luibh</a>
+                        | content by Huntington Hills Association, Inc. (All Rights Reserved)
+                    </p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
