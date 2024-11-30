@@ -7,7 +7,7 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
-from library.views.generic import MediaAuthChecker
+from library.views.generic import ProtectedMedia
 
 urlpatterns = ([
     url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
@@ -20,7 +20,7 @@ urlpatterns = ([
     url(r'^docs/', include('docs.urls')),
     url(r'^gallery/', include('gallery.urls')),
     url(r'^history/', include('history.urls')),
-    # url(r'^media/members/(?:.*)$', MediaAuthChecker.as_view(), name='media'),     # See if we can use this
+    url(r'^media/members/(?:.*)$', ProtectedMedia.as_view(), name='media'),
     url(r'^news/', include('news.urls')),
     url(r'^resident/', include('residents.urls')),
     url(r'^search/$', TemplateView.as_view(template_name='search.html'), name='search'),
