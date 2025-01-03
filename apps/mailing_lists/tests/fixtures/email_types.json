@@ -1,0 +1,23 @@
+[
+    {
+        "pk": 1,
+        "model": "residents.emailtype",
+        "fields": {
+            "email_type": "Notification"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "residents.emailtype",
+        "fields": {
+            "email_type": "Personal"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "residents.emailtype",
+        "fields": {
+            "email_type": "Resident"
+        }
+    }
+]

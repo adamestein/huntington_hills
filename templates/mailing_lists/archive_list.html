@@ -1,0 +1,19 @@
+{% extends "residents/base.html" %}
+{% load static %}
+
+{% block residents_title %}Archive List{% endblock %}
+{% block header %}Archive List{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block resident_content %}
+    <p>The following mailing list archives are available:</p>
+
+    <ol>
+        {% for ml in object_list %}
+            <li><a href="{% url 'mailing_lists:archives' ml.mailbox.name %}">{{ ml.mailbox.name }}</a></li>
+        {% endfor %}
+    </ol>
+{% endblock %}

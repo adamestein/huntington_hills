@@ -1,0 +1,16 @@
+[
+    {
+        "pk": 1,
+        "model": "residents.propertytype",
+        "fields": {
+            "property_type": "home"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "residents.propertytype",
+        "fields": {
+            "property_type": "lot"
+        }
+    }
+]

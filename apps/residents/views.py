@@ -1,10 +1,9 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView
+from library.views.generic import ProtectedTemplateView
 
 from .models import Board, BoardTerm, Property, Street
 
 
-class BoardMembersListView(LoginRequiredMixin, TemplateView):
+class BoardMembersListView(ProtectedTemplateView):
     template_name = 'residents/board_members.html'
 
     def get_context_data(self, **kwargs):
@@ -27,11 +26,11 @@ class BoardMembersListView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class MainMenuView(LoginRequiredMixin, TemplateView):
+class MainMenuView(ProtectedTemplateView):
     template_name = 'residents/main_menu.html'
 
 
-class ResidentListView(LoginRequiredMixin, TemplateView):
+class ResidentListView(ProtectedTemplateView):
     template_name = 'residents/residents.html'
 
     def get_context_data(self, **kwargs):

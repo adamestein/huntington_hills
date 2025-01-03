@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
+import logging
 from os import path
 import sys
 
@@ -36,6 +37,8 @@ DEBUG = config('DEBUG', cast=bool, default=False)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
+SITE_URL = config('SITE_URL')
+
 
 # Application definition
 
@@ -48,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # 3rd Party Apps
+    'django_mailbox',
     'django_recaptcha',         # https://www.google.com/recaptcha/admin/create
     'easy_pdf',
     'fullurl',
@@ -61,6 +65,7 @@ INSTALLED_APPS = [
     'gallery',
     'history',
     'library',
+    'mailing_lists',
     'news',
     'residents',
     'staff'
@@ -189,6 +194,7 @@ CORS_ORIGIN_WHITELIST = [
 
 # Email setup
 
+DEFAULT_FROM_EMAIL = 'adam@csh.rit.edu'
 EMAIL_BACKEND = config('EMAIL_BACKEND')
 
 if 'filebased' in EMAIL_BACKEND:
@@ -255,25 +261,62 @@ SETTINGS_EXPORT = [
 
 if DEBUG:
     INSTALLED_APPS.append('django_extensions')
+
+    if 'test' in sys.argv or 'test_coverage' in sys.argv:
+        from library.testing.migrations import DisableMigrations
+
+        # Turn off normal log messages (just leave CRITICAL in case it's something terrible)
+        logging.disable(logging.CRITICAL)
+
+        DEBUG = False
+        TESTING = True
+
+        # No reason to go through migrations for the test database. If we are testing, we should have our models the way we
+        # want.
+        MIGRATION_MODULES = DisableMigrations()
+
+        # Speed up unit tests by avoiding password hashing
+        PASSWORD_HASHERS = ['django_plainpasswordhasher.PlainPasswordHasher']
+
+        # No reason to compress CSS/JS files
+        COMPRESS_ENABLED = False
+
+        # Use SQLite3 databases for testing instead of MySQL because:
+        #
+        #   o faster to start, faster to run, no cleanup needed
+        #   o multiple tests can run at the same time
+        #   o no need to 'destroy' the test database when starting a new test if the previous test
+        #     stopped before cleaning up
+        DATABASES["default"] = {'ENGINE': 'django.db.backends.sqlite3', 'NAME': '/tmp/default.db'}
 else:
     # Logging handlers
 
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
+        'formatters': {
+            'simple': {
+                'format': '[%(levelname)s] [%(threadName)s/%(name)s:%(funcName)s:%(lineno)d] %(message)s'
+            }
+        },
         'handlers': {
             'file': {
                 'level': 'WARNING',
                 'class': 'logging.FileHandler',
                 'filename': '/home/huntingtonhills/logs/django.log'
-            },
+            }
         },
         'loggers': {
             'django.request': {
                 'handlers': ['file'],
                 'level': 'WARNING',
-                'propagate': True,
+                'propagate': True
             },
+            'mailing_lists': {
+                'handlers': ['file'],
+                'level': 'DEBUG',
+                'propagate': False
+            }
         },
     }
 

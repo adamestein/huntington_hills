@@ -1,4 +1,3 @@
-from .media import ProtectedMedia
-from .template import ProtectedTemplateView
+from .protected import ProtectedDetailView, ProtectedListView, ProtectedMedia, ProtectedTemplateView
 
-__all__ = ['ProtectedMedia', 'ProtectedTemplateView']
+__all__ = ['ProtectedDetailView', 'ProtectedListView', 'ProtectedMedia', 'ProtectedTemplateView']

@@ -1,0 +1,23 @@
+{% extends "residents/base.html" %}
+{% load static %}
+
+{% block title %}The {{ ml_name }} {{ archive }} Archive by author{% endblock %}
+{% block header %}{{ archive }} Archives by author{% endblock %}
+
+{% block resident_content %}
+    <p>
+        <strong>Sort messages by</strong>:
+        <a href="{% url "mailing_lists:by_thread" ml_name archive %}">[ thread ]</a>
+        <a href="{% url "mailing_lists:by_subject" ml_name archive %}">[ subject ]</a>
+        <a href="{% url "mailing_lists:by_date" ml_name archive %}">[ Date ]</a>
+    </p>
+
+    <ul>
+        {% for message in object_list %}
+            <li>
+                <a href="{% url "mailing_lists:message" message.0 %}" target="_blank">{{ message.1 }}</a>
+                <span style="font-size: 80%; padding-left: 0.5em;"><em>({{ message.2 }})</em></span>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

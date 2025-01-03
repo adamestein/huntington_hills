@@ -20,6 +20,7 @@ urlpatterns = ([
     url(r'^docs/', include('docs.urls')),
     url(r'^gallery/', include('gallery.urls')),
     url(r'^history/', include('history.urls')),
+    url(r'^mailing_lists/', include('mailing_lists.urls')),
     url(r'^media/members/(?:.*)$', ProtectedMedia.as_view(), name='media'),
     url(r'^news/', include('news.urls')),
     url(r'^resident/', include('residents.urls')),

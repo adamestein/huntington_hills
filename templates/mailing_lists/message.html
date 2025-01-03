@@ -1,0 +1,47 @@
+{% extends "residents/base.html" %}
+{% load static %}
+
+{% block title %}{{ object }}{% endblock %}
+{% block header %}{{ object }}{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+
+    <style>
+        th {
+            text-align: right;
+        }
+    </style>
+{% endblock %}
+
+{% block resident_content %}
+    <table>
+        <tr>
+            <th>From:</th>
+            <td>{{ object.from_header }}</td>
+        </tr>
+
+        <tr>
+            <th>To:</th>
+            <td>{{ object.to_header }}</td>
+        </tr>
+
+        <tr>
+            <th>Subject:</th>
+            <td>{{ object.subject }}</td>
+        </tr>
+
+        <tr>
+            <th>Date:</th>
+            <td>{{ date }}</td>
+        </tr>
+
+        <tr>
+            <td colspan="2"><hr /></td>
+        </tr>
+
+        <tr>
+            <td colspan="2">{{ object.text|linebreaks }}</td>
+        </tr>
+    </table>
+{% endblock %}

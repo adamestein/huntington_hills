@@ -1,10 +1,9 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView
+from library.views.generic import ProtectedTemplateView
 
 from .models import HHCommonsHunting
 
 
-class CommonsHunting(LoginRequiredMixin, TemplateView):
+class CommonsHunting(ProtectedTemplateView):
     template_name = 'bow_hunt/commons_hunting.html'
 
     def get_context_data(self, **kwargs):

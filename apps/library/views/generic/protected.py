@@ -3,7 +3,15 @@ import os
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import FileResponse, HttpResponseNotFound
-from django.views.generic import View
+from django.views.generic import DetailView, ListView, TemplateView, View
+
+
+class ProtectedDetailView(LoginRequiredMixin, DetailView):
+    pass
+
+
+class ProtectedListView(LoginRequiredMixin, ListView):
+    pass
 
 
 class ProtectedMedia(LoginRequiredMixin, View):
@@ -23,3 +31,7 @@ class ProtectedMedia(LoginRequiredMixin, View):
             return response
         else:
             return HttpResponseNotFound('file not found')
+
+
+class ProtectedTemplateView(LoginRequiredMixin, TemplateView):
+    pass

@@ -1,0 +1,11 @@
+[
+    {
+        "pk": 1,
+        "model": "residents.property",
+        "fields": {
+            "house_number": "1475",
+            "property_type": 1,
+            "street": 1
+        }
+    }
+]

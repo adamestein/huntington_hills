@@ -1,0 +1,12 @@
+{% for thread, children in threads.items %}
+    <ul>
+        <li>
+            <a href="{% url "mailing_lists:message" thread.0 %}" target="_blank">
+                {{ thread.1 }}
+            </a>
+            <span style="font-size: 80%; padding-left: 0.5em;"><em>({{ thread.2 }})</em></span>
+
+            {% include "mailing_lists/_thread.html" with threads=children %}
+        </li>
+    </ul>
+{% endfor %}

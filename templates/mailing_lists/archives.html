@@ -1,0 +1,51 @@
+{% extends "residents/base.html" %}
+{% load static %}
+
+{% block title %}The {{ ml_name }} Archives{% endblock %}
+{% block header %}The {{ ml_name }} Archives{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+    
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #04AA6D;
+            color: white;
+            padding-bottom: 12px;
+            padding-top: 12px;
+        }
+    </style>
+{% endblock %}
+
+{% block resident_content %}
+    <table>
+        <tr>
+            <th>Archive</th>
+            <th>View By</th>
+            <th>Downloadable Version</th>
+        </tr>
+
+        {% for archive in archives %}
+            <tr>
+                <td>{{ archive }}</td>
+                <td>
+                    <a href="{% url "mailing_lists:by_thread" ml_name archive %}">[ Thread ]</a>
+                    <a href="{% url "mailing_lists:by_subject" ml_name archive %}">[ Subject ]</a>
+                    <a href="{% url "mailing_lists:by_author" ml_name archive %}">[ Author ]</a>
+                    <a href="{% url "mailing_lists:by_date" ml_name archive %}">[ Date ]</a>
+                </td>
+                <td>TBD</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
