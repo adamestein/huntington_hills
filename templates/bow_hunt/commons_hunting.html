@@ -108,7 +108,7 @@
                 <tbody>
                     {% for event in exception.list %}
                         <tr>
-                            <td>{{ event.date|date:"d/m/Y" }}</td>
+                            <td>{{ event.date|date:"m/d/Y" }}</td>
                             <td>{{ event.time_shot|time:"h:i a" }}</td>
                             <td>{{ event.time_retrieved|time:"h:i a" }}</td>
                             <td>{{ event.hunter.name }}</td>
