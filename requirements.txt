@@ -7,7 +7,7 @@ django-mailbox==4.10.1
 django-phonenumber-field==3.0.1
 django-recaptcha==4.0.0
 django-settings-export==1.2.1
-django-tinymce==3.0.2
+django-tinymce==4.1.0
 phonenumbers==8.12.8
 Pillow==10.2.0
 PyMySQL==1.1.1
