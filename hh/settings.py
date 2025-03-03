@@ -213,28 +213,6 @@ else:
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 2000
 
-# Navbar links so we can easily switch between Site5 and PythonAnywhere...
-
-# ...Site5
-ABOUT_LINK = 'http://www.huntingtonhillsinc.org/about.html'
-CONTACT_LINK = 'http://www.huntingtonhillsinc.org/contact.html'
-DOCUMENTS_LINK = 'http://www.huntingtonhillsinc.org/docs.html'
-GALLERY_LINK = 'https://huntingtonhills.pythonanywhere.com/gallery/'
-HISTORY_LINK = 'http://www.huntingtonhillsinc.org/history.html'
-HOME_LINK = 'http://www.huntingtonhillsinc.org/index.html'
-SEARCH_LINK = 'http://www.huntingtonhillsinc.org/search.html'
-TECHNICAL_LINK = 'http://www.huntingtonhillsinc.org/technical.html'
-
-# ...PythonAnywhere
-# ABOUT_LINK = reverse_lazy('about')
-# CONTACT_LINK = reverse_lazy('contact:contact')
-# DOCUMENTS_LINK = reverse_lazy('docs:docs')
-# GALLERY_LINK = reverse_lazy('gallery:gallery')
-# HISTORY_LINK = reverse_lazy('history:history')
-# HOME_LINK = reverse_lazy('home')
-# SEARCH_LINK = reverse_lazy('search')
-# TECHNICAL_LINK = reverse_lazy('technical')
-
 
 # Version information
 
@@ -244,15 +222,7 @@ VERSION = '3.0'
 # List of settings to export to templates (django-settings-export)
 
 SETTINGS_EXPORT = [
-    'ABOUT_LINK',
-    'CONTACT_LINK',
     'DEBUG',
-    'DOCUMENTS_LINK',
-    'GALLERY_LINK',
-    'HISTORY_LINK',
-    'HOME_LINK',
-    'SEARCH_LINK',
-    'TECHNICAL_LINK',
     'VERSION'
 ]
 

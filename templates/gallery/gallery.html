@@ -84,14 +84,14 @@
 
             <div id="footer">
                 <span>
-                    <a href="{{ settings.HOME_LINK }}">Home</a> |
-                    <a href="{{ settings.ABOUT_LINK }}">About</a> |
-                    <a href="{{ settings.DOCUMENTS_LINK }}">Documents</a> |
-                    <a href="{{ settings.HISTORY_LINK }}">History</a> |
+                    <a href="{% url "home" %}">Home</a> |
+                    <a href="{% url "about" %}">About</a> |
+                    <a href="{% url "docs:docs" %}">Documents</a> |
+                    <a href="{% url "history:history" %}">History</a> |
                     Gallery |
-                    <a href="{{ settings.CONTACT_LINK }}">Contact</a> |
-                    <a href="{{ settings.SEARCH_LINK }}">Search</a> |
-                    <a href="{{ settings.TECHNICAL_LINK }}">Technical Details</a>
+                    <a href="{% url "contact:contact" %}">Contact</a> |
+                    <a href="{% url "search" %}">Search</a> |
+                    <a href="{% url "technical" %}">Technical Details</a>
                 </span>
             </div>
 

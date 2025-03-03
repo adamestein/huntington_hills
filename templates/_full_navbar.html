@@ -1,39 +1,39 @@
 {% ifequal active "home" %}
     <li><span class="fakelink">Home</span></li>
 {% else %}
-    <li><a href="{{ settings.HOME_LINK }}">Home</a></li>
+    <li><a href="{% url "home" %}">Home</a></li>
 {% endifequal %}
 
 {% ifequal active "about" %}
     <li><span class="fakelink">About</span></li>
 {% else %}
-    <li><a href="{{ settings.ABOUT_LINK }}">About</a></li>
+    <li><a href="{% url "about" %}">About</a></li>
 {% endifequal %}
 
 {% ifequal active "documents" %}
     <li><span class="fakelink">Documents</span></li>
 {% else %}
-    <li><a href="{{ settings.DOCUMENTS_LINK }}">Documents</a></li>
+    <li><a href="{% url "docs:docs" %}">Documents</a></li>
 {% endifequal %}
 
-<li><a href="{{ settings.HISTORY_LINK }}">History</a></li>
+<li><a href="{% url "history:history" %}">History</a></li>
 
-<li><a href="{{ settings.GALLERY_LINK }}">Gallery</a></li>
+<li><a href="{% url "gallery:gallery" %}">Gallery</a></li>
 
 {% ifequal active "contact" %}
     <li><span class="fakelink">Contact</span></li>
 {% else %}
-    <li><a href="{{ settings.CONTACT_LINK }}">Contact</a></li>
+    <li><a href="{% url "contact:contact" %}">Contact</a></li>
 {% endifequal %}
 
 {% ifequal active "search" %}
     <li><span class="fakelink">Search</span></li>
 {% else %}
-    <li><a href="{{ settings.SEARCH_LINK }}">Search</a></li>
+    <li><a href="{% url "search" %}">Search</a></li>
 {% endifequal %}
 
 {% ifequal active "technical" %}
     <li><span class="fakelink">Technical</span></li>
 {% else %}
-    <li><a href="{{ settings.TECHNICAL_LINK }}">Technical Details</a></li>
+    <li><a href="{% url "technical" %}">Technical Details</a></li>
 {% endifequal %}

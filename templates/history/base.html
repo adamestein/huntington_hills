@@ -28,14 +28,14 @@
                 <div class="bar">Links</div>
                 
                 <div class="colleft">
-                    <p><a href="{{ settings.HOME_LINK }}">Home</a></p>
-                    <p><a href="{{ settings.ABOUT_LINK }}">About</a></p>
-                    <p><a href="{{ settings.DOCUMENTS_LINK }}">Documents</a></p>
+                    <p><a href="{% url "home" %}">Home</a></p>
+                    <p><a href="{% url "about" %}">About</a></p>
+                    <p><a href="{% url "docs:docs" %}">Documents</a></p>
                     <p>History</p>
-                    <p><a href="{{ settings.GALLERY_LINK }}">Gallery</a></p>
-                    <p><a href="{{ settings.CONTACT_LINK }}">Contact</a></p>
-                    <p><a href="{{ settings.SEARCH_LINK }}">Search</a></p>
-                    <p><a href="{{ settings.TECHNICAL_LINK }}">Technical Details</a></p>
+                    <p><a href="{% url "gallery:gallery" %}">Gallery</a></p>
+                    <p><a href="{% url "contact:contact" %}">Contact</a></p>
+                    <p><a href="{% url "search" %}">Search</a></p>
+                    <p><a href="{% url "technical" %}">Technical Details</a></p>
                 </div>
             
                 {% block left_content %}{% endblock %}
