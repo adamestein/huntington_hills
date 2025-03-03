@@ -303,7 +303,7 @@ else:
             'file': {
                 'level': 'WARNING',
                 'class': 'logging.FileHandler',
-                'filename': '/home/huntingtonhills/logs/django.log'
+                'filename': '/home/hunttqze/logs/django.log'
             }
         },
         'loggers': {
