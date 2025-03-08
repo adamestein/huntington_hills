@@ -7,7 +7,7 @@ from django.test import TestCase
 
 from django_mailbox.models import Mailbox, Message
 
-from residents.models import EmailType, Person
+from residents.models import Person
 
 from ..models import MailingList
 
@@ -74,7 +74,7 @@ Generic email text.
         headers = mail.outbox[0].extra_headers
         self.assertEqual(11, len(headers))
         self.assertEqual('Adam Stein via Residents <residents_test@huntingtonhillsinc.org>', headers['From'])
-        self.assertEqual('<>', headers['List-Archive'])
+        self.assertEqual('<http://smeg:8002/mailing_lists/archives/list/>', headers['List-Archive'])
         self.assertEqual(
             '<http://www.huntingtonhillsinc.org/members/mailing_lists.html>,<mailto:adam@csh.rit.edu'
             '?subject=help%20Residents>',
@@ -257,7 +257,7 @@ Generic email text.
             'Outsider <outsider@outside.com> via Residents <residents_test@huntingtonhillsinc.org>',
             headers['From']
         )
-        self.assertEqual('<>', headers['List-Archive'])
+        self.assertEqual('<http://smeg:8002/mailing_lists/archives/list/>', headers['List-Archive'])
         self.assertEqual(
             '<http://www.huntingtonhillsinc.org/members/mailing_lists.html>,<mailto:adam@csh.rit.edu'
             '?subject=help%20Residents>',
@@ -308,6 +308,100 @@ Generic email text.
         msgs = Message.objects.all()
         self.assertEqual(1, msgs.count())
         self.assertEqual('[Residents] Re: Check reply subject line', msgs[0].subject)
+
+    def test_sanitize_html(self):
+        self.assertEqual(0, Message.objects.count())
+
+        message = email.message_from_bytes(b'''\
+Date: Sun, 20 Jan 2013 11:53:53 -0800
+Message-ID: <CAMdmm+hGH8Dgn-_0xnXJCd=PhyNAiouOYm5zFP0z-foqTO60zA@mail.gmail.com>
+Subject: Sanitize the HTML
+From: Adam Stein <adam@csh.rit.edu>
+To: Residents <residents_test@huntingtonhillsinc.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+This email has HTML
+''')
+
+        message = email.message.EmailMessage()
+        message['From'] = 'Adam Stein <adam@csh.rit.edu>'
+        message['To'] = 'Residents <residents_test@huntingtonhillsinc.org>'
+        message['Subject'] = 'Sanitize the HTML'
+        message['Message-ID'] = '<CAMdmm+hGH8Dgn-_0xnXJCd=PhyNAiouOYm5zFP0z-foqTO60zA@mail.gmail.com>'
+        message.set_content('This email has HTML')
+        message.add_alternative(
+            """
+                <html>
+                    <body>
+                        <p>This email has <strong>HTML</strong>.</p>
+                        
+                        <p>Link to http://www.google.com/</p>
+                        
+                        <p>Link to <a href="http://www.huntingtonhillsinc.org/">Huntington Hills</a>.</p>
+                        
+                        <script>evil()</script>
+                        
+                        <img src="image.gif" onerror="evil()">
+                        
+                        mailto:adam@csh.rit.edu
+                    </body>
+                </html>
+            """,
+            subtype='html'
+        )
+
+        self.mailbox.process_incoming_message(message)
+        self.string_handler.flush()
+
+        self.assertEqual(1, len(mail.outbox))
+        self.assertEqual(['randy@member.org', 'adam@csh.rit.edu'], mail.outbox[0].bcc)
+        self.assertEqual('This email has HTML', mail.outbox[0].body)
+        self.assertEqual('Adam Stein via Residents <residents_test@huntingtonhillsinc.org>', mail.outbox[0].from_email)
+        self.assertEqual(['Adam Stein <adam@csh.rit.edu>'], mail.outbox[0].reply_to)
+        self.assertEqual('[Residents] Sanitize the HTML', mail.outbox[0].subject)
+        self.assertEqual(['Residents <residents_test@huntingtonhillsinc.org>'], mail.outbox[0].to)
+
+        headers = mail.outbox[0].extra_headers
+        self.assertEqual(11, len(headers))
+        self.assertEqual('Adam Stein via Residents <residents_test@huntingtonhillsinc.org>', headers['From'])
+        self.assertEqual('<http://smeg:8002/mailing_lists/archives/list/>', headers['List-Archive'])
+        self.assertEqual(
+            '<http://www.huntingtonhillsinc.org/members/mailing_lists.html>,<mailto:adam@csh.rit.edu'
+            '?subject=help%20Residents>',
+            headers['List-Help']
+        )
+        self.assertEqual('<mailto:adam@csh.rit.edu> (Contact Person for Help)', headers['List-Owner'])
+        self.assertEqual('<mailto:residents_test@huntingtonhillsinc.org>', headers['List-Post'])
+        self.assertEqual('<mailto:adam@csh.rit.edu?subject=subscribe%20Residents>', headers['List-Subscribe'])
+        self.assertEqual('<mailto:adam@csh.rit.edu?subject=unsubscribe%20Residents>', headers['List-Unsubscribe'])
+        # noinspection PyUnresolvedReferences
+        self.assertEqual(message['Message-ID'], headers['Message-ID'])
+        self.assertEqual('Residents <residents_test-bounces@huntingtonhillsinc.org>', headers['Sender'])
+        self.assertEqual('residents_test@huntingtonhillsinc.org', headers['X-Hh-Beenthere'])
+        self.assertEqual('Residents <residents_test-bounces@huntingtonhillsinc.org>', headers['X-Sender'])
+
+        # noinspection PyUnresolvedReferences
+        alternatives = mail.outbox[0].alternatives
+        self.assertEqual(1, len(alternatives))
+        self.assertEqual(
+            '<html>                    <body>                        '
+            '<p>This email has <strong>HTML</strong>.</p>                                                '
+            '<p>Link to <a href="http://www.google.com/">http://www.google.com/</a></p>'
+            '                                                '
+            '<p>Link to <a href="http://www.huntingtonhillsinc.org/">Huntington Hills</a>.</p>'
+            '                                                                                                '
+            '<img src="image.gif">                                                '
+            '<a href="mailto:adam@csh.rit.edu">adam@csh.rit.edu</a>                    </body>                </html>',
+            alternatives[0][0]
+        )
+        self.assertEqual('text/html', alternatives[0][1])
+
+        self.assertEqual('', self.stream.getvalue())
+
+        msgs = Message.objects.all()
+        self.assertEqual(1, msgs.count())
+        self.assertEqual('[Residents] Sanitize the HTML', msgs[0].subject)
 
 
     def tearDown(self):
