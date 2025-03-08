@@ -14,8 +14,7 @@ import logging
 from os import path
 import sys
 
-# noinspection PyPackageRequirements
-from decouple import config, Csv
+import upsilonconf
 
 from django.urls import reverse_lazy
 
@@ -29,15 +28,17 @@ sys.path.append(path.join(BASE_DIR, 'apps'))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
+config = upsilonconf.load('.env.json')['Settings']
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = config.secret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', cast=bool, default=False)
+DEBUG = config.get('debug', default=False)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+ALLOWED_HOSTS = config.allowed_hosts
 
-SITE_URL = config('SITE_URL')
+SITE_URL = config.site_url
 
 
 # Application definition
@@ -116,10 +117,10 @@ WSGI_APPLICATION = 'hh.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
+        'NAME': config.db_name,
+        'USER': config.db_user,
+        'PASSWORD': config.db_password,
+        'HOST': config.db_host,
         'OPTIONS': {
             'init_command': 'SET sql_mode="STRICT_ALL_TABLES"'
         },
@@ -192,20 +193,20 @@ CORS_ORIGIN_WHITELIST = [
     'http://www.huntingtonhillsinc.org'
 ]
 
+
 # Email setup
 
 DEFAULT_FROM_EMAIL = 'adam@csh.rit.edu'
-EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_BACKEND = config.email_backend
 
 if 'filebased' in EMAIL_BACKEND:
     # Local development
-    EMAIL_FILE_PATH = config('EMAIL_FILE_PATH')
+    EMAIL_FILE_PATH = config.email_file_path
 else:
-    # Production
-    EMAIL_HOST = config('EMAIL_HOST')
-    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-    EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-    EMAIL_PORT = 587
+    EMAIL_HOST = 'shared102.accountservergroup.com'
+    EMAIL_HOST_PASSWORD = 'fZg9m3Gw5qiVYOe'
+    EMAIL_HOST_USER = 'residents_test@huntingtonhillsinc.org'
+    EMAIL_PORT = 465
     EMAIL_USE_TLS = True
 
 
