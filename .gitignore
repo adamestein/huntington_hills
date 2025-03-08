@@ -1,6 +1,6 @@
 *.pyc
 *.swp
-.env
+.env*
 .idea
 datadumper.js
 /emails
