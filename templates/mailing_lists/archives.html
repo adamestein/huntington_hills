@@ -32,7 +32,6 @@
         <tr>
             <th>Archive</th>
             <th>View By</th>
-            <th>Downloadable Version</th>
         </tr>
 
         {% for archive in archives %}
@@ -44,7 +43,6 @@
                     <a href="{% url "mailing_lists:by_author" ml_name archive %}">[ Author ]</a>
                     <a href="{% url "mailing_lists:by_date" ml_name archive %}">[ Date ]</a>
                 </td>
-                <td>TBD</td>
             </tr>
         {% endfor %}
     </table>
