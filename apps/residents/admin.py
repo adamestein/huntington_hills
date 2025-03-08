@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (
-    Board, BoardTerm, Email, EmailType, LotNumber, MailingAddress, Person, Property, PropertyType, Street
+    Board, BoardTerm, Email, LotNumber, MailingAddress, Person, Property, PropertyType, Street
 )
 
 
@@ -48,16 +48,6 @@ class BoardTermAdmin(admin.ModelAdmin):
     search_fields = ('person__first_name', 'person__last_name')
 
 
-@admin.register(Email)
-class EmailAdmin(admin.ModelAdmin):
-    list_filter = ('email_type',)
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'person':
-            kwargs['queryset'] = Person.objects.filter(active=True)
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
-
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
     list_filter = ('residential_property__street',)
@@ -70,7 +60,7 @@ class PropertyAdmin(admin.ModelAdmin):
     list_filter = ('street',)
 
 
-admin.site.register(EmailType)
+admin.site.register(Email)
 admin.site.register(LotNumber)
 admin.site.register(MailingAddress)
 admin.site.register(PropertyType)

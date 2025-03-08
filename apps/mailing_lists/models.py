@@ -2,25 +2,45 @@ import logging
 import re
 
 from django.conf import settings
-from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.core.mail import EmailMessage, EmailMultiAlternatives, get_connection
 from django.db import models
 from django.dispatch import receiver
 from django.shortcuts import reverse
 from django.template.defaultfilters import pluralize
 
+import upsilonconf
+
+from lxml.html.clean import Cleaner, autolink_html
+
 from django_mailbox.models import Mailbox, Message
 from django_mailbox.signals import message_received
 
-from residents.models import Email, EmailType, Person
+from residents.models import Person
 
 logger = logging.getLogger(__name__)
+
+
+# We use the same cleaner for every message with HTML, so only create this once
+cleaner = Cleaner(
+    add_nofollow=False,
+    annoying_tags=True,
+    comments=True,
+    embedded=True,
+    forms=True,
+    frames=True,
+    javascript=True,
+    page_structure=False,
+    processing_instructions=True,
+    remove_unknown_tags=True,
+    safe_attrs_only=True,
+    scripts=True
+)
 
 
 class MailingList(models.Model):
     allow_anonymous_posts = models.BooleanField(default=False)
     can_post = models.ManyToManyField(Person, blank=True, related_name='can_post')    # If empty, all members can post
     email = models.EmailField()
-    email_type = models.ForeignKey(EmailType)
     mailbox = models.OneToOneField(Mailbox)
     members = models.ManyToManyField(Person, related_name='members')
 
@@ -31,7 +51,9 @@ class MailingList(models.Model):
 
     def __str__(self):
         num_members = self.members.count()
-        return f'{self.mailbox.name} ({num_members} member{pluralize(num_members)})'
+        num_can_post = self.can_post.count()
+        can_post = 'all can post' if num_can_post == 0 else f'{num_can_post} can post'
+        return f'{self.mailbox.name} ({num_members} member{pluralize(num_members)}, {can_post})'
 
 
 class RejectedMessage(models.Model):
@@ -55,10 +77,12 @@ def send(sender, message, **_):
             # This was the message that was sent out, don't need to store the one sent back to the ML
             message.delete()
         else:
-            try:
-                member = Email.objects.get(email=message.from_address[0], email_type=mailing_list.email_type).person
-            except (Email.DoesNotExist, IndexError):
-                member = None
+            raise RuntimeError('Need to update for NewMail')
+            # try:
+            #     member = Email.objects.get(email=message.from_address[0], email_type=mailing_list.email_type).person
+            # except (Email.DoesNotExist, IndexError):
+            #     member = None
+            member = None
 
             # We allow posting to this mailing list if:
             #
@@ -72,9 +96,20 @@ def send(sender, message, **_):
             else:
                 can_post = mailing_list.allow_anonymous_posts
 
+            config = upsilonconf.load('.env.json')['Mailing Lists']
+
+            connection_args = {
+                'host': config.host,
+                'password': config.credentials[sender.name]['password'],
+                'port': config.port,
+                'use_tls': True,
+                'username': config.credentials[sender.name]['username']
+            }
+
             if can_post:
                 bcc_list = []
                 for person in mailing_list.members.all():
+                    raise RuntimeError('Fix next line')
                     bcc_list += list(person.emails.filter(email_type=mailing_list.email_type))
 
                 if member:
@@ -89,48 +124,50 @@ def send(sender, message, **_):
                 message.subject = subject
                 message.save()
 
-                msg = EmailMultiAlternatives(
-                    bcc=bcc_list,
-                    body=message.text,
-                    from_email=from_email,
-                    headers={
-                        'From': from_email,
-                        'List-Archive': f'<{settings.SITE_URL}{reverse("mailing_lists:archive_list")}>',
-                        'List-Help': (
-                            '<http://www.huntingtonhillsinc.org/members/mailing_lists.html>,'
-                            f'<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=help%20{sender.name}>'
-                        ),
-                        'List-Owner': f'<mailto:{settings.DEFAULT_FROM_EMAIL}> (Contact Person for Help)',
-                        'List-Post': '<mailto:residents_test@huntingtonhillsinc.org>',
-                        'List-Subscribe': f'<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=subscribe%20{sender.name}>',
-                        'List-Unsubscribe': f'<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=unsubscribe%20{sender.name}>',
-                        'Message-ID': message.message_id,
-                        'Sender': f'{sender.name} <{mailing_list.bounce_email}>',
-                        'X-Hh-Beenthere': mailing_list.email,
-                        'X-Sender': f'{sender.name} <{mailing_list.bounce_email}>'
-                    },
-                    reply_to=(message.from_header,),
-                    subject=subject,
-                    to=[f'{sender.name} <{mailing_list.email}>']
-                )
-
-                if email_object.get('In-Reply-to') is not None:
-                    msg.extra_headers['In-Reply-To'] = email_object['In-Reply-to']
-
-                if email_object.get('References') is not None:
-                    msg.extra_headers['References'] = email_object['References'].replace('\r\n\t', ' ')
-
-                if message.html:
-                    msg.attach_alternative(message.html, 'text/html')
-
-                for att in message.attachments.all():
-                    # noinspection PyProtectedMember
-                    msg.attach(
-                        filename=att.get_filename(), content=att.document.read(),
-                        mimetype=att._get_rehydrated_headers().get_content_type()
+                with get_connection(**connection_args) as connection:
+                    msg = EmailMultiAlternatives(
+                        bcc=bcc_list,
+                        body=message.text,
+                        connection=connection,
+                        from_email=from_email,
+                        headers={
+                            'From': from_email,
+                            'List-Archive': f'<{settings.SITE_URL}{reverse("mailing_lists:archive_list")}>',
+                            'List-Help': (
+                                '<http://www.huntingtonhillsinc.org/members/mailing_lists.html>,'
+                                f'<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=help%20{sender.name}>'
+                            ),
+                            'List-Owner': f'<mailto:{settings.DEFAULT_FROM_EMAIL}> (Contact Person for Help)',
+                            'List-Post': '<mailto:residents_test@huntingtonhillsinc.org>',
+                            'List-Subscribe': f'<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=subscribe%20{sender.name}>',
+                            'List-Unsubscribe': f'<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=unsubscribe%20{sender.name}>',
+                            'Message-ID': message.message_id,
+                            'Sender': f'{sender.name} <{mailing_list.bounce_email}>',
+                            'X-Hh-Beenthere': mailing_list.email,
+                            'X-Sender': f'{sender.name} <{mailing_list.bounce_email}>'
+                        },
+                        reply_to=(message.from_header,),
+                        subject=subject,
+                        to=[f'{sender.name} <{mailing_list.email}>']
                     )
 
-                msg.send()
+                    if email_object.get('In-Reply-to') is not None:
+                        msg.extra_headers['In-Reply-To'] = email_object['In-Reply-to']
+
+                    if email_object.get('References') is not None:
+                        msg.extra_headers['References'] = email_object['References'].replace('\r\n\t', ' ')
+
+                    if message.html:
+                        msg.attach_alternative(autolink_html(cleaner.clean_html(message.html)), 'text/html')
+
+                    for att in message.attachments.all():
+                        # noinspection PyProtectedMember
+                        msg.attach(
+                            filename=att.get_filename(), content=att.document.read(),
+                            mimetype=att._get_rehydrated_headers().get_content_type()
+                        )
+
+                    msg.send()
             else:
                 # Save the message to our reject pile (easier to view just rejected messages or to remove when
                 # viewing ML archives)
@@ -139,18 +176,17 @@ def send(sender, message, **_):
                 # Log the issue and respond
                 logger.info(f'{message.from_header} is not allowed to post to the {sender.name} list')
 
-                msg = EmailMessage(
-                    body='You are not authorized',
-                    from_email=mailing_list.bounce_email,
-                    headers={
-                        'From': mailing_list.email,
-                        'Sender': mailing_list.bounce_email,
-                        'X-Sender': mailing_list.bounce_email
-                    },
-                    subject='Email Rejected',
-                    to=[message.from_header]
-                )
-                msg.send()
-
-
-
+                with get_connection(**connection_args) as connection:
+                    msg = EmailMessage(
+                        body='You are not authorized',
+                        connection=connection,
+                        from_email=mailing_list.bounce_email,
+                        headers={
+                            'From': mailing_list.email,
+                            'Sender': mailing_list.bounce_email,
+                            'X-Sender': mailing_list.bounce_email
+                        },
+                        subject='Email Rejected',
+                        to=[message.from_header]
+                    )
+                    msg.send()

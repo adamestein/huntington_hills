@@ -54,30 +54,10 @@ class BoardTerm(models.Model):
 
 
 class Email(models.Model):
-    email = models.EmailField()
-    email_type = models.ForeignKey('EmailType')
-    person = models.ForeignKey('Person')
-
-    class Meta:
-        ordering = ('email_type', 'person', 'email')
-        unique_together = ('email', 'email_type', 'person')
+    email = models.EmailField(unique=True)
 
     def __str__(self):
-        return f'[{self.email_type}] {self.person} ({self.email})'
-
-
-class EmailType(models.Model):
-    NOTIFICATION = 'Notification'
-    PERSONAL = 'Personal'
-    RESIDENT = 'Resident'
-
-    email_type = models.CharField(max_length=12, unique=True)
-
-    class Meta:
-        ordering = ('email_type',)
-
-    def __str__(self):
-        return self.email_type
+        return self.email
 
 
 class LotNumber(models.Model):
@@ -120,6 +100,7 @@ class Person(models.Model):
     suffix = models.CharField(blank=True, default=None, max_length=10, null=True)
     phone = PhoneNumberField(blank=True, help_text='Example: 000-000-0000.', region='US')
     active = models.BooleanField(default=True)
+    emails = models.ManyToManyField(Email)
 
     class Meta:
         ordering = ('last_name', 'first_name')
@@ -134,12 +115,9 @@ class Person(models.Model):
             return f' {self.suffix}' if self.suffix else ''
 
     @property
-    def emails(self):
-        return self.email_set.order_by('email').values_list('email', flat=True).distinct()
-
-    @property
     def has_notice_email(self):
-        return self.email_set.filter(email_type__email_type=EmailType.NOTIFICATION).exists()
+        raise RuntimeError('Needs to be updated to use the notices mailing list')
+        # return self.email_set.filter(email_type__email_type=EmailType.NOTIFICATION).exists()
 
     @property
     def full_name(self):
@@ -150,10 +128,11 @@ class Person(models.Model):
 
     @property
     def primary_email(self):
-        try:
-            return self.email_set.filter(email_type__email_type__in=[EmailType.RESIDENT, EmailType.PERSONAL])[0].email
-        except IndexError:
-            return ''
+        raise RuntimeError('Update as needed')
+        # try:
+        #     return self.email_set.filter(email_type__email_type__in=[EmailType.RESIDENT, EmailType.PERSONAL])[0].email
+        # except IndexError:
+        #     return ''
 
     def __str__(self):
         return f'{self.last_name}, {self.first_name} [{self.residential_property.mailing_address(multiline=False)}]'
