@@ -100,7 +100,7 @@ class Person(models.Model):
     suffix = models.CharField(blank=True, default=None, max_length=10, null=True)
     phone = PhoneNumberField(blank=True, help_text='Example: 000-000-0000.', region='US')
     active = models.BooleanField(default=True)
-    emails = models.ManyToManyField(Email)
+    emails = models.ManyToManyField(Email, through='PersonEmail')
 
     class Meta:
         ordering = ('last_name', 'first_name')
@@ -136,6 +136,17 @@ class Person(models.Model):
 
     def __str__(self):
         return f'{self.last_name}, {self.first_name} [{self.residential_property.mailing_address(multiline=False)}]'
+
+
+class PersonEmail(models.Model):
+    email = models.OneToOneField(Email, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ('person', 'email')
+
+    def __str__(self):
+        return f'[{self.person.full_name}] {self.email}'
 
 
 class Property(models.Model):

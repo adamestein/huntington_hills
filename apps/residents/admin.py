@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (
-    Board, BoardTerm, Email, LotNumber, MailingAddress, Person, Property, PropertyType, Street
+    Board, BoardTerm, Email, LotNumber, MailingAddress, Person, Property, PropertyType, Street, PersonEmail
 )
 
 
@@ -48,10 +48,14 @@ class BoardTermAdmin(admin.ModelAdmin):
     search_fields = ('person__first_name', 'person__last_name')
 
 
+class PersonEmailInline(admin.TabularInline):
+    model = PersonEmail
+
+
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
+    inlines = (PersonEmailInline,)
     list_filter = ('residential_property__street',)
-
     search_fields = ('first_name', 'last_name')
 
 
@@ -60,6 +64,7 @@ class PropertyAdmin(admin.ModelAdmin):
     list_filter = ('street',)
 
 
+admin.site.register(PersonEmail)
 admin.site.register(Email)
 admin.site.register(LotNumber)
 admin.site.register(MailingAddress)
