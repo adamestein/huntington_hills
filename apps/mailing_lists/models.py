@@ -1,4 +1,3 @@
-from ast import literal_eval
 import logging
 import re
 
@@ -16,7 +15,7 @@ from lxml.html.clean import Cleaner, autolink_html
 from django_mailbox.models import Mailbox, Message
 from django_mailbox.signals import message_received
 
-from residents.models import Person
+from residents.models import Email
 
 logger = logging.getLogger(__name__)
 
@@ -40,15 +39,24 @@ cleaner = Cleaner(
 
 class MailingList(models.Model):
     allow_anonymous_posts = models.BooleanField(default=False)
-    can_post = models.ManyToManyField(Person, blank=True, related_name='can_post')    # If empty, all members can post
+    can_post = models.ManyToManyField(Email, blank=True, related_name='can_post')    # If empty, all members can post
     email = models.EmailField()
     mailbox = models.OneToOneField(Mailbox)
-    members = models.ManyToManyField(Person, related_name='members')
+    members = models.ManyToManyField(Email, related_name='members')
 
     @property
     def bounce_email(self):
         pieces = self.email.split('@')
         return f'{pieces[0]}-bounces@{pieces[1]}'
+
+    def member(self, email):
+        try:
+            return self.members.get(email=email).personemail.person
+        except Email.DoesNotExist:
+            return None
+
+    def member_can_post(self, email):
+        return self.can_post.count() == 0 or self.can_post.filter(email=email).exists()
 
     def __str__(self):
         num_members = self.members.count()
@@ -78,24 +86,18 @@ def send(sender, message, **_):
             # This was the message that was sent out, don't need to store the one sent back to the ML
             message.delete()
         else:
-            raise RuntimeError('Need to update for NewMail')
-            # try:
-            #     member = Email.objects.get(email=message.from_address[0], email_type=mailing_list.email_type).person
-            # except (Email.DoesNotExist, IndexError):
-            #     member = None
-            member = None
+            member = mailing_list.member(message.from_address[0])
 
             # We allow posting to this mailing list if:
             #
             #   1) the sender is not in the system at all and the ML allows anonymous posts
             #   2) the sender is a member of this ML and there is no can_post list (all and only members can post)
             #   3) the sender is on the can_post list
-
             if member:
-                can_post = mailing_list.can_post.count() == 0 and member.members.filter().exists() or \
-                           member.can_post.filter().exists()
+                can_post = mailing_list.member_can_post(message.from_address[0])
             else:
                 can_post = mailing_list.allow_anonymous_posts
+
 
             config = upsilonconf.load('.env.json')['Mailing Lists']
 
@@ -108,11 +110,6 @@ def send(sender, message, **_):
             }
 
             if can_post:
-                bcc_list = []
-                for person in mailing_list.members.all():
-                    raise RuntimeError('Fix next line')
-                    bcc_list += list(person.emails.filter(email_type=mailing_list.email_type))
-
                 if member:
                     from_email = f'{member.full_name} via {sender.name} <{mailing_list.email}>'
                 else:
@@ -127,7 +124,7 @@ def send(sender, message, **_):
 
                 with get_connection(**connection_args) as connection:
                     msg = EmailMultiAlternatives(
-                        bcc=bcc_list,
+                        bcc=[member.email for member in mailing_list.members.all()],
                         body=message.text,
                         connection=connection,
                         from_email=from_email,
@@ -135,11 +132,11 @@ def send(sender, message, **_):
                             'From': from_email,
                             'List-Archive': f'<{settings.SITE_URL}{reverse("mailing_lists:archive_list")}>',
                             'List-Help': (
-                                '<http://www.huntingtonhillsinc.org/members/mailing_lists.html>,'
+                                f'<{settings.SITE_URL}{reverse("mailing_lists:lists")}>,'
                                 f'<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=help%20{sender.name}>'
                             ),
                             'List-Owner': f'<mailto:{settings.DEFAULT_FROM_EMAIL}> (Contact Person for Help)',
-                            'List-Post': '<mailto:residents_test@huntingtonhillsinc.org>',
+                            'List-Post': f'<mailto:{mailing_list.email}>',
                             'List-Subscribe': f'<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=subscribe%20{sender.name}>',
                             'List-Unsubscribe': f'<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=unsubscribe%20{sender.name}>',
                             'Message-ID': message.message_id,

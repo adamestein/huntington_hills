@@ -7,14 +7,13 @@ from library.admin import custom_title_filter_factory
 
 from residents.models import Board, BoardTerm
 
-from .forms import MailingListAdminForm
 from .models import MailingList, RejectedMessage
 
 
 @admin.register(MailingList)
 class MailingListAdmin(admin.ModelAdmin):
     actions = ['set_can_post_to_board_members']
-    form = MailingListAdminForm
+    filter_horizontal = ('can_post', 'members',)
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         return super().formfield_for_manytomany(db_field, request, **kwargs)

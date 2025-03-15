@@ -3,27 +3,21 @@
         "pk": 1,
         "model": "residents.email",
         "fields": {
-            "email": "adam@csh.rit.edu",
-            "email_type": 3,
-            "person": 1
+            "email": "adam@csh.rit.edu"
         }
     },
     {
         "pk": 2,
         "model": "residents.email",
         "fields": {
-            "email": "joe@nonmember.org",
-            "email_type": 3,
-            "person": 2
+            "email": "joe@nonmember.org"
         }
     },
     {
         "pk": 3,
         "model": "residents.email",
         "fields": {
-            "email": "randy@member.org",
-            "email_type": 3,
-            "person": 3
+            "email": "randy@member.org"
         }
     }
 ]

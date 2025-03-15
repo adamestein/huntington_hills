@@ -7,7 +7,7 @@ from django.test import TestCase
 
 from django_mailbox.models import Mailbox, Message
 
-from residents.models import Person
+from residents.models import Email
 
 from ..models import MailingList
 
@@ -18,23 +18,22 @@ class PostingTest(TestCase):
         'apps/mailing_lists/tests/fixtures/property_types.json',
         'apps/mailing_lists/tests/fixtures/properties.json',
         'apps/mailing_lists/tests/fixtures/people.json',
-        'apps/mailing_lists/tests/fixtures/email_types.json',
-        'apps/mailing_lists/tests/fixtures/emails.json'
+        'apps/mailing_lists/tests/fixtures/emails.json',
+        'apps/mailing_lists/tests/fixtures/people_emails.json'
     ]
 
     def setUp(self):
         self.mailbox = Mailbox.objects.create(name='Residents')
         self.resident_ml = MailingList.objects.create(
             email='residents_test@huntingtonhillsinc.org',
-            email_type=EmailType.objects.get(email_type=EmailType.RESIDENT),
             mailbox=self.mailbox
         )
 
-        person1 = Person.objects.get(first_name='Adam', last_name='Stein')
-        person2 = Person.objects.get(first_name='Randy', last_name='Member')
+        self.email1 = Email.objects.get(email='adam@csh.rit.edu')
+        self.email2 = Email.objects.get(email='randy@member.org')
 
-        self.resident_ml.members.add(person1)
-        self.resident_ml.members.add(person2)
+        self.resident_ml.members.add(self.email1)
+        self.resident_ml.members.add(self.email2)
 
         logging.disable(logging.NOTSET)  # Normally logging is turned off for unit tests, turn it back on
         self.stream = StringIO()
@@ -64,7 +63,7 @@ Generic email text.
         self.string_handler.flush()
 
         self.assertEqual(1, len(mail.outbox))
-        self.assertEqual(['randy@member.org', 'adam@csh.rit.edu'], mail.outbox[0].bcc)
+        self.assertEqual(['adam@csh.rit.edu', 'randy@member.org'], mail.outbox[0].bcc)
         self.assertEqual('Generic email text.', mail.outbox[0].body)
         self.assertEqual('Adam Stein via Residents <residents_test@huntingtonhillsinc.org>', mail.outbox[0].from_email)
         self.assertEqual(['Adam Stein <adam@csh.rit.edu>'], mail.outbox[0].reply_to)
@@ -76,8 +75,7 @@ Generic email text.
         self.assertEqual('Adam Stein via Residents <residents_test@huntingtonhillsinc.org>', headers['From'])
         self.assertEqual('<http://smeg:8002/mailing_lists/archives/list/>', headers['List-Archive'])
         self.assertEqual(
-            '<http://www.huntingtonhillsinc.org/members/mailing_lists.html>,<mailto:adam@csh.rit.edu'
-            '?subject=help%20Residents>',
+            '<http://smeg:8002/mailing_lists/lists/>,<mailto:adam@csh.rit.edu?subject=help%20Residents>',
             headers['List-Help']
         )
         self.assertEqual('<mailto:adam@csh.rit.edu> (Contact Person for Help)', headers['List-Owner'])
@@ -98,6 +96,110 @@ Generic email text.
         msgs = Message.objects.all()
         self.assertEqual(1, msgs.count())
         self.assertEqual('[Residents] Member posting when no can_post list', msgs[0].subject)
+
+    def test_can_post_list_1(self):
+        self.resident_ml.can_post.add(self.email1)
+
+        self.assertEqual(0, Message.objects.count())
+
+        message = email.message_from_bytes(b'''\
+Date: Sun, 20 Jan 2013 11:53:53 -0800
+Message-ID: <CAMdmm+hGH8Dgn-_0xnXJCd=PhyNAiouOYm5zFP0z-foqTO60zA@mail.gmail.com>
+Subject: Member posting when there is a can_post list and member is ON it
+From: Adam Stein <adam@csh.rit.edu>
+To: Residents <residents_test@huntingtonhillsinc.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+Generic email text.
+''')
+
+        self.mailbox.process_incoming_message(message)
+        self.string_handler.flush()
+
+        self.assertEqual(1, len(mail.outbox))
+        self.assertEqual(['adam@csh.rit.edu', 'randy@member.org'], mail.outbox[0].bcc)
+        self.assertEqual('Generic email text.', mail.outbox[0].body)
+        self.assertEqual('Adam Stein via Residents <residents_test@huntingtonhillsinc.org>', mail.outbox[0].from_email)
+        self.assertEqual(['Adam Stein <adam@csh.rit.edu>'], mail.outbox[0].reply_to)
+        self.assertEqual(
+            '[Residents] Member posting when there is a can_post list and member is ON it', mail.outbox[0].subject
+        )
+        self.assertEqual(['Residents <residents_test@huntingtonhillsinc.org>'], mail.outbox[0].to)
+
+        headers = mail.outbox[0].extra_headers
+        self.assertEqual(11, len(headers))
+        self.assertEqual('Adam Stein via Residents <residents_test@huntingtonhillsinc.org>', headers['From'])
+        self.assertEqual('<http://smeg:8002/mailing_lists/archives/list/>', headers['List-Archive'])
+        self.assertEqual(
+            '<http://smeg:8002/mailing_lists/lists/>,<mailto:adam@csh.rit.edu?subject=help%20Residents>',
+            headers['List-Help']
+        )
+        self.assertEqual('<mailto:adam@csh.rit.edu> (Contact Person for Help)', headers['List-Owner'])
+        self.assertEqual('<mailto:residents_test@huntingtonhillsinc.org>', headers['List-Post'])
+        self.assertEqual('<mailto:adam@csh.rit.edu?subject=subscribe%20Residents>', headers['List-Subscribe'])
+        self.assertEqual('<mailto:adam@csh.rit.edu?subject=unsubscribe%20Residents>', headers['List-Unsubscribe'])
+        # noinspection PyUnresolvedReferences
+        self.assertEqual(message._headers[1][1], headers['Message-ID'])
+        self.assertEqual('Residents <residents_test-bounces@huntingtonhillsinc.org>', headers['Sender'])
+        self.assertEqual('residents_test@huntingtonhillsinc.org', headers['X-Hh-Beenthere'])
+        self.assertEqual('Residents <residents_test-bounces@huntingtonhillsinc.org>', headers['X-Sender'])
+
+        # noinspection PyUnresolvedReferences
+        self.assertEqual(0, len(mail.outbox[0].alternatives))
+
+        self.assertEqual('', self.stream.getvalue())
+
+        msgs = Message.objects.all()
+        self.assertEqual(1, msgs.count())
+        self.assertEqual(
+            '[Residents] Member posting when there is a can_post list and member is ON it', msgs[0].subject
+        )
+
+    def test_can_post_list_2(self):
+        self.resident_ml.can_post.add(self.email2)
+
+        self.assertEqual(0, Message.objects.count())
+
+        message = email.message_from_bytes(b'''\
+Date: Sun, 20 Jan 2013 11:53:53 -0800
+Message-ID: <CAMdmm+hGH8Dgn-_0xnXJCd=PhyNAiouOYm5zFP0z-foqTO60zA@mail.gmail.com>
+Subject: Member posting when there is a can_post list and member is NOT on it
+From: Adam Stein <adam@csh.rit.edu>
+To: Residents <residents_test@huntingtonhillsinc.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+Generic email text.
+    ''')
+
+        self.mailbox.process_incoming_message(message)
+        self.string_handler.flush()
+
+        self.assertEqual(1, len(mail.outbox))
+        self.assertEqual([], mail.outbox[0].bcc)
+        self.assertEqual('You are not authorized', mail.outbox[0].body)
+        self.assertEqual('residents_test-bounces@huntingtonhillsinc.org', mail.outbox[0].from_email)
+        self.assertEqual([], mail.outbox[0].reply_to)
+        self.assertEqual('Email Rejected', mail.outbox[0].subject)
+        self.assertEqual(['Adam Stein <adam@csh.rit.edu>'], mail.outbox[0].to)
+
+        headers = mail.outbox[0].extra_headers
+        self.assertEqual(3, len(headers))
+        self.assertEqual('residents_test@huntingtonhillsinc.org', headers['From'])
+        self.assertEqual('residents_test-bounces@huntingtonhillsinc.org', headers['Sender'])
+        self.assertEqual('residents_test-bounces@huntingtonhillsinc.org', headers['X-Sender'])
+
+        self.assertIsNone(getattr(mail.outbox[0], 'alternatives', None))
+
+        self.assertEqual(
+            'Adam Stein <adam@csh.rit.edu> is not allowed to post to the Residents list\n',
+            self.stream.getvalue()
+        )
+
+        msgs = Message.objects.all()
+        self.assertEqual(1, msgs.count())
+        self.assertEqual('Member posting when there is a can_post list and member is NOT on it', msgs[0].subject)
 
     def test_valid_email_non_member_posting(self):
         self.assertEqual(0, Message.objects.count())
@@ -241,7 +343,7 @@ Generic email text.
         string_handler.flush()
 
         self.assertEqual(1, len(mail.outbox))
-        self.assertEqual(['randy@member.org', 'adam@csh.rit.edu'], mail.outbox[0].bcc)
+        self.assertEqual(['adam@csh.rit.edu', 'randy@member.org'], mail.outbox[0].bcc)
         self.assertEqual('Generic email text.', mail.outbox[0].body)
         self.assertEqual(
             'Outsider <outsider@outside.com> via Residents <residents_test@huntingtonhillsinc.org>',
@@ -259,8 +361,7 @@ Generic email text.
         )
         self.assertEqual('<http://smeg:8002/mailing_lists/archives/list/>', headers['List-Archive'])
         self.assertEqual(
-            '<http://www.huntingtonhillsinc.org/members/mailing_lists.html>,<mailto:adam@csh.rit.edu'
-            '?subject=help%20Residents>',
+            '<http://smeg:8002/mailing_lists/lists/>,<mailto:adam@csh.rit.edu?subject=help%20Residents>',
             headers['List-Help']
         )
         self.assertEqual('<mailto:adam@csh.rit.edu> (Contact Person for Help)', headers['List-Owner'])
@@ -355,7 +456,7 @@ This email has HTML
         self.string_handler.flush()
 
         self.assertEqual(1, len(mail.outbox))
-        self.assertEqual(['randy@member.org', 'adam@csh.rit.edu'], mail.outbox[0].bcc)
+        self.assertEqual(['adam@csh.rit.edu', 'randy@member.org'], mail.outbox[0].bcc)
         self.assertEqual('This email has HTML', mail.outbox[0].body)
         self.assertEqual('Adam Stein via Residents <residents_test@huntingtonhillsinc.org>', mail.outbox[0].from_email)
         self.assertEqual(['Adam Stein <adam@csh.rit.edu>'], mail.outbox[0].reply_to)
@@ -367,8 +468,7 @@ This email has HTML
         self.assertEqual('Adam Stein via Residents <residents_test@huntingtonhillsinc.org>', headers['From'])
         self.assertEqual('<http://smeg:8002/mailing_lists/archives/list/>', headers['List-Archive'])
         self.assertEqual(
-            '<http://www.huntingtonhillsinc.org/members/mailing_lists.html>,<mailto:adam@csh.rit.edu'
-            '?subject=help%20Residents>',
+            '<http://smeg:8002/mailing_lists/lists/>,<mailto:adam@csh.rit.edu?subject=help%20Residents>',
             headers['List-Help']
         )
         self.assertEqual('<mailto:adam@csh.rit.edu> (Contact Person for Help)', headers['List-Owner'])
