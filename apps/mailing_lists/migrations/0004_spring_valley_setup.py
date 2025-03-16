@@ -70,6 +70,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('mailing_lists', '0003_auto_20250309_1052'),
+        ('residents', '0013_auto_20250308_1651')
     ]
 
     operations = [
