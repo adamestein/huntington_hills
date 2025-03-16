@@ -44,6 +44,9 @@ class MailingList(models.Model):
     mailbox = models.OneToOneField(Mailbox)
     members = models.ManyToManyField(Email, related_name='members')
 
+    class Meta:
+        ordering = ('mailbox__name',)
+
     @property
     def bounce_email(self):
         pieces = self.email.split('@')
