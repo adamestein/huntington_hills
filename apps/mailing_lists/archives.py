@@ -27,6 +27,8 @@ class Archives(ProtectedTemplateView):
                 .order_by('month')
         )
 
+        context['ml_name'] = ml.mailbox.name
+
         for msg_group in msg_groups:
             context['archives'].append(msg_group['month'].strftime('%B %Y'))
 
