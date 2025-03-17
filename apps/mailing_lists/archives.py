@@ -28,6 +28,7 @@ class Archives(ProtectedTemplateView):
         )
 
         context['ml_name'] = ml.mailbox.name
+        context['ml_name_slug'] = ml.name_slug
 
         for msg_group in msg_groups:
             context['archives'].append(msg_group['month'].strftime('%B %Y'))

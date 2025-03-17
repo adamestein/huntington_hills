@@ -16,7 +16,7 @@ class ByAuthor(ProtectedListView):
         return context
 
     def get_queryset(self):
-        ml = MailingList.objects.get(mailbox__name=self.kwargs['ml_name'])
+        ml = MailingList.objects.get(name_slug=self.kwargs['ml_name_slug'])
         messages = (
             ml.mailbox.messages
                 .exclude(id__in=RejectedMessage.objects.values_list('message_id', flat=True))
@@ -40,7 +40,7 @@ class ByDate(ProtectedListView):
         return context
 
     def get_queryset(self):
-        ml = MailingList.objects.get(mailbox__name=self.kwargs['ml_name'])
+        ml = MailingList.objects.get(name_slug=self.kwargs['ml_name_slug'])
         messages = (
             ml.mailbox.messages
                 .exclude(id__in=RejectedMessage.objects.values_list('message_id', flat=True))
@@ -66,7 +66,7 @@ class BySubject(ProtectedListView):
         return context
 
     def get_queryset(self):
-        ml = MailingList.objects.get(mailbox__name=self.kwargs['ml_name'])
+        ml = MailingList.objects.get(name_slug=self.kwargs['ml_name_slug'])
         return (
             ml.mailbox.messages
                 .exclude(id__in=RejectedMessage.objects.values_list('message_id', flat=True))
@@ -81,7 +81,7 @@ class ByThread(ProtectedTemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        ml = MailingList.objects.get(mailbox__name=self.kwargs['ml_name'])
+        ml = MailingList.objects.get(name_slug=self.kwargs['ml_name_slug'])
 
         context['threads'] = self._build_thread_hierarchy(ml.mailbox.messages, None)
 
