@@ -9,11 +9,11 @@ from .message import MessageDetailView
 
 app_name = 'mailing_lists'
 urlpatterns = [
-    url(r'^archives/(?P<ml_name>[\w ]+)$', Archives.as_view(), name='archives'),
-    url(r'^archives/(?P<ml_name>[\w ]+)/byauthor/(?P<archive>[\w ]+)$', ByAuthor.as_view(), name='by_author'),
-    url(r'^archives/(?P<ml_name>[\w ]+)/bydate/(?P<archive>[\w ]+)$', ByDate.as_view(), name='by_date'),
-    url(r'^archives/(?P<ml_name>[\w ]+)/bysubject/(?P<archive>[\w ]+)$', BySubject.as_view(), name='by_subject'),
-    url(r'^archives/(?P<ml_name>[\w ]+)/bythread/(?P<archive>[\w ]+)$', ByThread.as_view(), name='by_thread'),
+    url(r'^archives/(?P<ml_name_slug>[-\w]+)$', Archives.as_view(), name='archives'),
+    url(r'^archives/(?P<ml_name_slug>[-\w]+)/byauthor/(?P<archive>[\w ]+)$', ByAuthor.as_view(), name='by_author'),
+    url(r'^archives/(?P<ml_name_slug>[-\w]+)/bydate/(?P<archive>[\w ]+)$', ByDate.as_view(), name='by_date'),
+    url(r'^archives/(?P<ml_name_slug>[-\w]+)/bysubject/(?P<archive>[\w ]+)$', BySubject.as_view(), name='by_subject'),
+    url(r'^archives/(?P<ml_name_slug>[-\w]+)/bythread/(?P<archive>[\w ]+)$', ByThread.as_view(), name='by_thread'),
     url(r'^archives/list/$', ArchiveList.as_view(), name='archive_list'),
     url(r'^archives/message/(?P<pk>[\d]+)/$', MessageDetailView.as_view(), name='message'),
     url(

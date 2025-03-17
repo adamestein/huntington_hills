@@ -17,7 +17,7 @@ class Archives(ProtectedTemplateView):
         context = super().get_context_data(**kwargs)
         context['archives'] = []
 
-        ml = MailingList.objects.get(mailbox__name=self.kwargs['ml_name'])
+        ml = MailingList.objects.get(name_slug=self.kwargs['ml_name_slug'])
         msg_groups = (
             ml.mailbox.messages
                 .values('processed')

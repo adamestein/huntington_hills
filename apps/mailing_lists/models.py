@@ -7,6 +7,7 @@ from django.db import models
 from django.dispatch import receiver
 from django.shortcuts import reverse
 from django.template.defaultfilters import pluralize
+from django.utils.text import slugify
 
 import upsilonconf
 
@@ -43,6 +44,7 @@ class MailingList(models.Model):
     email = models.EmailField()
     mailbox = models.OneToOneField(Mailbox)
     members = models.ManyToManyField(Email, related_name='members')
+    name_slug = models.SlugField()
 
     class Meta:
         ordering = ('mailbox__name',)
@@ -60,6 +62,10 @@ class MailingList(models.Model):
 
     def member_can_post(self, email):
         return self.can_post.count() == 0 or self.can_post.filter(email=email).exists()
+
+    def save(self, *args, **kwargs):
+        self.name_slug = slugify(self.mailbox.name)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         num_members = self.members.count()
