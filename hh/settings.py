@@ -289,5 +289,6 @@ else:
         },
     }
 
-# The Google test keys used for local use are causing a warning message
-SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
+if config.get('silence_recaptcha_test_key_error', default=False):
+    # The Google test keys used for local use are causing a warning message
+    SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
