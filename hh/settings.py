@@ -212,6 +212,22 @@ else:
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 2000
 
+# Recaptcha related stuff
+
+config = upsilonconf.load('.env.json')['Recaptcha']
+
+recaptcha_private_key = config.get('recaptcha_private_key', None)
+recaptcha_public_key = config.get('recaptcha_public_key', None)
+
+if recaptcha_private_key and recaptcha_public_key:
+    RECAPTCHA_PRIVATE_KEY = recaptcha_private_key
+    RECAPTCHA_PUBLIC_KEY = recaptcha_public_key
+
+if config.get('silence_recaptcha_test_key_error', default=False):
+    # The Google test keys used for local use are causing a warning message
+    SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
+
+
 
 # Version information
 
@@ -288,7 +304,3 @@ else:
             }
         },
     }
-
-if config.get('silence_recaptcha_test_key_error', default=False):
-    # The Google test keys used for local use are causing a warning message
-    SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
