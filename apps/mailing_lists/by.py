@@ -13,6 +13,7 @@ class ByAuthor(ProtectedListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**self.kwargs)
+        context['archive'] = context['archive'].replace('_', ' ')   # Namecheap can't handle spaces in URLs
         return context
 
     def get_queryset(self):
@@ -37,6 +38,7 @@ class ByDate(ProtectedListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**self.kwargs)
+        context['archive'] = context['archive'].replace('_', ' ')  # Namecheap can't handle spaces in URLs
         return context
 
     def get_queryset(self):
@@ -63,6 +65,7 @@ class BySubject(ProtectedListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**self.kwargs)
+        context['archive'] = context['archive'].replace('_', ' ')  # Namecheap can't handle spaces in URLs
         return context
 
     def get_queryset(self):
@@ -83,6 +86,7 @@ class ByThread(ProtectedTemplateView):
 
         ml = MailingList.objects.get(name_slug=self.kwargs['ml_name_slug'])
 
+        context['archive'] = context['archive'].replace('_', ' ')  # Namecheap can't handle spaces in URLs
         context['threads'] = self._build_thread_hierarchy(ml.mailbox.messages, None)
 
         return context

@@ -1,4 +1,5 @@
 {% extends "residents/base.html" %}
+{% load replace %}
 {% load static %}
 
 {% block title %}The {{ ml_name }} Archives{% endblock %}
@@ -38,10 +39,10 @@
             <tr>
                 <td>{{ archive }}</td>
                 <td>
-                    <a href="{% url "mailing_lists:by_thread" ml_name_slug archive %}">[ Thread ]</a>
-                    <a href="{% url "mailing_lists:by_subject" ml_name_slug archive %}">[ Subject ]</a>
-                    <a href="{% url "mailing_lists:by_author" ml_name_slug archive %}">[ Author ]</a>
-                    <a href="{% url "mailing_lists:by_date" ml_name_slug archive %}">[ Date ]</a>
+                    <a href="{% url "mailing_lists:by_thread" ml_name_slug archive|replace:" |_" %}">[ Thread ]</a>
+                    <a href="{% url "mailing_lists:by_subject" ml_name_slug archive|replace:" |_" %}">[ Subject ]</a>
+                    <a href="{% url "mailing_lists:by_author" ml_name_slug archive|replace:" |_" %}">[ Author ]</a>
+                    <a href="{% url "mailing_lists:by_date" ml_name_slug archive|replace:" |_" %}">[ Date ]</a>
                 </td>
             </tr>
         {% endfor %}
