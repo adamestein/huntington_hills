@@ -201,10 +201,10 @@ if 'filebased' in EMAIL_BACKEND:
     # Local development
     EMAIL_FILE_PATH = config.email_file_path
 else:
-    EMAIL_HOST = 'shared102.accountservergroup.com'
-    EMAIL_HOST_PASSWORD = 'fZg9m3Gw5qiVYOe'
-    EMAIL_HOST_USER = 'residents_test@huntingtonhillsinc.org'
-    EMAIL_PORT = 465
+    EMAIL_HOST = config.email_host
+    EMAIL_HOST_PASSWORD = config.email_host_password
+    EMAIL_HOST_USER = config.email_host_user
+    EMAIL_PORT = 587
     EMAIL_USE_TLS = True
 
 

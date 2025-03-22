@@ -2,7 +2,7 @@ from datetime import datetime
 import logging
 
 from django.contrib.messages import success
-from django.core.mail import send_mail
+from django.core.mail import BadHeaderError, EmailMessage
 from django.urls import reverse_lazy
 from django.views.generic import FormView
 
@@ -57,13 +57,18 @@ REMOTE_ADDR: {ip}
 HTTP_USER_AGENT: {self.request.META.get('HTTP_USER_AGENT')}
 '''
 
+        email = EmailMessage(
+            body=message,
+            from_email='postmaster@huntingtonhillsinc.website',
+            reply_to=[form.cleaned_data['email']],
+            subject='Huntington Hills Web Email for ' + EMAIL_INFORMATION[self.kwargs['recipient']]['subject'],
+            to=[EMAIL_INFORMATION[self.kwargs['recipient']]['email']]
+        )
+
         try:
-            send_mail(
-                'Huntington Hills Web Email for ' + EMAIL_INFORMATION[self.kwargs['recipient']]['subject'],
-                message,
-                form.cleaned_data['email'],
-                [EMAIL_INFORMATION[self.kwargs['recipient']]['email']]
-            )
+            email.send()
+        except BadHeaderError as e:
+            logger.error(f'Invalid header found when sending email from {self.kwargs["recipient"]} form: {e}')
         except Exception as e:
             logger.error(f'Error sending email from {self.kwargs["recipient"]} form: {e}')
 
