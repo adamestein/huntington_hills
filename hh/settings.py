@@ -288,6 +288,9 @@ else:
         'formatters': {
             'simple': {
                 'format': '[%(levelname)s] [%(threadName)s/%(name)s:%(funcName)s:%(lineno)d] %(message)s'
+            },
+            'simple_date': {
+                'format': '[%(asctime)s] [%(levelname)s] [%(threadName)s/%(name)s:%(funcName)s:%(lineno)d] %(message)s'
             }
         },
         'handlers': {
