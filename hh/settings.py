@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # 3rd Party Apps
+    'django_crontab',
     'django_mailbox',
     'django_recaptcha',         # https://www.google.com/recaptcha/admin/create
     'easy_pdf',
@@ -63,6 +64,7 @@ INSTALLED_APPS = [
     'authentication',
     'bow_hunt',
     'contact',
+    'crontab',
     'gallery',
     'history',
     'library',
@@ -212,6 +214,10 @@ else:
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 2000
 
+# Set up to run cron jobs
+
+RUN_CRON_JOBS = config.run_cron_jobs
+
 # Recaptcha related stuff
 
 config = upsilonconf.load('.env.json')['Recaptcha']
@@ -292,6 +298,15 @@ else:
             }
         },
         'loggers': {
+            'crontab': {
+                'handlers': ['cronjob'],
+                'level': 'DEBUG',
+                'propagate': False
+            },
+            'django_crontab': {
+                'handlers': ['null'],
+                'level': 'INFO',
+            },
             'django.request': {
                 'handlers': ['file'],
                 'level': 'WARNING',
