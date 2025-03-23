@@ -19,6 +19,14 @@ class Board(SingletonModel):
     class Meta:
         verbose_name_plural = 'Board members'
 
+    def get_email_list(self):
+        emails = []
+        for field in self._meta.get_fields():
+            if not field.primary_key:
+                # We assume the first email is the one to be used
+                emails.append(getattr(self, field.name).emails.first().email)
+        return emails
+
 
 class BoardTerm(models.Model):
     POSITIONS = (
@@ -115,9 +123,13 @@ class Person(models.Model):
             return f' {self.suffix}' if self.suffix else ''
 
     @property
-    def has_notice_email(self):
-        raise RuntimeError('Needs to be updated to use the notices mailing list')
-        # return self.email_set.filter(email_type__email_type=EmailType.NOTIFICATION).exists()
+    def get_notices_email(self):
+        try:
+            return list(
+                set(self.residential_property.notices_emails) & set(self.emails.values_list('email', flat=True))
+            )[0]
+        except IndexError:
+            return ''
 
     @property
     def full_name(self):
@@ -127,12 +139,12 @@ class Person(models.Model):
         return full_name
 
     @property
-    def primary_email(self):
-        raise RuntimeError('Update as needed')
-        # try:
-        #     return self.email_set.filter(email_type__email_type__in=[EmailType.RESIDENT, EmailType.PERSONAL])[0].email
-        # except IndexError:
-        #     return ''
+    def board_email(self):
+        from mailing_lists.models import MailingList
+
+        board_ml = MailingList.objects.get(mailbox__name='Board')
+        # noinspection PyTypeChecker
+        return (board_ml.members.all() & self.emails.all()).first()
 
     def __str__(self):
         return f'{self.last_name}, {self.first_name} [{self.residential_property.mailing_address(multiline=False)}]'
@@ -157,6 +169,8 @@ class Property(models.Model):
     property_type = models.ForeignKey('PropertyType')
     street = models.ForeignKey('Street')
 
+    _notices_ml = None
+
     class Meta:
         ordering = ('street', 'house_number')
         verbose_name_plural = 'Properties'
@@ -177,6 +191,12 @@ class Property(models.Model):
             all_names = ' / '.join([person.full_name for person in self.get_all_active_people()])
 
         return all_names
+
+    def get_notices_ml(self):
+        from mailing_lists.models import MailingList
+
+        if self._notices_ml is None:
+            self._notices_ml = MailingList.objects.get(mailbox__name='Notices')
 
     @property
     def household_address(self):
@@ -211,8 +231,21 @@ class Property(models.Model):
             return f'{names}{self.street_address()}{line_end}Rochester, NY{pre_zip}14622'
 
     @property
+    def notices_emails(self):
+        self.get_notices_ml()
+
+        emails = []
+        for person in self.get_all_active_people():
+            # noinspection PyTypeChecker
+            email = (self._notices_ml.members.all() & person.emails.all()).first()
+            if email:
+                emails.append(email.email)
+
+        return emails
+
+    @property
     def receives_email_notices(self):
-        return any([person.has_notice_email for person in self.get_all_active_people()])
+        return any(self.notices_emails)
 
     @property
     def receives_no_email(self):

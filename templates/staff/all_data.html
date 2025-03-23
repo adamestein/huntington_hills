@@ -4,7 +4,7 @@
 {% block css %}
     {{ block.super }}
 
-    <style type="text/css">
+    <style>
         caption {
             font-weight: bold;
             margin-bottom: 1em;
@@ -64,21 +64,18 @@
                     <td class="row_label">Emails:</td>
                     <td>
                         {% with property_emails=emails|dict_lookup:property.id %}
-                            {% for email_type in email_types %}
-                                {% with type_emails=property_emails|dict_lookup:email_type %}
-                                    {% if type_emails %}
-                                        <div style="font-size: 95%;">{{ email_type }}:</div>
+                            {% for person, emails in property_emails.items %}
+                                {% if emails %}
+                                    <div style="font-size: 95%;">{{ person.first_name }}:</div>
 
-                                        <ul style="list-style: none;">
-                                            {% for email in type_emails %}
-                                                <li>
-                                                    <a href="mailto:{{ email.email }}">{{ email.email }}</a>
-                                                    ({{ email.person.first_name }})
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    {% endif %}
-                                {% endwith %}
+                                    <ul style="list-style: none;">
+                                        {% for email in emails %}
+                                            <li>
+                                                <a href="mailto:{{ email }}">{{ email }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
                             {% endfor %}
                         {% endwith %}
                     </td>

@@ -10,6 +10,8 @@ from .forms import UpdateBoardMembersForm, UpdateHomeownersFormSet
 from library.contrib.auth.mixins import IsStaffMixin
 from library.views.generic.csv import CSVFileView
 
+from mailing_lists.models import MailingList
+
 from news.views import CurrentArticles
 
 from residents.models import Board, BoardTerm, Person, Property, Street
@@ -23,52 +25,50 @@ class AllDataView(LoginRequiredMixin, IsStaffMixin, TemplateView):
     template_name = 'staff/all_data.html'
 
     def get_context_data(self, **kwargs):
-        raise RuntimeError('Update as needed for NewEmail')
-        # context = super().get_context_data(**kwargs)
-        #
-        # context['properties'] = Property.objects.all()
-        # context['emails'] = {}
-        # context['email_types'] = EmailType.objects.all().values_list('email_type', flat=True)
-        #
-        # for residential_property in context['properties']:
-        #     context['emails'][residential_property.id] = {}
-        #     for email_type in EmailType.objects.all():
-        #         context['emails'][residential_property.id][email_type.email_type] = Email.objects.filter(
-        #             email_type=email_type, person__active=True, person__residential_property=residential_property
-        #         ).order_by('email')
-        #
-        # return context
+        context = super().get_context_data(**kwargs)
+
+        context['properties'] = Property.objects.all()
+        context['emails'] = {}
+
+        for residential_property in context['properties']:
+            context['emails'][residential_property.id] = {}
+            for person in residential_property.get_all_active_people().order_by('first_name'):
+                context['emails'][residential_property.id][person] = person.emails.values_list('email', flat=True)
+
+        return context
 
 
 class EmailNoticeList(LoginRequiredMixin, IsStaffMixin, CSVFileView):
     csv_filename = 'email_notice_list.csv'
 
     def get_context_data(self, **kwargs):
-        raise RuntimeError('Update as needed for NewEmail')
-        # context = super().get_context_data(**kwargs)
-        #
-        # context['data'] = [['', 'Names', 'Address', 'Emails'], []]
-        #
-        # for street in Street.objects.all():
-        #     context['data'].append([street.street])
-        #
-        #     for residential_property in Property.objects.filter(street=street):
-        #         emails = []
-        #         people = []
-        #
-        #         for person in residential_property.get_all_active_people():
-        #             if person.has_notice_email:
-        #                 emails.append(person.email_set.get(email_type__email_type=EmailType.NOTIFICATION).email)
-        #                 people.append(person.full_name)
-        #
-        #         if people:
-        #             context['data'].append(
-        #                 ['', '\n'.join(people), residential_property.street_address(), '\n'.join(emails)]
-        #             )
-        #
-        #     context['data'].append([])
-        #
-        # return context
+        context = super().get_context_data(**kwargs)
+
+        context['data'] = [['', 'Names', 'Address', 'Emails'], []]
+
+        notices_ml = MailingList.objects.get(mailbox__name='Notices')
+
+        for street in Street.objects.all():
+            context['data'].append([street.street])
+
+            for residential_property in Property.objects.filter(street=street):
+                emails = []
+                people = []
+
+                for person in residential_property.get_all_active_people():
+                    notice_email = (notices_ml.members.all() & person.emails.all()).first()
+                    if notice_email:
+                        emails.append(notice_email.email)
+                        people.append(person.full_name)
+
+                if people:
+                    context['data'].append(
+                        ['', '\n'.join(people), residential_property.street_address(), '\n'.join(emails)]
+                    )
+
+            context['data'].append([])
+
+        return context
 
 
 class MailingAddresses(LoginRequiredMixin, IsStaffMixin, TemplateView):

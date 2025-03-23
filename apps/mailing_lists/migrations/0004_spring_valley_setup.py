@@ -50,12 +50,12 @@ def forwards_func(apps, schema_editor):
 
     for member_email in member_emails:
         try:
-            email = email_model.objects.get(email=member_email)
+            email_obj = email_model.objects.get(email=member_email)
         except ObjectDoesNotExist:
             # Can't find email in system, so don't add the person
             pass
         else:
-            ml.members.add(email)
+            ml.members.add(email_obj)
 
     print(f'''
 

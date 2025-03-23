@@ -5,7 +5,7 @@ from django_mailbox.utils import convert_header_to_unicode
 
 from library.admin import custom_title_filter_factory
 
-from residents.models import Board, BoardTerm
+from residents.models import Board, BoardTerm, Person
 
 from .models import MailingList, RejectedMessage
 
@@ -19,17 +19,20 @@ class MailingListAdmin(admin.ModelAdmin):
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def set_can_post_to_board_members(self, request, queryset):
-        board = Board.objects.all()[0]
+        board = Board.objects.first()
         board_members = []
 
         for position in BoardTerm.POSITIONS:
             office = position[1].lower().replace(' ', '_')
             board_members.append(getattr(board, office))
 
+        # Add webmaster
+        board_members.append(Person.objects.get(first_name='Adam', last_name='Stein'))
+
         # For every selected ML, delete ALL the items in can_post and add all current board members
         for mailing_list in queryset:
             mailing_list.can_post.clear()
-            mailing_list.can_post.add(*board_members)
+            mailing_list.can_post.add(*[member.emails.first() for member in board_members])
 
         success(request, 'Mailing List(s) have been updated')
 

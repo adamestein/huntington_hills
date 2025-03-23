@@ -16,11 +16,11 @@ EMAIL_INFORMATION = {
         'subject': 'Adam'
     },
     'Board': {
-        'email': 'adam@csh.rit.edu',
+        'email': 'board@huntingtonhillsinc.website',
         'subject': 'the HH board'
     },
     'Webmaster': {
-        'email': 'adam@csh.rit.edu',
+        'email': 'webmaster@huntingtonhillsinc.website',
         'subject': 'the Webmaster'
     }
 }

@@ -63,9 +63,7 @@
 
                     <td>
                         {% for person in property.get_all_active_people %}
-                            {% for email in person.emails %}
-                                {{ email }}<br />
-                            {% endfor %}
+                            {{ person.get_notices_email }}
                         {% endfor %}
                     </td>
 
