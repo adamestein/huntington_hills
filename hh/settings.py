@@ -303,7 +303,11 @@ else:
                 'level': 'WARNING',
                 'class': 'logging.FileHandler',
                 'filename': '/home/hunttqze/logs/django.log'
-            }
+            },
+            'null': {
+                'level': 'DEBUG',
+                'class': 'logging.NullHandler'
+            },
         },
         'loggers': {
             'crontab': {
