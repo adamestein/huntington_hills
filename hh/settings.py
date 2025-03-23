@@ -291,6 +291,11 @@ else:
             }
         },
         'handlers': {
+            'cronjob': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+                'formatter': 'simple_date'
+            },
             'file': {
                 'level': 'WARNING',
                 'class': 'logging.FileHandler',
