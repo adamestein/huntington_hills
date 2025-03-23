@@ -10,7 +10,7 @@ if getattr(settings, 'RUN_CRON_JOBS', None):
         return f'>> {os.path.join(logdir, filename)} 2>&1'
 
     # All output (including exceptions) go to the log files
-    logdir = os.path.join(settings.LOG_PATH, 'cron')
+    logdir = os.path.join('logs', 'cron')
     if not os.path.exists(logdir):
         os.makedirs(logdir)
 
