@@ -1,4 +1,4 @@
-Django==1.11.29
+Django==4.2.20
 django-cors-headers==3.2.1
 django-crontab==0.7.1
 django-easy-pdf==0.1.1
