@@ -26,6 +26,6 @@ if getattr(settings, 'RUN_CRON_JOBS', None):
     # Cron jobs
     CRONJOBS = [
         # Run every 15 minutes
-        ("0/15 * * * *", "crontab.mailbox.process_mailboxes", _log_output('process_mailboxes.log')),
+        ("*/15 * * * *", "crontab.mailbox.process_mailboxes", _log_output('process_mailboxes.log')),
     ]
     CRONTAB_LOCK_JOBS = True
