@@ -2,9 +2,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+from django_mailbox.models import Mailbox
+
 
 def process_mailboxes():
-    logger.info('Info Message')
-    logger.error('Error Message')
-    import sys
-    print('Msg to sys.stderr', file=sys.stderr)
+    for mailbox in Mailbox.objects.filter(name='Spring Valley'):
+        logger.info(f'Gathering messages for {mailbox.name}')
+        messages = mailbox.get_new_mail()
+        for message in messages:
+            logger.info(f'Received {message.subject} (from {message.from_address})')

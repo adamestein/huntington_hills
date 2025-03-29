@@ -10,7 +10,7 @@ if getattr(settings, 'RUN_CRON_JOBS', None):
         return f'>> {os.path.join(logdir, filename)} 2>&1'
 
     # All output (including exceptions) go to the log files
-    logdir = os.path.join('logs', 'cron')
+    logdir = os.path.join(os.environ['HOME'], 'hh', 'logs', 'cron')
     if not os.path.exists(logdir):
         os.makedirs(logdir)
 
@@ -25,9 +25,7 @@ if getattr(settings, 'RUN_CRON_JOBS', None):
 
     # Cron jobs
     CRONJOBS = [
-        # Run 'delete old aes data' at 12:00AM PST on the first and third Saturday of every month. Cron actually has
-        # no way to do this, so we'll specify the days to run (which cover the 1st and 3rd Saturdays) and the
-        # function will have to make sure it's a Saturday.
-        ("0 16 * * *", "crontab.mailbox.process_mailboxes", _log_output('process_mailboxes.log')),
+        # Run every 15 minutes
+        ("0/15 * * * *", "crontab.mailbox.process_mailboxes", _log_output('process_mailboxes.log')),
     ]
     CRONTAB_LOCK_JOBS = True
