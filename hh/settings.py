@@ -302,7 +302,7 @@ else:
             'file': {
                 'level': 'WARNING',
                 'class': 'logging.FileHandler',
-                'filename': '/home/hunttqze/logs/django.log'
+                'filename': upsilonconf.load('.env.json')['Settings'].django_log_file
             },
             'null': {
                 'level': 'DEBUG',

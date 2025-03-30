@@ -11,3 +11,5 @@ def process_mailboxes():
         messages = mailbox.get_new_mail()
         for message in messages:
             logger.info(f'Received {message.subject} (from {message.from_address})')
+        else:
+            logger.info(f'No new mail for {mailbox.name}')

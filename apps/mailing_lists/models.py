@@ -124,8 +124,12 @@ def send(sender, message, **_):
                 else:
                     from_email = f'{message.from_header} via {sender.name} <{mailing_list.email}>'
 
-                # Remove any [ML NAME] and Re: strings
-                subject = re.sub(r'(?<!^)(?i)Re: ', '', message.subject.replace(f'[{sender.name}] ', ''), flags=re.M)
+                # Remove any [ML NAME], Re: strings, and newlines
+                subject = (
+                    re.sub(r'(?<!^)(?i)Re: ', '', message.subject.replace(f'[{sender.name}] ', ''), flags=re.M)
+                    .replace('\r', '')
+                    .replace('\n', '')
+                )
                 subject = f'[{sender.name}] {subject}'
 
                 message.subject = subject
