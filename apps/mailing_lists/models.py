@@ -2,7 +2,7 @@ import logging
 import re
 
 from django.conf import settings
-from django.core.mail import EmailMessage, EmailMultiAlternatives, get_connection
+from django.core.mail import BadHeaderError, EmailMessage, EmailMultiAlternatives, get_connection
 from django.db import models
 from django.dispatch import receiver
 from django.shortcuts import reverse
@@ -166,7 +166,8 @@ def send(sender, message, **_):
                         msg.extra_headers['In-Reply-To'] = email_object['In-Reply-to']
 
                     if email_object.get('References') is not None:
-                        msg.extra_headers['References'] = email_object['References'].replace('\r\n\t', ' ')
+                        msg.extra_headers['References'] = \
+                            email_object['References'].replace('\r\n', ' ').replace('\n', '')
 
                     if message.html:
                         msg.attach_alternative(autolink_html(cleaner.clean_html(message.html)), 'text/html')
@@ -178,7 +179,10 @@ def send(sender, message, **_):
                             mimetype=att._get_rehydrated_headers().get_content_type()
                         )
 
-                    msg.send()
+                    try:
+                        msg.send()
+                    except BadHeaderError as e:
+                        logger.error(f'Error sending rejection email with subject "{subject}": {e}')
             else:
                 # Save the message to our reject pile (easier to view just rejected messages or to remove when
                 # viewing ML archives)
@@ -200,4 +204,8 @@ def send(sender, message, **_):
                         subject='Email Rejected',
                         to=[message.from_header]
                     )
-                    msg.send()
+
+                    try:
+                        msg.send()
+                    except Exception as e:
+                        logger.error(f'Error sending rejection email to "{message.from_header}": {e}')
