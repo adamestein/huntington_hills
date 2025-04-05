@@ -6,7 +6,7 @@ from django_mailbox.models import Mailbox
 
 
 def process_mailboxes():
-    for mailbox in Mailbox.objects.filter(name='Spring Valley'):
+    for mailbox in Mailbox.active_mailboxes.all():
         logger.info(f'Gathering messages for {mailbox.name}')
         messages = mailbox.get_new_mail()
         for message in messages:
