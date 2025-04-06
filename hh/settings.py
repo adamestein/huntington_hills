@@ -295,12 +295,11 @@ else:
         },
         'handlers': {
             'cronjob': {
-                'level': 'DEBUG',
                 'class': 'logging.StreamHandler',
                 'formatter': 'simple_date'
             },
             'file': {
-                'level': 'WARNING',
+                'level': 'DEBUG',
                 'class': 'logging.FileHandler',
                 'filename': upsilonconf.load('.env.json')['Settings'].django_log_file
             },
