@@ -70,7 +70,12 @@ class MailingList(models.Model):
     def __str__(self):
         num_members = self.members.count()
         num_can_post = self.can_post.count()
-        can_post = 'all can post' if num_can_post == 0 else f'{num_can_post} can post'
+        if self.allow_anonymous_posts:
+            can_post = 'anonymous posts allowed'
+        elif num_can_post == 0:
+            can_post = 'all members can post'
+        else:
+            can_post = f'{num_can_post} member{pluralize(num_can_post)} can post'
         return f'{self.mailbox.name} ({num_members} member{pluralize(num_members)}, {can_post})'
 
 
