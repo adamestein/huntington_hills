@@ -16,11 +16,11 @@ EMAIL_INFORMATION = {
         'subject': 'Adam'
     },
     'Board': {
-        'email': 'board@huntingtonhillsinc.website',
+        'email': 'board@huntingtonhillsinc.org',
         'subject': 'the HH board'
     },
     'Webmaster': {
-        'email': 'webmaster@huntingtonhillsinc.website',
+        'email': 'webmaster@huntingtonhillsinc.org',
         'subject': 'the Webmaster'
     }
 }
@@ -59,7 +59,7 @@ HTTP_USER_AGENT: {self.request.META.get('HTTP_USER_AGENT')}
 
         email = EmailMessage(
             body=message,
-            from_email='postmaster@huntingtonhillsinc.website',
+            from_email='postmaster@huntingtonhillsinc.org',
             reply_to=[form.cleaned_data['email']],
             subject='Huntington Hills Web Email for ' + EMAIL_INFORMATION[self.kwargs['recipient']]['subject'],
             to=[EMAIL_INFORMATION[self.kwargs['recipient']]['email']]
