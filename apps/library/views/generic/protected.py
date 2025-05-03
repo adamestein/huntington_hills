@@ -17,7 +17,7 @@ class ProtectedListView(LoginRequiredMixin, ListView):
 class ProtectedMedia(LoginRequiredMixin, View):
     @staticmethod
     def get(request, *args, **kwargs):
-        absolute_path = __file__.replace('/apps/library/views/generic/media.py', request.get_full_path())
+        absolute_path = __file__.replace('/apps/library/views/generic/protected.py', request.get_full_path())
 
         if os.path.exists(absolute_path):
             mime = MimeTypes()
