@@ -237,7 +237,7 @@ if config.get('silence_recaptcha_test_key_error', default=False):
 
 # Version information
 
-VERSION = '3.1'
+VERSION = '3.1.1'
 
 
 # List of settings to export to templates (django-settings-export)

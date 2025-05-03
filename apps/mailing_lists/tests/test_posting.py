@@ -1,6 +1,7 @@
 import email
 from io import StringIO
 import logging
+from string import Template
 
 from django.core import mail
 from django.test import TestCase
@@ -34,6 +35,35 @@ class PostingTest(TestCase):
 
         self.resident_ml.members.add(self.email1)
         self.resident_ml.members.add(self.email2)
+
+        self.expected_rejection = Template('''\
+Dear $from_header,
+
+Your message to the Residents list has been automatically rejected.
+
+You are not authorized to post to this mailing list because your email
+address is not subscribed. This list only accepts posts from subscribed
+members.
+
+If you believe this is incorrect, or you would like to request permission
+to post, please contact the list administrator at:
+
+residents_test-owner@huntingtonhillsinc.org
+
+-----------------------------------------------------------------------
+
+Reason for rejection:
+
+Post by non-member to a members-only list.
+
+---------------------------------------------------------------
+
+Original message information:
+
+Subject: $subject
+
+Generic email text.
+''')
 
         logging.disable(logging.NOTSET)  # Normally logging is turned off for unit tests, turn it back on
         self.stream = StringIO()
@@ -176,12 +206,17 @@ Generic email text.
         self.mailbox.process_incoming_message(message)
         self.string_handler.flush()
 
+        values = {
+            'from_header': 'Adam Stein <adam@csh.rit.edu>',
+            'subject': 'Member posting when there is a can_post list and member is NOT on it'
+        }
+
         self.assertEqual(1, len(mail.outbox))
         self.assertEqual([], mail.outbox[0].bcc)
-        self.assertEqual('You are not authorized', mail.outbox[0].body)
+        self.assertEqual(self.expected_rejection.substitute(values), mail.outbox[0].body)
         self.assertEqual('residents_test-bounces@huntingtonhillsinc.org', mail.outbox[0].from_email)
         self.assertEqual([], mail.outbox[0].reply_to)
-        self.assertEqual('Email Rejected', mail.outbox[0].subject)
+        self.assertEqual('Your message to Residents was rejected', mail.outbox[0].subject)
         self.assertEqual(['Adam Stein <adam@csh.rit.edu>'], mail.outbox[0].to)
 
         headers = mail.outbox[0].extra_headers
@@ -219,12 +254,17 @@ Generic email text.
         self.mailbox.process_incoming_message(message)
         self.string_handler.flush()
 
+        values = {
+            'from_header': 'Joe NonMember <joe@nonmember.org>',
+            'subject': 'Valid Email, Non Member'
+        }
+
         self.assertEqual(1, len(mail.outbox))
         self.assertEqual([], mail.outbox[0].bcc)
-        self.assertEqual('You are not authorized', mail.outbox[0].body)
+        self.assertEqual(self.expected_rejection.substitute(values), mail.outbox[0].body)
         self.assertEqual('residents_test-bounces@huntingtonhillsinc.org', mail.outbox[0].from_email)
         self.assertEqual([], mail.outbox[0].reply_to)
-        self.assertEqual('Email Rejected', mail.outbox[0].subject)
+        self.assertEqual('Your message to Residents was rejected', mail.outbox[0].subject)
         self.assertEqual(['Joe NonMember <joe@nonmember.org>'], mail.outbox[0].to)
 
         headers = mail.outbox[0].extra_headers
@@ -262,12 +302,17 @@ Generic email text.
         self.mailbox.process_incoming_message(message)
         self.string_handler.flush()
 
+        values = {
+            'from_header': 'Spam Email <spam@spamemail.com>',
+            'subject': 'Invalid Email, Non Member'
+        }
+
         self.assertEqual(1, len(mail.outbox))
         self.assertEqual([], mail.outbox[0].bcc)
-        self.assertEqual('You are not authorized', mail.outbox[0].body)
+        self.assertEqual(self.expected_rejection.substitute(values), mail.outbox[0].body)
         self.assertEqual('residents_test-bounces@huntingtonhillsinc.org', mail.outbox[0].from_email)
         self.assertEqual([], mail.outbox[0].reply_to)
-        self.assertEqual('Email Rejected', mail.outbox[0].subject)
+        self.assertEqual('Your message to Residents was rejected', mail.outbox[0].subject)
         self.assertEqual(['Spam Email <spam@spamemail.com>'], mail.outbox[0].to)
 
         headers = mail.outbox[0].extra_headers

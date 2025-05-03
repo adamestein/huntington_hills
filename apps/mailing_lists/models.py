@@ -63,6 +63,11 @@ class MailingList(models.Model):
     def member_can_post(self, email):
         return self.can_post.count() == 0 or self.can_post.filter(email=email).exists()
 
+    @property
+    def owner_email(self):
+        pieces = self.email.split('@')
+        return f'{pieces[0]}-owner@{pieces[1]}'
+
     def save(self, *args, **kwargs):
         self.name_slug = slugify(self.mailbox.name)
         super().save(*args, **kwargs)
@@ -196,9 +201,38 @@ def send(sender, message, **_):
                 # Log the issue and respond
                 logger.info(f'{message.from_header} is not allowed to post to the {sender.name} list')
 
+                msg = f'''\
+Dear {message.from_header},
+
+Your message to the {sender.name} list has been automatically rejected.
+
+You are not authorized to post to this mailing list because your email
+address is not subscribed. This list only accepts posts from subscribed
+members.
+
+If you believe this is incorrect, or you would like to request permission
+to post, please contact the list administrator at:
+
+{mailing_list.owner_email}
+
+-----------------------------------------------------------------------
+
+Reason for rejection:
+
+Post by non-member to a members-only list.
+
+---------------------------------------------------------------
+
+Original message information:
+
+Subject: {message.subject}
+
+{message.text}
+'''
+
                 with get_connection(**connection_args) as connection:
                     msg = EmailMessage(
-                        body='You are not authorized',
+                        body=msg,
                         connection=connection,
                         from_email=mailing_list.bounce_email,
                         headers={
@@ -206,7 +240,7 @@ def send(sender, message, **_):
                             'Sender': mailing_list.bounce_email,
                             'X-Sender': mailing_list.bounce_email
                         },
-                        subject='Email Rejected',
+                        subject=f'Your message to {sender.name} was rejected',
                         to=[message.from_header]
                     )
 
