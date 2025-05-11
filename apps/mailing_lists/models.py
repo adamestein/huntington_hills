@@ -122,10 +122,10 @@ def send(sender, message, **_):
 
             connection_args = {
                 'host': config.host,
-                'password': config.credentials[sender.name]['password'],
+                'password': config.password,
                 'port': config.port,
                 'use_tls': True,
-                'username': config.credentials[sender.name]['username']
+                'username': config.username
             }
 
             if can_post:
