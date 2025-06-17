@@ -27,7 +27,6 @@ class ByAuthor(ProtectedListView):
                 .exclude(id__in=RejectedMessage.objects.values_list('message_id', flat=True))
                 .filter(processed__month=month, processed__year=year)
                 .values_list('id', 'subject', 'from_header')
-                .order_by('subject')
         )
 
         # Sort by full name (if no last name) or last name (if there is one)
@@ -56,7 +55,6 @@ class ByDate(ProtectedListView):
                 .exclude(id__in=RejectedMessage.objects.values_list('message_id', flat=True))
                 .filter(processed__month=month, processed__year=year)
                 .values_list('id', 'subject', 'from_header')
-                .order_by('subject')
         )
 
         # Sort by full name (if no last name) or last name (if there is one)
