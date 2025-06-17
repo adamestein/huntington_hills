@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from datetime import datetime
 from email.utils import parseaddr
 
 from django_mailbox.models import Message
@@ -17,10 +18,14 @@ class ByAuthor(ProtectedListView):
         return context
 
     def get_queryset(self):
+        month, year = self.kwargs['archive'].split(' ')
+        month = datetime.strptime(month, '%B').month
+
         ml = MailingList.objects.get(name_slug=self.kwargs['ml_name_slug'])
         messages = (
             ml.mailbox.messages
                 .exclude(id__in=RejectedMessage.objects.values_list('message_id', flat=True))
+                .filter(processed__month=month, processed__year=year)
                 .values_list('id', 'subject', 'from_header')
                 .order_by('subject')
         )
@@ -42,10 +47,14 @@ class ByDate(ProtectedListView):
         return context
 
     def get_queryset(self):
+        month, year = self.kwargs['archive'].split(' ')
+        month = datetime.strptime(month, '%B').month
+
         ml = MailingList.objects.get(name_slug=self.kwargs['ml_name_slug'])
         messages = (
             ml.mailbox.messages
                 .exclude(id__in=RejectedMessage.objects.values_list('message_id', flat=True))
+                .filter(processed__month=month, processed__year=year)
                 .values_list('id', 'subject', 'from_header')
                 .order_by('subject')
         )
@@ -69,10 +78,14 @@ class BySubject(ProtectedListView):
         return context
 
     def get_queryset(self):
+        month, year = self.kwargs['archive'].split(' ')
+        month = datetime.strptime(month, '%B').month
+
         ml = MailingList.objects.get(name_slug=self.kwargs['ml_name_slug'])
         return (
             ml.mailbox.messages
                 .exclude(id__in=RejectedMessage.objects.values_list('message_id', flat=True))
+                .filter(processed__month=month, processed__year=year)
                 .values_list('id', 'subject', 'from_header')
                 .order_by('subject')
         )
@@ -87,21 +100,24 @@ class ByThread(ProtectedTemplateView):
         ml = MailingList.objects.get(name_slug=self.kwargs['ml_name_slug'])
 
         context['archive'] = context['archive'].replace('_', ' ')  # Namecheap can't handle spaces in URLs
-        context['threads'] = self._build_thread_hierarchy(ml.mailbox.messages, None)
+        context['threads'] = self._build_thread_hierarchy(context['archive'], ml.mailbox.messages, None)
 
         return context
 
-    def _build_thread_hierarchy(self, messages, in_reply_to):
+    def _build_thread_hierarchy(self, archive, messages, in_reply_to):
+        month, year = archive.split(' ')
+        month = datetime.strptime(month, '%B').month
+
         hierarchy = OrderedDict()
         threads = (
             messages
                 .exclude(id__in=RejectedMessage.objects.values_list('message_id', flat=True))
-                .filter(in_reply_to=in_reply_to)
+                .filter(in_reply_to=in_reply_to, processed__month=month, processed__year=year)
                 .values_list('id', 'subject', 'from_header')
                 .order_by('id')
         )
 
         for thread in threads:
-            hierarchy[thread] = self._build_thread_hierarchy(messages, thread[0])
+            hierarchy[thread] = self._build_thread_hierarchy(archive, messages, thread[0])
 
         return hierarchy
