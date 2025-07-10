@@ -1,5 +1,6 @@
 import logging
 import re
+from smtplib import SMTPSenderRefused
 
 from django.conf import settings
 from django.core.mail import BadHeaderError, EmailMessage, EmailMultiAlternatives, get_connection
@@ -150,7 +151,7 @@ def send(sender, message, **_):
                         bcc=[member.email for member in mailing_list.members.all()],
                         body=message.text,
                         connection=connection,
-                        from_email=from_email,
+                        from_email=from_email.replace(',', ''),     # Can't have commas
                         headers={
                             'From': from_email,
                             'List-Archive': f'<{settings.SITE_URL}{reverse("mailing_lists:archive_list")}>',
@@ -173,7 +174,8 @@ def send(sender, message, **_):
                     )
 
                     if email_object.get('In-Reply-to') is not None:
-                        msg.extra_headers['In-Reply-To'] = email_object['In-Reply-to']
+                        msg.extra_headers['In-Reply-To'] = \
+                            email_object['In-Reply-to'].replace('\r\n', ' ').replace('\n', '')
 
                     if email_object.get('References') is not None:
                         msg.extra_headers['References'] = \
@@ -191,8 +193,9 @@ def send(sender, message, **_):
 
                     try:
                         msg.send()
-                    except BadHeaderError as e:
-                        logger.error(f'Error sending rejection email with subject "{subject}": {e}')
+                    except (BadHeaderError, SMTPSenderRefused) as e:
+                        msg.send()
+                        logger.error(f'Error sending email with subject "{subject}": {e}')
             else:
                 # Save the message to our reject pile (easier to view just rejected messages or to remove when
                 # viewing ML archives)
