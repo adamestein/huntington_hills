@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 EMAIL_INFORMATION = {
     'Adam Stein': {
-        'email': 'adam@csh.rit.edu',
+        'email': 'adamstein0@gmail.com',
         'subject': 'Adam'
     },
     'Board': {

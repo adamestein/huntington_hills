@@ -196,7 +196,7 @@ CORS_ORIGIN_WHITELIST = [
 
 # Email setup
 
-DEFAULT_FROM_EMAIL = 'adam@csh.rit.edu'
+DEFAULT_FROM_EMAIL = 'adamstein0@gmail.com'
 EMAIL_BACKEND = config.email_backend
 
 if 'filebased' in EMAIL_BACKEND:
@@ -237,7 +237,7 @@ if config.get('silence_recaptcha_test_key_error', default=False):
 
 # Version information
 
-VERSION = '3.1.5'
+VERSION = '3.2'
 
 
 # List of settings to export to templates (django-settings-export)
