@@ -36,7 +36,7 @@
     
     <ul>
         <li>
-            <a style="font-weight: bold;" href="docs/docs.html">Documents</a>: Click here, and you will have
+            <a style="font-weight: bold;" href="{% url "docs:docs" %}">Documents</a>: Click here, and you will have
             access to Tax Maps, the EPOD Maps of the Town of Irondequoit, the By-Laws of Huntington Hills, 
             Inc. and updated information about projects affecting our area, such as the Spring
             Valley Project.
@@ -45,7 +45,7 @@
     
     <ul>
         <li>
-            <a style="font-weight: bold;" href="/gallery/">Gallery</a>:
+            <a style="font-weight: bold;" href="{% url "gallery:gallery" %}">Gallery</a>:
             This is a site where each of you can share photographs of interest for members of Huntington 
             Hills or anyone viewing our website. Scenic pictures of the area, pictures of area wildlife, 
             your home, or anything else of interest are all welcome. Just forward them to our Webmaster for 
@@ -61,7 +61,7 @@
     <p>
         This site is intended to provide important information about Huntington Hills, Inc. as well as to 
         share items of interest with others in our community. Please use the 
-        <a href="contact.html"><span style="font-weight: bold;">Contact</span></a> section to comment on 
+        <a href="{% url "contact:contact" %}"><span style="font-weight: bold;">Contact</span></a> section to comment on
         the site, its contents and to add your own contributions to 
         <span style="font-style: italic;">www.HuntingtonHillsInc.org</span>.
     </p>
