@@ -190,7 +190,7 @@ CORS_ALLOW_METHODS = [
     'GET'
 ]
 
-CORS_ORIGIN_WHITELIST = [
+CORS_ALLOWED_ORIGINS = [
     'http://www.huntingtonhillsinc.org'
 ]
 
