@@ -4,9 +4,9 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.db import ProgrammingError
 from django.db.models.functions import ExtractYear
-from django.utils import six
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.html import conditional_escape
+import six
 
 from .models import Deer, Hunter, Location, Log, LogSheet, LogSheetNonIPD, Site
 
@@ -128,7 +128,7 @@ class FinalReportForm(forms.Form):
 
     @staticmethod
     def label_from_instance(obj):
-        return force_text(obj.label)
+        return force_str(obj.label)
 
 
 FinalReportFormSet = forms.formset_factory(FinalReportForm, extra=1)
@@ -186,17 +186,17 @@ class HunterForm(forms.ModelForm):
         bf_errors = self.error_class([conditional_escape(error) for error in bf.errors])
 
         if bf.label:
-            label = conditional_escape(force_text(bf.label))
+            label = conditional_escape(force_str(bf.label))
             label = bf.label_tag(label) or ''
         else:
             label = ''
 
         if self.fields[field_name].help_text:
-            help_text = f'<span class="helptext">{force_text(self.fields[f"{field_name}"].help_text)}</span>'
+            help_text = f'<span class="helptext">{force_str(self.fields[f"{field_name}"].help_text)}</span>'
         else:
             help_text = ''
 
-        error_row = f'<tr><td colspan="2">{force_text(bf_errors)}</td></tr>' if bf_errors else ''
+        error_row = f'<tr><td colspan="2">{force_str(bf_errors)}</td></tr>' if bf_errors else ''
 
         if field_name == 'hunter':
             return f"""

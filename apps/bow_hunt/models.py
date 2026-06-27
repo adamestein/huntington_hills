@@ -62,7 +62,7 @@ class Deer(models.Model):
     points = models.PositiveSmallIntegerField(
         blank=True, default=None, help_text='(set only if deer is male, set to 0 if unknown)', null=True
     )
-    tracking = models.NullBooleanField(default=False)
+    tracking = models.BooleanField(default=False, null=True)
 
     class Meta:
         ordering = ('log',)

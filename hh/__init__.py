@@ -5,7 +5,7 @@ pymysql.install_as_MySQLdb()
 from django.db.backends.mysql.operations import DatabaseOperations
 
 
-# PyMySQL exposes cursor._executed as text; Django 2.2's MySQLdb backend expects bytes.
+# PyMySQL exposes cursor._executed as text; Django's MySQLdb backend expects bytes.
 def last_executed_query(self, cursor, sql, params):
     query = getattr(cursor, '_executed', None)
     if isinstance(query, bytes):

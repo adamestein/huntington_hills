@@ -55,7 +55,6 @@ INSTALLED_APPS = [
     'django_crontab',
     'django_mailbox',
     'django_recaptcha',         # https://www.google.com/recaptcha/admin/create
-    'easy_pdf',
     'fullurl',
     'phonenumber_field',
     'tinymce',
@@ -165,6 +164,8 @@ USE_L10N = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 STATIC_ROOT = path.abspath(path.join(BASE_DIR, 'static'))
 STATIC_URL = '/static/'

@@ -1,5 +1,3 @@
-from easy_pdf.views import PDFTemplateView
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages import success
 from django.views.generic import FormView, TemplateView, UpdateView
@@ -9,6 +7,7 @@ from .forms import UpdateBoardMembersForm, UpdateHomeownersFormSet
 
 from library.contrib.auth.mixins import IsStaffMixin
 from library.views.generic.csv import CSVFileView
+from library.views.generic.pdf import PDFTemplateView
 
 from mailing_lists.models import MailingList
 
