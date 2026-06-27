@@ -3,6 +3,7 @@ from io import StringIO
 import logging
 from string import Template
 
+from django.conf import settings
 from django.core import mail
 from django.test import TestCase
 
@@ -105,13 +106,13 @@ Generic email text.
         self.assertEqual('Adam Stein via Residents <residents_test@huntingtonhillsinc.org>', headers['From'])
         self.assertEqual('<http://smeg:8002/mailing_lists/archives/list/>', headers['List-Archive'])
         self.assertEqual(
-            '<http://smeg:8002/mailing_lists/lists/>,<mailto:adam@csh.rit.edu?subject=help%20Residents>',
+            f'<http://smeg:8002/mailing_lists/lists/>,<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=help%20Residents>',
             headers['List-Help']
         )
-        self.assertEqual('<mailto:adam@csh.rit.edu> (Contact Person for Help)', headers['List-Owner'])
+        self.assertEqual(f'<mailto:{settings.DEFAULT_FROM_EMAIL}> (Contact Person for Help)', headers['List-Owner'])
         self.assertEqual('<mailto:residents_test@huntingtonhillsinc.org>', headers['List-Post'])
-        self.assertEqual('<mailto:adam@csh.rit.edu?subject=subscribe%20Residents>', headers['List-Subscribe'])
-        self.assertEqual('<mailto:adam@csh.rit.edu?subject=unsubscribe%20Residents>', headers['List-Unsubscribe'])
+        self.assertEqual(f'<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=subscribe%20Residents>', headers['List-Subscribe'])
+        self.assertEqual(f'<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=unsubscribe%20Residents>', headers['List-Unsubscribe'])
         # noinspection PyUnresolvedReferences
         self.assertEqual(message._headers[1][1], headers['Message-ID'])
         self.assertEqual('Residents <residents_test-bounces@huntingtonhillsinc.org>', headers['Sender'])
@@ -162,13 +163,13 @@ Generic email text.
         self.assertEqual('Adam Stein via Residents <residents_test@huntingtonhillsinc.org>', headers['From'])
         self.assertEqual('<http://smeg:8002/mailing_lists/archives/list/>', headers['List-Archive'])
         self.assertEqual(
-            '<http://smeg:8002/mailing_lists/lists/>,<mailto:adam@csh.rit.edu?subject=help%20Residents>',
+            f'<http://smeg:8002/mailing_lists/lists/>,<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=help%20Residents>',
             headers['List-Help']
         )
-        self.assertEqual('<mailto:adam@csh.rit.edu> (Contact Person for Help)', headers['List-Owner'])
+        self.assertEqual(f'<mailto:{settings.DEFAULT_FROM_EMAIL}> (Contact Person for Help)', headers['List-Owner'])
         self.assertEqual('<mailto:residents_test@huntingtonhillsinc.org>', headers['List-Post'])
-        self.assertEqual('<mailto:adam@csh.rit.edu?subject=subscribe%20Residents>', headers['List-Subscribe'])
-        self.assertEqual('<mailto:adam@csh.rit.edu?subject=unsubscribe%20Residents>', headers['List-Unsubscribe'])
+        self.assertEqual(f'<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=subscribe%20Residents>', headers['List-Subscribe'])
+        self.assertEqual(f'<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=unsubscribe%20Residents>', headers['List-Unsubscribe'])
         # noinspection PyUnresolvedReferences
         self.assertEqual(message._headers[1][1], headers['Message-ID'])
         self.assertEqual('Residents <residents_test-bounces@huntingtonhillsinc.org>', headers['Sender'])
@@ -406,13 +407,13 @@ Generic email text.
         )
         self.assertEqual('<http://smeg:8002/mailing_lists/archives/list/>', headers['List-Archive'])
         self.assertEqual(
-            '<http://smeg:8002/mailing_lists/lists/>,<mailto:adam@csh.rit.edu?subject=help%20Residents>',
+            f'<http://smeg:8002/mailing_lists/lists/>,<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=help%20Residents>',
             headers['List-Help']
         )
-        self.assertEqual('<mailto:adam@csh.rit.edu> (Contact Person for Help)', headers['List-Owner'])
+        self.assertEqual(f'<mailto:{settings.DEFAULT_FROM_EMAIL}> (Contact Person for Help)', headers['List-Owner'])
         self.assertEqual('<mailto:residents_test@huntingtonhillsinc.org>', headers['List-Post'])
-        self.assertEqual('<mailto:adam@csh.rit.edu?subject=subscribe%20Residents>', headers['List-Subscribe'])
-        self.assertEqual('<mailto:adam@csh.rit.edu?subject=unsubscribe%20Residents>', headers['List-Unsubscribe'])
+        self.assertEqual(f'<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=subscribe%20Residents>', headers['List-Subscribe'])
+        self.assertEqual(f'<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=unsubscribe%20Residents>', headers['List-Unsubscribe'])
         # noinspection PyUnresolvedReferences
         self.assertEqual(message._headers[1][1], headers['Message-ID'])
         self.assertEqual('Residents <residents_test-bounces@huntingtonhillsinc.org>', headers['Sender'])
@@ -513,13 +514,13 @@ This email has HTML
         self.assertEqual('Adam Stein via Residents <residents_test@huntingtonhillsinc.org>', headers['From'])
         self.assertEqual('<http://smeg:8002/mailing_lists/archives/list/>', headers['List-Archive'])
         self.assertEqual(
-            '<http://smeg:8002/mailing_lists/lists/>,<mailto:adam@csh.rit.edu?subject=help%20Residents>',
+            f'<http://smeg:8002/mailing_lists/lists/>,<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=help%20Residents>',
             headers['List-Help']
         )
-        self.assertEqual('<mailto:adam@csh.rit.edu> (Contact Person for Help)', headers['List-Owner'])
+        self.assertEqual(f'<mailto:{settings.DEFAULT_FROM_EMAIL}> (Contact Person for Help)', headers['List-Owner'])
         self.assertEqual('<mailto:residents_test@huntingtonhillsinc.org>', headers['List-Post'])
-        self.assertEqual('<mailto:adam@csh.rit.edu?subject=subscribe%20Residents>', headers['List-Subscribe'])
-        self.assertEqual('<mailto:adam@csh.rit.edu?subject=unsubscribe%20Residents>', headers['List-Unsubscribe'])
+        self.assertEqual(f'<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=subscribe%20Residents>', headers['List-Subscribe'])
+        self.assertEqual(f'<mailto:{settings.DEFAULT_FROM_EMAIL}?subject=unsubscribe%20Residents>', headers['List-Unsubscribe'])
         # noinspection PyUnresolvedReferences
         self.assertEqual(message['Message-ID'], headers['Message-ID'])
         self.assertEqual('Residents <residents_test-bounces@huntingtonhillsinc.org>', headers['Sender'])

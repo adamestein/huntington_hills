@@ -18,8 +18,8 @@ DEER_PREFIX = 'deer'
 HUNTER_PREFIX = 'hunter'
 
 
-def _get_year_field():
-    year_choices = [
+def _get_year_choices():
+    years = [
         (year, year) for year in
         LogSheet.objects.dates('date', 'year')
         .annotate(year=ExtractYear('date'))
@@ -28,7 +28,7 @@ def _get_year_field():
     ]
 
     try:
-        year_choices += [
+        years += [
             (year, year) for year in
             LogSheetNonIPD.objects.dates('date', 'year')
             .annotate(year=ExtractYear('date'))
@@ -39,9 +39,7 @@ def _get_year_field():
         # Need to ignore if the LogSheetNonIPD doesn't exist, so we can migrate and create it
         pass
 
-    return forms.MultipleChoiceField(
-        choices=sorted(year_choices), label='', widget=forms.SelectMultiple(attrs={'size': 20})
-    )
+    return sorted(years)
 
 
 class DeerForm(forms.ModelForm):
@@ -137,13 +135,19 @@ FinalReportFormSet = forms.formset_factory(FinalReportForm, extra=1)
 
 
 class HunterAnalysisForm(forms.Form):
-    years = _get_year_field()
-
-    hunter_choices = [(hunter.id, str(hunter)) for hunter in Hunter.objects.exclude(first_name='<unknown>')]
-
-    hunters = forms.MultipleChoiceField(
-        choices=hunter_choices, label='', widget=forms.SelectMultiple(attrs={'size': 20})
+    years = forms.MultipleChoiceField(
+        choices=(), label='', widget=forms.SelectMultiple(attrs={'size': 20})
     )
+    hunters = forms.MultipleChoiceField(
+        choices=(), label='', widget=forms.SelectMultiple(attrs={'size': 20})
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['years'].choices = _get_year_choices()
+        self.fields['hunters'].choices = [
+            (hunter.id, str(hunter)) for hunter in Hunter.objects.exclude(first_name='<unknown>')
+        ]
 
 
 class HunterForm(forms.ModelForm):
@@ -225,16 +229,20 @@ HunterFormSet = forms.formset_factory(HunterForm, extra=0)
 
 
 class LocationAnalysisForm(forms.Form):
-    years = _get_year_field()
-
-    location_choices = [
-        (location, location)
-        for location in Location.objects.distinct().values_list('label', flat=True).order_by('label')
-    ]
-
-    locations = forms.MultipleChoiceField(
-        choices=location_choices, label='', widget=forms.SelectMultiple(attrs={'size': 20})
+    years = forms.MultipleChoiceField(
+        choices=(), label='', widget=forms.SelectMultiple(attrs={'size': 20})
     )
+    locations = forms.MultipleChoiceField(
+        choices=(), label='', widget=forms.SelectMultiple(attrs={'size': 20})
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['years'].choices = _get_year_choices()
+        self.fields['locations'].choices = [
+            (location, location)
+            for location in Location.objects.distinct().values_list('label', flat=True).order_by('label')
+        ]
 
 
 class LocationForm(forms.Form):
@@ -262,8 +270,10 @@ class NonIPDLogSheetForm(forms.Form):
 
 
 class SiteAnalysisForm(forms.Form):
-    site_choices = [(site, site) for site in Site.objects.exclude(street='')]
-
     sites = forms.MultipleChoiceField(
-        choices=site_choices, label='', widget=forms.SelectMultiple(attrs={'size': 20})
+        choices=(), label='', widget=forms.SelectMultiple(attrs={'size': 20})
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['sites'].choices = [(site, site) for site in Site.objects.exclude(street='')]

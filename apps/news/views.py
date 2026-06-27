@@ -1,7 +1,8 @@
 from datetime import date
 
 from django.db.models.functions import Extract
-from django.shortcuts import get_object_or_404, reverse
+from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.utils.text import slugify
 from django.views.generic import RedirectView, TemplateView
 

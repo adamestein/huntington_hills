@@ -58,7 +58,7 @@ class Deer(models.Model):
     gender = models.CharField(
         blank=True, choices=GENDER_CHOICES, max_length=1, null=True
     )
-    log = models.ForeignKey('Log')
+    log = models.ForeignKey('Log', on_delete=models.CASCADE)
     points = models.PositiveSmallIntegerField(
         blank=True, default=None, help_text='(set only if deer is male, set to 0 if unknown)', null=True
     )
@@ -91,9 +91,9 @@ class Deer(models.Model):
 
 
 class HHCommonsHunting(models.Model):
-    approved_property = models.ForeignKey('Location')
-    hunter = models.ForeignKey('Hunter')
-    hh_rep = models.ForeignKey(Person, verbose_name='HH rep')
+    approved_property = models.ForeignKey('Location', on_delete=models.CASCADE)
+    hunter = models.ForeignKey('Hunter', on_delete=models.CASCADE)
+    hh_rep = models.ForeignKey(Person, on_delete=models.CASCADE, verbose_name='HH rep')
     date = models.DateField()
     time_shot = models.TimeField(blank=True, default=None, null=True)
     time_retrieved = models.TimeField(blank=True, default=None, null=True)
@@ -138,7 +138,7 @@ class Hunter(models.Model):
 class Location(models.Model):
     line_item_number = models.PositiveSmallIntegerField(validators=[MinValueValidator(1)])
     label = models.CharField(max_length=50)
-    site = models.ForeignKey('Site', blank=True, default=None, null=True)
+    site = models.ForeignKey('Site', blank=True, default=None, null=True, on_delete=models.CASCADE)
     year = models.PositiveSmallIntegerField(
         help_text='(to verify location is being used on the correct log sheet)', validators=[MinValueValidator(2017)]
     )
@@ -174,11 +174,11 @@ class Location(models.Model):
 
 
 class Log(models.Model):
-    log_sheet = models.ForeignKey('LogSheet', blank=True, default=None, null=True)
-    log_sheet_non_ipd = models.ForeignKey('LogSheetNonIPD', blank=True, default=None, null=True)
+    log_sheet = models.ForeignKey('LogSheet', blank=True, default=None, null=True, on_delete=models.CASCADE)
+    log_sheet_non_ipd = models.ForeignKey('LogSheetNonIPD', blank=True, default=None, null=True, on_delete=models.CASCADE)
 
-    location = models.ForeignKey('Location')
-    hunter = models.ForeignKey('Hunter', blank=True, null=True)
+    location = models.ForeignKey('Location', on_delete=models.CASCADE)
+    hunter = models.ForeignKey('Hunter', blank=True, null=True, on_delete=models.CASCADE)
 
     comment = models.CharField(blank=True, max_length=200)
 
@@ -248,7 +248,7 @@ class LogSheetBase(models.Model):
 class LogSheet(LogSheetBase):
     weather = models.CharField(max_length=50)
     temp = models.CharField(max_length=10)
-    officer = models.ForeignKey('Officer')
+    officer = models.ForeignKey('Officer', on_delete=models.CASCADE)
 
 
 class LogSheetNonIPD(LogSheetBase):
@@ -258,7 +258,7 @@ class LogSheetNonIPD(LogSheetBase):
 
 class NonHunter(models.Model):
     description = models.CharField(max_length=50)
-    log = models.OneToOneField(Log)
+    log = models.OneToOneField(Log, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'[{self.log.log_sheet.date}] Deer killed due to {self.description}'

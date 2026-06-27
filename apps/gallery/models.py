@@ -45,7 +45,7 @@ class Photo(models.Model):
     height = models.PositiveIntegerField(editable=False)
     image = models.ImageField(height_field='height', upload_to=gallery_path, width_field='width')
     long_description = models.TextField(blank=True)
-    owner = models.ForeignKey('Owner')
+    owner = models.ForeignKey('Owner', on_delete=models.CASCADE)
     page = models.PositiveSmallIntegerField()
     short_description = models.CharField(blank=True, max_length=80)
     tnail = models.ImageField(

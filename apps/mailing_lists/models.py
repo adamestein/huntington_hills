@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.mail import BadHeaderError, EmailMessage, EmailMultiAlternatives, get_connection
 from django.db import models
 from django.dispatch import receiver
-from django.shortcuts import reverse
+from django.urls import reverse
 from django.template.defaultfilters import pluralize
 from django.utils.text import slugify
 
@@ -43,7 +43,7 @@ class MailingList(models.Model):
     allow_anonymous_posts = models.BooleanField(default=False)
     can_post = models.ManyToManyField(Email, blank=True, related_name='can_post')    # If empty, all members can post
     email = models.EmailField()
-    mailbox = models.OneToOneField(Mailbox)
+    mailbox = models.OneToOneField(Mailbox, on_delete=models.CASCADE)
     members = models.ManyToManyField(Email, related_name='members')
     name_slug = models.SlugField()
 

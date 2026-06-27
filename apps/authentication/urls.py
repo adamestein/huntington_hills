@@ -1,8 +1,8 @@
-from django.conf.urls import url
+from django.urls import re_path
 
 from .redirect import redirect
 
 
 urlpatterns = [
-    url(r'^redirect/$', redirect, name='redirect')
+    re_path(r'^redirect/$', redirect, name='redirect')
 ]

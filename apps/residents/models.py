@@ -9,12 +9,12 @@ from library.models import SingletonModel
 
 
 class Board(SingletonModel):
-    director_at_large_1 = models.ForeignKey('Person', blank=True, related_name='director_at_large_1')
-    director_at_large_2 = models.ForeignKey('Person', blank=True, related_name='director_at_large_2')
-    president = models.ForeignKey('Person', blank=True, related_name='president')
-    secretary = models.ForeignKey('Person', blank=True, related_name='secretary')
-    treasurer = models.ForeignKey('Person', blank=True, related_name='treasurer')
-    vice_president = models.ForeignKey('Person', blank=True, related_name='vice_president')
+    director_at_large_1 = models.ForeignKey('Person', blank=True, on_delete=models.CASCADE, related_name='director_at_large_1')
+    director_at_large_2 = models.ForeignKey('Person', blank=True, on_delete=models.CASCADE, related_name='director_at_large_2')
+    president = models.ForeignKey('Person', blank=True, on_delete=models.CASCADE, related_name='president')
+    secretary = models.ForeignKey('Person', blank=True, on_delete=models.CASCADE, related_name='secretary')
+    treasurer = models.ForeignKey('Person', blank=True, on_delete=models.CASCADE, related_name='treasurer')
+    vice_president = models.ForeignKey('Person', blank=True, on_delete=models.CASCADE, related_name='vice_president')
 
     class Meta:
         verbose_name_plural = 'Board members'
@@ -40,7 +40,7 @@ class BoardTerm(models.Model):
 
     elected_date = models.DateField()
     office = models.CharField(choices=POSITIONS, max_length=2)
-    person = models.ForeignKey('Person')
+    person = models.ForeignKey('Person', on_delete=models.CASCADE)
 
     class Meta:
         ordering = ('-elected_date', 'person')
@@ -70,7 +70,7 @@ class Email(models.Model):
 
 class LotNumber(models.Model):
     lot_number = models.CharField(blank=True, max_length=20, null=True)
-    property = models.ForeignKey('Property')
+    property = models.ForeignKey('Property', on_delete=models.CASCADE)
 
     class Meta:
         ordering = ('property', 'lot_number')
@@ -104,7 +104,7 @@ class Person(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     prefix = models.CharField(blank=True, default=None, max_length=5, null=True)
-    residential_property = models.ForeignKey('Property')
+    residential_property = models.ForeignKey('Property', on_delete=models.CASCADE)
     suffix = models.CharField(blank=True, default=None, max_length=10, null=True)
     phone = PhoneNumberField(blank=True, help_text='Example: 000-000-0000.', region='US')
     active = models.BooleanField(default=True)
@@ -165,9 +165,9 @@ class Property(models.Model):
     comment = models.TextField(blank=True, null=True)
     house_number = models.SmallIntegerField()
     in_hh = models.BooleanField(default=True)
-    outside_mailing_address = models.ForeignKey('MailingAddress', blank=True, null=True)
-    property_type = models.ForeignKey('PropertyType')
-    street = models.ForeignKey('Street')
+    outside_mailing_address = models.ForeignKey('MailingAddress', blank=True, null=True, on_delete=models.CASCADE)
+    property_type = models.ForeignKey('PropertyType', on_delete=models.CASCADE)
+    street = models.ForeignKey('Street', on_delete=models.CASCADE)
 
     _notices_ml = None
 
