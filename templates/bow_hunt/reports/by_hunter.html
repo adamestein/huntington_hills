@@ -234,7 +234,7 @@
 
                 <tbody>
                     {% for location, info in location_info.items %}
-                        {% ifnotequal location "normalized_name" %}
+                        {% if location != "normalized_name" %}
                             <tr>
                                 <td>{{ location }}</td>
                                 <td>{{ info.days_hunted }}</td>
@@ -244,7 +244,7 @@
                                 <td>{{ info.deer_tracked }}</td>
                                 <td>{{ info.percent_tracked|floatformat:"2" }}%</td>
                             </tr>
-                        {% endifnotequal %}
+                        {% endif %}
                     {% endfor %}
                 </tbody>
             </table>

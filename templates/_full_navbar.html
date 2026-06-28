@@ -1,39 +1,39 @@
-{% ifequal active "home" %}
+{% if active == "home" %}
     <li><span class="fakelink">Home</span></li>
 {% else %}
     <li><a href="{% url "home" %}">Home</a></li>
-{% endifequal %}
+{% endif %}
 
-{% ifequal active "about" %}
+{% if active == "about" %}
     <li><span class="fakelink">About</span></li>
 {% else %}
     <li><a href="{% url "about" %}">About</a></li>
-{% endifequal %}
+{% endif %}
 
-{% ifequal active "documents" %}
+{% if active == "documents" %}
     <li><span class="fakelink">Documents</span></li>
 {% else %}
     <li><a href="{% url "docs:docs" %}">Documents</a></li>
-{% endifequal %}
+{% endif %}
 
 <li><a href="{% url "history:history" %}">History</a></li>
 
 <li><a href="{% url "gallery:gallery" %}">Gallery</a></li>
 
-{% ifequal active "contact" %}
+{% if active == "contact" %}
     <li><span class="fakelink">Contact</span></li>
 {% else %}
     <li><a href="{% url "contact:contact" %}">Contact</a></li>
-{% endifequal %}
+{% endif %}
 
-{% ifequal active "search" %}
+{% if active == "search" %}
     <li><span class="fakelink">Search</span></li>
 {% else %}
     <li><a href="{% url "search" %}">Search</a></li>
-{% endifequal %}
+{% endif %}
 
-{% ifequal active "technical" %}
+{% if active == "technical" %}
     <li><span class="fakelink">Technical</span></li>
 {% else %}
     <li><a href="{% url "technical" %}">Technical Details</a></li>
-{% endifequal %}
+{% endif %}

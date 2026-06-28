@@ -230,10 +230,9 @@ if config.get('silence_recaptcha_test_key_error', default=False):
     SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
 
 
-
 # Version information
 
-VERSION = '3.4'
+VERSION = '4.0'
 
 
 # List of settings to export to templates (django-settings-export)
@@ -244,7 +243,7 @@ SETTINGS_EXPORT = [
 ]
 
 
-# Production vs Development specific stuff
+# Production vs. Development specific stuff
 
 if DEBUG:
     INSTALLED_APPS.append('django_extensions')

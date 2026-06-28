@@ -62,11 +62,11 @@
                     <ol>
                         {% for owner in owner_list %}
                             <li>
-                                {% ifequal owner object %}
+                                {% if owner == object %}
                                     {{ owner.name }}
                                 {% else %}
                                     <a href="{% url 'gallery:owner' owner.slug %}">{{ owner.name }}</a>
-                                {% endifequal %}
+                                {% endif %}
                             </li>
                         {% endfor %}
                     </ol>
