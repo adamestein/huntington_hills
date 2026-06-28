@@ -1,4 +1,4 @@
-Django==4.2.30
+Django==5.2.15
 django-cors-headers==4.9.0
 django-crontab==0.7.1
 django-fullurl==1.1
@@ -16,6 +16,5 @@ PyMySQL==1.1.1
 python-decouple==3.3
 pytz==2020.1
 reportlab==4.5.1
-six==1.15.0
 upsilonconf==0.7.0
 xhtml2pdf==0.2.17

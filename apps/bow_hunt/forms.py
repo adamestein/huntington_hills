@@ -6,7 +6,6 @@ from django.db import ProgrammingError
 from django.db.models.functions import ExtractYear
 from django.utils.encoding import force_str
 from django.utils.html import conditional_escape
-import six
 
 from .models import Deer, Hunter, Location, Log, LogSheet, LogSheetNonIPD, Site
 
@@ -204,14 +203,14 @@ class HunterForm(forms.ModelForm):
                 <tr>
                     <th>{label}</th>
                     <td>
-                        {six.text_type(self['pk'])}
-                        {six.text_type(self['log_sheet_id'])}
-                        {six.text_type(self['log_sheet_non_ipd_id'])}
-                        {six.text_type(self['location_id'])}
-                        {six.text_type(self['hunter_formset_number'])}
-                        {six.text_type(bf)}{help_text}<br />
-                        {six.text_type(self['missing_warnings'])}
-                        {six.text_type(self['incorrect_warnings'])}
+                        {str(self['pk'])}
+                        {str(self['log_sheet_id'])}
+                        {str(self['log_sheet_non_ipd_id'])}
+                        {str(self['location_id'])}
+                        {str(self['hunter_formset_number'])}
+                        {str(bf)}{help_text}<br />
+                        {str(self['missing_warnings'])}
+                        {str(self['incorrect_warnings'])}
                     </td>
                 </tr>
             """
@@ -220,7 +219,7 @@ class HunterForm(forms.ModelForm):
                 {error_row}
                 <tr>
                     <th>{label}</th>
-                    <td>{six.text_type(bf)}{help_text}</td>
+                    <td>{str(bf)}{help_text}</td>
                 </tr>
             """
 

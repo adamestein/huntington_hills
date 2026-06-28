@@ -137,7 +137,7 @@ def send(sender, message, **_):
 
                 # Remove any [ML NAME], Re: strings, and newlines
                 subject = (
-                    re.sub(r'(?<!^)(?i)Re: ', '', message.subject.replace(f'[{sender.name}] ', ''), flags=re.M)
+                    re.sub(r'(?<!^)Re: ', '', message.subject.replace(f'[{sender.name}] ', ''), flags=re.I | re.M)
                     .replace('\r', '')
                     .replace('\n', '')
                 )
