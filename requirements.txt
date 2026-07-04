@@ -7,14 +7,13 @@ django-mailbox==4.10.1
 django-phonenumber-field==8.4.0
 django-recaptcha==4.0.0
 django-settings-export==1.2.1
-django-tinymce==4.1.0
+django-tinymce==5.0.0
 lxml==6.1.1
 lxml_html_clean==0.4.1
 phonenumbers==8.12.8
 Pillow==11.3.0
 PyMySQL==1.1.1
 python-decouple==3.3
-pytz==2020.1
 reportlab==4.5.1
 upsilonconf==0.7.0
 xhtml2pdf==0.2.17
