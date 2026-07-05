@@ -11,7 +11,7 @@ django-tinymce==5.0.0
 lxml==6.1.1
 lxml_html_clean==0.4.1
 phonenumbers==8.12.8
-Pillow==11.3.0
+Pillow==12.1.0
 PyMySQL==1.1.1
 python-decouple==3.3
 reportlab==4.5.1
