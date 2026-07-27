@@ -232,7 +232,7 @@ if config.get('silence_recaptcha_test_key_error', default=False):
 
 # Version information
 
-VERSION = '4.0'
+VERSION = '4.1'
 
 
 # List of settings to export to templates (django-settings-export)

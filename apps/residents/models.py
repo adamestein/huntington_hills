@@ -249,7 +249,7 @@ class Property(models.Model):
 
     @property
     def receives_no_email(self):
-        return sum([person.email_set.all().count() for person in self.get_all_active_people()]) == 0
+        return sum([person.emails.count() for person in self.get_all_active_people()]) == 0
 
     def street_address(self):
         return f'{self.house_number} {self.street}'

@@ -38,7 +38,7 @@ class AllDataView(LoginRequiredMixin, IsStaffMixin, TemplateView):
 
 
 class EmailNoticeList(LoginRequiredMixin, IsStaffMixin, CSVFileView):
-    csv_filename = 'email_notice_list.csv'
+    csv_filename = 'notices_ml.csv'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -46,6 +46,39 @@ class EmailNoticeList(LoginRequiredMixin, IsStaffMixin, CSVFileView):
         context['data'] = [['', 'Names', 'Address', 'Emails'], []]
 
         notices_ml = MailingList.objects.get(mailbox__name='Notices')
+
+        for street in Street.objects.all():
+            context['data'].append([street.street])
+
+            for residential_property in Property.objects.filter(street=street):
+                emails = []
+                people = []
+
+                for person in residential_property.get_all_active_people():
+                    notice_email = (notices_ml.members.all() & person.emails.all()).first()
+                    if notice_email:
+                        emails.append(notice_email.email)
+                        people.append(person.full_name)
+
+                if people:
+                    context['data'].append(
+                        ['', '\n'.join(people), residential_property.street_address(), '\n'.join(emails)]
+                    )
+
+            context['data'].append([])
+
+        return context
+
+
+class EmailResidentsList(LoginRequiredMixin, IsStaffMixin, CSVFileView):
+    csv_filename = 'residents_ml.csv'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['data'] = [['', 'Names', 'Address', 'Emails'], []]
+
+        notices_ml = MailingList.objects.get(mailbox__name='Residents')
 
         for street in Street.objects.all():
             context['data'].append([street.street])
