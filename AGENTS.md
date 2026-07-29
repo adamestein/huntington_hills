@@ -13,11 +13,20 @@ uv sync
 # Run dev server
 uv run python manage.py runserver
 
-# Run tests
+# Run all unit tests (default)
 uv run pytest
 
-# Run a single app's tests
+# Run all behavior tests (Playwright)
+uv run pytest -m behavior
+
+# Run all tests (both unit and behavior)
+uv run pytest -m ""
+
+# Run a single app's unit tests
 uv run pytest apps/mailing_lists/
+
+# Run a single app's behavior tests
+uv run pytest apps/mailing_lists/ -m behavior
 
 # Run a specific test file
 uv run pytest apps/mailing_lists/tests/unit/test_posting.py
@@ -60,7 +69,8 @@ All config via `upsilonconf` loading `.env.json` (gitignored, not committed). Se
 - **Migrations disabled** in tests via `library.testing.migrations.DisableMigrations`
 - **Passwords**: MD5 hasher in tests (no hashing overhead)
 - **Fixtures**: `apps/<app>/tests/fixtures/*.json` with paths relative to project root
-- **Test structure**: Tests in `apps/<app>/tests/unit/test_*.py`
+- **Test structure**: Unit tests in `apps/<app>/tests/unit/`, behavior tests (Playwright) in `apps/<app>/tests/behavior/`
+- Tests auto-tagged with `unit` or `behavior` markers based on directory; `unit` is the default filter
 - Logging suppressed to CRITICAL during tests
 - Test settings configured in `conftest.py` (applies same settings as `manage.py test`)
 
