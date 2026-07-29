@@ -248,7 +248,7 @@ SETTINGS_EXPORT = [
 if DEBUG:
     INSTALLED_APPS.append('django_extensions')
 
-    if 'test' in sys.argv or 'test_coverage' in sys.argv:
+    if 'test' in sys.argv or 'test_coverage' in sys.argv or 'pytest' in sys.argv[0]:
         from library.testing.migrations import DisableMigrations
 
         # Turn off normal log messages (just leave CRITICAL in case it's something terrible)
