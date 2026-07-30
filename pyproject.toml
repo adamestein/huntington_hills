@@ -15,4 +15,4 @@ markers = [
     "unit: Unit tests (no browser)",
     "behavior: Behavior/integration tests (Playwright)",
 ]
-addopts = ["-m", "unit"]
+

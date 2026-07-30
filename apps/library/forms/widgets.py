@@ -11,11 +11,11 @@ DEFAULT_URL = '/admin/bow_hunt/%(field)s/add/?_to_field=id&_popup=1'
 class MultipleSelectWithAdd(forms.SelectMultiple):
     def __init__(self, attrs=None, choices=()):
         defaults = _set_popup_defaults(attrs)
-        super(MultipleSelectWithAdd, self).__init__(attrs, choices)
+        super().__init__(attrs, choices)
         self.popup_add = _create_popup_anchor(defaults)
 
     def render(self, name, value, attrs=None, renderer=None):
-        html = super(MultipleSelectWithAdd, self).render(name, value, attrs, renderer)
+        html = super().render(name, value, attrs, renderer)
         return mark_safe(
             html + self.popup_add % {
                 'field': name.replace('_', ''),
@@ -29,13 +29,13 @@ class MultipleSelectWithAdd(forms.SelectMultiple):
 class SelectWithAdd(forms.Select):
     def __init__(self, attrs=None, choices=()):
         defaults = _set_popup_defaults(attrs)
-        super(SelectWithAdd, self).__init__(attrs, choices)
+        super().__init__(attrs, choices)
         self.popup_add = _create_popup_anchor(defaults)
 
     def render(self, name, value, attrs=None, renderer=None):
         field_name = re.sub(r'.*-(\d+|__prefix__)-', '', name)
 
-        html = super(SelectWithAdd, self).render(name, value, attrs, renderer)
+        html = super().render(name, value, attrs, renderer)
         return mark_safe(
             html + self.popup_add % {
                 'field': field_name.replace('_', ''),

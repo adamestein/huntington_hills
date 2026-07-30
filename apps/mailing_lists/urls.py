@@ -1,4 +1,4 @@
-from django.urls import re_path
+from django.urls import path
 
 from library.views.generic import ProtectedTemplateView
 
@@ -9,15 +9,15 @@ from .message import MessageDetailView
 
 app_name = 'mailing_lists'
 urlpatterns = [
-    re_path(r'^archives/(?P<ml_name_slug>[-\w]+)$', Archives.as_view(), name='archives'),
-    re_path(r'^archives/(?P<ml_name_slug>[-\w]+)/byauthor/(?P<archive>[\w ]+)$', ByAuthor.as_view(), name='by_author'),
-    re_path(r'^archives/(?P<ml_name_slug>[-\w]+)/bydate/(?P<archive>[\w ]+)$', ByDate.as_view(), name='by_date'),
-    re_path(r'^archives/(?P<ml_name_slug>[-\w]+)/bysubject/(?P<archive>[\w ]+)$', BySubject.as_view(), name='by_subject'),
-    re_path(r'^archives/(?P<ml_name_slug>[-\w]+)/bythread/(?P<archive>[\w ]+)$', ByThread.as_view(), name='by_thread'),
-    re_path(r'^archives/list/$', ArchiveList.as_view(), name='archive_list'),
-    re_path(r'^archives/message/(?P<pk>[\d]+)/$', MessageDetailView.as_view(), name='message'),
-    re_path(
-        r'^lists/$',
+    path('archives/<slug:ml_name_slug>', Archives.as_view(), name='archives'),
+    path('archives/<slug:ml_name_slug>/byauthor/<str:archive>', ByAuthor.as_view(), name='by_author'),
+    path('archives/<slug:ml_name_slug>/bydate/<str:archive>', ByDate.as_view(), name='by_date'),
+    path('archives/<slug:ml_name_slug>/bysubject/<str:archive>', BySubject.as_view(), name='by_subject'),
+    path('archives/<slug:ml_name_slug>/bythread/<str:archive>', ByThread.as_view(), name='by_thread'),
+    path('archives/list/', ArchiveList.as_view(), name='archive_list'),
+    path('archives/message/<int:pk>/', MessageDetailView.as_view(), name='message'),
+    path(
+        'lists/',
         ProtectedTemplateView.as_view(template_name='mailing_lists/lists.html'),
         name='lists'
     ),

@@ -1,12 +1,12 @@
-from django.urls import re_path
+from django.urls import path
 
 from .views import Archived, ArticleRedirect, ByYear, CurrentArticles
 
 app_name = 'news'
 urlpatterns = [
-    re_path(r'^archived/$', Archived.as_view(), name='archived'),
-    re_path(r'^article/(?P<pk>\d+)$', ArticleRedirect.as_view(), name='article_redirect'),
-    re_path(r'^by_year/(?P<year>\d{4})/$', ByYear.as_view(), name='by_year'),
-    re_path(r'^by_year/(?P<year>\d{4})/(?P<slug>[\w-]+)$', ByYear.as_view(), name='by_year'),
-    re_path(r'^current/$', CurrentArticles.as_view(), name='current_news_articles')
+    path('archived/', Archived.as_view(), name='archived'),
+    path('article/<int:pk>', ArticleRedirect.as_view(), name='article_redirect'),
+    path('by_year/<int:year>/', ByYear.as_view(), name='by_year'),
+    path('by_year/<int:year>/<slug:slug>', ByYear.as_view(), name='by_year'),
+    path('current/', CurrentArticles.as_view(), name='current_news_articles')
 ]
