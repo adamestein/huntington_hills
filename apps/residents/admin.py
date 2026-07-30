@@ -48,6 +48,12 @@ class BoardTermAdmin(admin.ModelAdmin):
     search_fields = ('person__first_name', 'person__last_name')
 
 
+@admin.register(MailingAddress)
+class MailingAddressAdmin(admin.ModelAdmin):
+    list_display = ('name', 'active', 'line1', 'city', 'state', 'zip_code')
+    list_filter = ('active',)
+
+
 class PersonEmailInline(admin.TabularInline):
     model = PersonEmail
 
@@ -67,6 +73,5 @@ class PropertyAdmin(admin.ModelAdmin):
 admin.site.register(PersonEmail)
 admin.site.register(Email)
 admin.site.register(LotNumber)
-admin.site.register(MailingAddress)
 admin.site.register(PropertyType)
 admin.site.register(Street)

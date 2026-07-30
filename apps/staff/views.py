@@ -13,7 +13,7 @@ from mailing_lists.models import MailingList
 
 from news.views import CurrentArticles
 
-from residents.models import Board, BoardTerm, Person, Property, Street
+from residents.models import Board, BoardTerm, MailingAddress, Person, Property, Street
 
 
 class AllCurrentNews(CurrentArticles):
@@ -215,6 +215,10 @@ class UpdateHomeowners(LoginRequiredMixin, IsStaffMixin, FormView):
 
         # Deactivate the old property owners
         Person.objects.filter(residential_property=residential_property).update(active=False)
+
+        # Deactivate the old mailing address if one exists
+        if residential_property.outside_mailing_address:
+            MailingAddress.objects.filter(id=residential_property.outside_mailing_address_id).update(active=False)
 
         for person_form in form.forms:
             if person_form.cleaned_data:

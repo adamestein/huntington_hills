@@ -81,6 +81,7 @@ class LotNumber(models.Model):
 
 
 class MailingAddress(models.Model):
+    active = models.BooleanField(default=True)
     city = models.CharField(max_length=20)
     line1 = models.CharField(max_length=50)
     line2 = models.CharField(blank=True, max_length=50, null=True)
@@ -209,7 +210,7 @@ class Property(models.Model):
         else:
             line_end = pre_zip = ', '
 
-        if self.outside_mailing_address:
+        if self.outside_mailing_address and self.outside_mailing_address.active:
             if include_names:
                 names = f'{self.outside_mailing_address.name} (for {self.street_address()}){line_end}'
             else:
