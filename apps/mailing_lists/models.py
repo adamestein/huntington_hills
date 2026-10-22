@@ -1,6 +1,7 @@
 import logging
 import re
-from smtplib import SMTPSenderRefused
+from email.utils import formataddr
+from smtplib import SMTPException
 
 from django.conf import settings
 from django.core.mail import BadHeaderError, EmailMessage, EmailMultiAlternatives, get_connection
@@ -130,10 +131,22 @@ def send(sender, message, **_):
             }
 
             if can_post:
+                # A folded header still contains the line breaks used to fold it; they have
+                # to be removed before the header can be used in a composed message.
+                from_header = re.sub(r'\r\n[ \t]+', ' ', message.from_header)
+                from_header = re.sub(r'[\r\n]', '', from_header).strip()
+
                 if member:
-                    from_email = f'{member.full_name} via {sender.name} <{mailing_list.email}>'
+                    poster_name = member.full_name.strip()
                 else:
-                    from_email = f'{message.from_header} via {sender.name} <{mailing_list.email}>'
+                    poster_name = from_header
+
+                if not poster_name:
+                    poster_name = message.from_address[0]
+
+                # The poster's name can contain characters that are only legal inside a
+                # quoted string (<, >, @), so let the stdlib build the mailbox for us.
+                from_email = formataddr((f'{poster_name} via {sender.name}', mailing_list.email))
 
                 # Remove any [ML NAME], Re: strings, and newlines
                 subject = (
@@ -151,7 +164,7 @@ def send(sender, message, **_):
                         bcc=[member.email for member in mailing_list.members.all()],
                         body=message.text,
                         connection=connection,
-                        from_email=from_email.replace(',', ''),     # Can't have commas
+                        from_email=from_email,
                         headers={
                             'From': from_email,
                             'List-Archive': f'<{settings.SITE_URL}{reverse("mailing_lists:archive_list")}>',
@@ -168,7 +181,7 @@ def send(sender, message, **_):
                             'X-Hh-Beenthere': mailing_list.email,
                             'X-Sender': f'{sender.name} <{mailing_list.bounce_email}>'
                         },
-                        reply_to=(message.from_header,),
+                        reply_to=(from_header,) if from_header else (),
                         subject=subject,
                         to=[f'{sender.name} <{mailing_list.email}>']
                     )
@@ -193,8 +206,9 @@ def send(sender, message, **_):
 
                     try:
                         msg.send()
-                    except (BadHeaderError, SMTPSenderRefused) as e:
-                        msg.send()
+                    except (BadHeaderError, SMTPException, ValueError) as e:
+                        # Retrying cannot fix these errors and letting the exception escape
+                        # aborts the entire mail run, so log it and keep going.
                         logger.error(f'Error sending email with subject "{subject}": {e}')
             else:
                 # Save the message to our reject pile (easier to view just rejected messages or to remove when

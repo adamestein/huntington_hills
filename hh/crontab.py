@@ -26,6 +26,8 @@ if getattr(settings, 'RUN_CRON_JOBS', None):
     # Cron jobs
     CRONJOBS = [
         # Run every 15 minutes
+        # The production cron runs the getmail command, which calls this same function
+        # (see apps/crontab/management/commands/getmail.py)
         ("*/15 * * * *", "crontab.mailbox.process_mailboxes", _log_output('process_mailboxes.log')),
     ]
     CRONTAB_LOCK_JOBS = True

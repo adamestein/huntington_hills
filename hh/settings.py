@@ -41,7 +41,6 @@ INSTALLED_APPS = [
 
     # 3rd Party Apps
     'django_crontab',
-    'django_mailbox',
     'django_recaptcha',         # https://www.google.com/recaptcha/admin/create
     'fullurl',
     'phonenumber_field',
@@ -51,14 +50,19 @@ INSTALLED_APPS = [
     'authentication',
     'bow_hunt',
     'contact',
-    'crontab',
+    'crontab',                  # Must be listed before django_mailbox, see below
     'gallery',
     'history',
     'library',
     'mailing_lists',
     'news',
     'residents',
-    'staff'
+    'staff',
+
+    # Django resolves management commands in reverse INSTALLED_APPS order, so
+    # django_mailbox has to be listed after the crontab app for the crontab app's
+    # getmail command to override the one django_mailbox provides.
+    'django_mailbox',
 ]
 
 MIDDLEWARE = [

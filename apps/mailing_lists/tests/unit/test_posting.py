@@ -3,10 +3,12 @@ from io import StringIO
 import json
 import logging
 from string import Template
+from unittest.mock import Mock
 
 import pytest
 from django.conf import settings
 from django.core import mail
+from django.core.mail.backends.smtp import EmailBackend
 from django.core.management import call_command
 
 from django_mailbox.models import Mailbox, Message
@@ -97,6 +99,18 @@ def log_stream():
     log.addHandler(handler)
     yield stream, handler
     logging.disable(logging.CRITICAL)
+
+
+def send_via_smtp(message):
+    """
+    Send a message the way production does, through the SMTP backend.
+
+    The locmem backend used by the test suite never validates the From address, so the
+    tests have to go through the SMTP backend to catch addresses Django cannot parse.
+    """
+    backend = EmailBackend(host='localhost', port=25)
+    backend.connection = Mock()
+    return backend.send_messages([message])
 
 
 @pytest.mark.django_db
@@ -420,7 +434,8 @@ Generic email text.
         assert mail.outbox[0].bcc == ['adam@csh.rit.edu', 'randy@member.org']
         assert mail.outbox[0].body == 'Generic email text.'
         assert mail.outbox[0].from_email == (
-            'Outsider <outsider@outside.com> via Residents <residents_test@huntingtonhillsinc.org>'
+            '"Outsider <outsider@outside.com> via Residents" '
+            '<residents_test@huntingtonhillsinc.org>'
         )
         assert mail.outbox[0].reply_to == ['Outsider <outsider@outside.com>']
         assert mail.outbox[0].subject == '[Residents] Allow anonymous posting'
@@ -429,7 +444,8 @@ Generic email text.
         headers = mail.outbox[0].extra_headers
         assert len(headers) == 11
         assert headers['From'] == (
-            'Outsider <outsider@outside.com> via Residents <residents_test@huntingtonhillsinc.org>'
+            '"Outsider <outsider@outside.com> via Residents" '
+            '<residents_test@huntingtonhillsinc.org>'
         )
         assert headers['List-Archive'] == '<http://smeg:8002/mailing_lists/archives/list/>'
         assert headers['List-Help'] == (
@@ -456,6 +472,111 @@ Generic email text.
         msgs = Message.objects.all()
         assert msgs.count() == 1
         assert msgs[0].subject == '[Residents] Allow anonymous posting'
+
+    def test_anonymous_posting_from_address_without_display_name(
+            self, mailbox, resident_ml, email1, email2, log_stream):
+        """
+        A From header without a display name still has to produce a mailbox Django can parse.
+
+        The name is quoted, otherwise the address is mistaken for the start of the mailbox.
+        """
+        stream, handler = log_stream
+
+        resident_ml.allow_anonymous_posts = True
+        resident_ml.save()
+
+        message = email.message_from_bytes(b'''\
+Date: Sun, 20 Jan 2013 11:53:53 -0800
+Message-ID: <CAMdmm+hGH8Dgn-_0xnXJCd=PhyNAiouOYm5zFP0z-foqTO60zA@mail.gmail.com>
+Subject: Anonymous post without a display name
+From: postmaster@huntingtonhillsinc.org
+To: Residents <residents_test@huntingtonhillsinc.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+Generic email text.
+''')
+
+        mailbox.process_incoming_message(message)
+        handler.flush()
+
+        assert len(mail.outbox) == 1
+
+        # Sending is what fails in production, so check it before the header details
+        assert send_via_smtp(mail.outbox[0]) == 1
+
+        assert mail.outbox[0].from_email == (
+            '"postmaster@huntingtonhillsinc.org via Residents" '
+            '<residents_test@huntingtonhillsinc.org>'
+        )
+        assert mail.outbox[0].reply_to == ['postmaster@huntingtonhillsinc.org']
+        assert mail.outbox[0].subject == '[Residents] Anonymous post without a display name'
+
+        assert stream.getvalue() == ''
+
+    def test_anonymous_posting_with_folded_from_header(
+            self, mailbox, resident_ml, email1, email2, log_stream):
+        """A folded From header must not put a line break into the composed message."""
+        stream, handler = log_stream
+
+        resident_ml.allow_anonymous_posts = True
+        resident_ml.save()
+
+        message = email.message_from_bytes(b'''\
+Date: Sun, 20 Jan 2013 11:53:53 -0800
+Message-ID: <CAMdmm+hGH8Dgn-_0xnXJCd=PhyNAiouOYm5zFP0z-foqTO60zA@mail.gmail.com>
+Subject: Anonymous post with a folded From header
+From: Some Long Display Name\r\n <folded@example.com>
+To: Residents <residents_test@huntingtonhillsinc.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+Generic email text.
+''')
+
+        mailbox.process_incoming_message(message)
+        handler.flush()
+
+        assert len(mail.outbox) == 1
+
+        # Sending is what fails in production, so check it before the header details
+        assert send_via_smtp(mail.outbox[0]) == 1
+
+        assert mail.outbox[0].from_email == (
+            '"Some Long Display Name <folded@example.com> via Residents" '
+            '<residents_test@huntingtonhillsinc.org>'
+        )
+        assert mail.outbox[0].reply_to == ['Some Long Display Name <folded@example.com>']
+
+        assert stream.getvalue() == ''
+
+    def test_member_posting_is_sendable(self, mailbox, resident_ml, email1, email2, log_stream):
+        """A member's post has to survive the SMTP backend's address sanitizing."""
+        stream, handler = log_stream
+
+        message = email.message_from_bytes(b'''\
+Date: Sun, 20 Jan 2013 11:53:53 -0800
+Message-ID: <CAMdmm+hGH8Dgn-_0xnXJCd=PhyNAiouOYm5zFP0z-foqTO60zA@mail.gmail.com>
+Subject: Member posting
+From: Adam Stein <adam@csh.rit.edu>
+To: Residents <residents_test@huntingtonhillsinc.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+
+Generic email text.
+''')
+
+        mailbox.process_incoming_message(message)
+        handler.flush()
+
+        assert len(mail.outbox) == 1
+
+        # Sending is what fails in production, so check it before the header details
+        assert send_via_smtp(mail.outbox[0]) == 1
+
+        assert mail.outbox[0].from_email == 'Adam Stein via Residents <residents_test@huntingtonhillsinc.org>'
+
+        assert stream.getvalue() == ''
 
     def test_reply_subject_line(self, mailbox, resident_ml, email1, email2, log_stream):
         stream, handler = log_stream

@@ -1,18 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+export BDD_BROWSER_DESKTOP=2
 unset VIRTUAL_ENV
 
-usage() { echo "Usage: $(basename "$0") [-b] [-a] [-d] [-u <path>] [pytest args...]" >&2; exit 1; }
+usage() { echo "Usage: $(basename "$0") [-b] [-a] [-u <path>] [pytest args...]" >&2; exit 1; }
 
 mode="unit"
 path=()
-headed=""
 while [ $# -gt 0 ]; do
     case "$1" in
         -b) mode="behavior"; shift ;;
         -a) mode=""; shift ;;
-        -d) headed="--headed"; shift ;;
         -u) path=("$2"); shift 2 ;;
         -h) usage ;;
         --) shift; break ;;
@@ -21,5 +20,5 @@ while [ $# -gt 0 ]; do
     esac
 done
 
-exec uv run pytest ${mode:+-m "$mode"} "$headed" "${path[@]}" "$@"
+uv run pytest ${mode:+-m "$mode"} "${path[@]}" "$@" 2>&1 | tee test.log
 
